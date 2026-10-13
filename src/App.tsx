@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Switch, Box, Button, CircularProgress } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Box, CircularProgress } from '@mui/material';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
-import { MonacoEditor } from '@monaco-editor/react';
+import Editor from '@monaco-editor/react';
 
 const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
@@ -51,7 +51,7 @@ const App: React.FC = () => {
       </Box>
 
       <Box sx={{ p: 2, height: '70vh' }}>
-        <MonacoEditor
+        <Editor
           height="100%"
           defaultLanguage="java"
           defaultValue="// Start coding with AI assistance..."
