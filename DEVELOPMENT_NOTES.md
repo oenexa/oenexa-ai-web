@@ -1,7 +1,10 @@
 # OENEXA AI Engineer UI - Development Notes & Architecture Log
 
-> **Project:** OENEXA AI Engineer UI  
+> **Component Role:** `[AI-FE] 💻` (Frontend UI)  
+> **Paired Backend Service:** `[AI-BE] ⚡` [`oenexa-ai-engineer-backend`](../oenexa-ai-engineer-backend) (`http://localhost:8080/api`)  
 > **Frontend Stack:** React 18, Vite 5, TypeScript, Tailwind CSS, Material-UI 5, Monaco Editor  
+> **Backend Stack:** Java 25+, Spring Boot 4.1.1, Spring MVC REST  
+> **Master Ecosystem Directory:** [`AI_AGENT_DEVELOPER_REPO_MAPPING.md`](../AI_AGENT_DEVELOPER_REPO_MAPPING.md)  
 
 ---
 
@@ -34,6 +37,8 @@ oenexa-ai-engineer-frontend/
 | **01** | Repo Separation  | Transferred UI files into isolated repository root                           | Clean decoupled codebase without Maven/Gradle dependencies.       |
 | **02** | `App.tsx`        | Fixed Monaco Editor import from named to default import                      | `npm run build` succeeds cleanly with zero bundle errors.         |
 | **03** | Configuration    | Configured proxy route `/api` to `http://localhost:8080` in `vite.config.ts` | Allows seamless local full-stack development without CORS issues. |
+| **04** | Feature Upgrades | Ported and redesigned full feature suite from platform: Multi-Agent Workflows, AI Assistant Chat, RAG Knowledge Base, and Monaco Editor. | 100% test pass on Vitest, clean production bundle with zero warnings. |
+| **05** | Docker Runner Integration | Integrated with backend Docker Runner suite (`Dockerfile.frontend`, `nginx.conf`, `docker-compose.yml`, `docker-runner.sh`/`.ps1`). Verified dual IPv4/IPv6 Nginx listeners, SPA fallback, and `/api/` reverse proxy to Spring Boot backend on port 3000. | All 4 containers achieve 100% healthy status in automated stack. |
 
 ---
 

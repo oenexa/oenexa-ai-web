@@ -21,8 +21,8 @@ describe('Feature: Theme Switching & Workspace Health Diagnostics', () => {
       });
 
       // When & Then: title and health monitor are visible
-      expect(screen.getByText('OENEXA AI Engineer')).toBeInTheDocument();
-      expect(screen.getByText(/Backend health:/i)).toBeInTheDocument();
+      expect(screen.getByText(/OENEXA AI Engineer/i)).toBeInTheDocument();
+      expect(screen.getByText(/Backend Service Health:/i)).toBeInTheDocument();
     });
   });
 
