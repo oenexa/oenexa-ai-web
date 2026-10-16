@@ -39,6 +39,7 @@ oenexa-ai-engineer-frontend/
 | **03** | Configuration    | Configured proxy route `/api` to `http://localhost:8080` in `vite.config.ts` | Allows seamless local full-stack development without CORS issues. |
 | **04** | Feature Upgrades | Ported and redesigned full feature suite from platform: Multi-Agent Workflows, AI Assistant Chat, RAG Knowledge Base, and Monaco Editor. | 100% test pass on Vitest, clean production bundle with zero warnings. |
 | **05** | Docker Runner Integration | Integrated with backend Docker Runner suite (`Dockerfile.frontend`, `nginx.conf`, `docker-compose.yml`, `docker-runner.sh`/`.ps1`). Verified dual IPv4/IPv6 Nginx listeners, SPA fallback, and `/api/` reverse proxy to Spring Boot backend on port 3000. | All 4 containers achieve 100% healthy status in automated stack. |
+| **06** | Pro-Grade Chat & Backend Automations | Upgraded UI to match backend Gemini Pro specifications: 1. Multi-turn session management (listing, pinning, forking, titling), 2. Gemini 2.5 Pro/Flash model selector & CoT thinking accordion, 3. Autonomous tool execution cards (`ast_analyzer`, `security_scanner`, `test_synthesizer`, `code_refactoring`, `architecture_diagram`), 4. Monaco code artifact extraction with "Load in Editor" & "Copy", 5. Code context attachments from editor, 6. Code Workspace AST Analysis, SAST Security Scan, and JUnit 5 test synthesis buttons, 7. Dynamic 23-module discovery grid. | `npm test` passes 6/6 BDD test suites, `npm run build` succeeds cleanly in 9s with 0 warnings. |
 
 ---
 
