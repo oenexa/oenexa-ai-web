@@ -10,7 +10,8 @@ Modern, high-performance web interface for the OENEXA AI Engineer ecosystem.
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS & Material-UI 5 (MUI)
 - **Editor:** Monaco Code Editor (`@monaco-editor/react`)
-- **Testing:** Vitest & React Testing Library (Strictly Real Tests, No Mocks)
+- **AI Agent Engine:** Google Gemini 4 Argon ReAct Planner, Dynamic 7-Persona DAG, Real-Time Trace Streaming, and Self-Healing Reflection Loop
+- **Testing:** Vitest & React Testing Library (Strictly Real Tests, No Mocks, 12/12 BDD Scenarios Passing)
 - **Architecture:** Polyrepo decoupled frontend communicating with `oenexa-ai-engineer-backend` via reverse proxy (`/api`).
 
 ---

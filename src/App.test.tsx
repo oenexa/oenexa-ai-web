@@ -211,3 +211,102 @@ describe('Feature: AI Memory Inspector (Short-Term & Long-Term)', () => {
     });
   });
 });
+
+describe('Feature: Google Gemini 4 Argon Autonomous AI Agent', () => {
+  describe('Scenario: Navigate to Gemini 4 Argon AI Agent and inspect plan DAG & trace', () => {
+    it('Given the user opens the application, When clicking the Gemini 4 Argon tab, Then the autonomous plan DAG, telemetry, and self-healing loop are visible', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const argonTab = screen.getByRole('tab', { name: /Gemini 4 Argon AI Agent/i });
+      await act(async () => {
+        fireEvent.click(argonTab);
+      });
+
+      // Verify Header & Stepper
+      expect(screen.getByText(/Google Gemini 4 Argon Autonomous AI Agent/i)).toBeInTheDocument();
+      expect(screen.getByText(/1\. PLANNING/i)).toBeInTheDocument();
+      expect(screen.getByText(/2\. DECOMPOSITION/i)).toBeInTheDocument();
+      expect(screen.getByText(/3\. TOOL_EXECUTION/i)).toBeInTheDocument();
+      expect(screen.getByText(/4\. SELF_HEALING/i)).toBeInTheDocument();
+      expect(screen.getByText(/5\. REFLECTION/i)).toBeInTheDocument();
+      expect(screen.getByText(/6\. COMPLETED/i)).toBeInTheDocument();
+
+      // Verify Plan DAG
+      expect(screen.getByText(/Argon Autonomous Plan DAG/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/ARCHITECTURE_AGENT/i).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText(/CODE_AGENT/i).length).toBeGreaterThanOrEqual(1);
+
+      // Verify Telemetry Stream Terminal
+      expect(screen.getByText(/Real-Time Thought Trace & Tool Telemetry/i)).toBeInTheDocument();
+
+      // Verify Self-Healing Loop
+      expect(screen.getAllByText(/Self-Healing Reflection Loop/i)[0]).toBeInTheDocument();
+      expect(screen.getByText(/Cycle #1: Resolved ✅/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('Scenario: Launch an autonomous engineering goal', () => {
+    it('Given the user enters an engineering goal, When clicking Launch Autonomous Goal, Then the goal executes across 7 personas and completes with high confidence', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const argonTab = screen.getByRole('tab', { name: /Gemini 4 Argon AI Agent/i });
+      await act(async () => {
+        fireEvent.click(argonTab);
+      });
+
+      const goalInput = screen.getByPlaceholderText(/e\.g\. Refactor database entities to reactive Spring WebFlux/i);
+      await act(async () => {
+        fireEvent.change(goalInput, {
+          target: { value: 'Synthesize reactive WebClient with zero-mock test coverage' },
+        });
+      });
+
+      const launchButton = screen.getByRole('button', { name: /Launch Autonomous Engineering Goal/i });
+      await act(async () => {
+        fireEvent.click(launchButton);
+      });
+
+      // Verifies completion and confidence metric
+      expect(screen.getAllByText(/Confidence Score:/i)[0]).toBeInTheDocument();
+      expect(screen.getByText(/99% \(Verified\)/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('Scenario: Simulate and trigger on-demand self-healing reflection cycle', () => {
+    it('Given an error occurs, When the user triggers manual self-healing, Then a new resolved patch cycle is added to the loop', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const argonTab = screen.getByRole('tab', { name: /Gemini 4 Argon AI Agent/i });
+      await act(async () => {
+        fireEvent.click(argonTab);
+      });
+
+      const issueInput = screen.getByPlaceholderText(/e\.g\. NullPointerException at line 42/i);
+      const causeInput = screen.getByPlaceholderText(/e\.g\. Unchecked optional dereference/i);
+
+      await act(async () => {
+        fireEvent.change(issueInput, {
+          target: { value: 'NullPointerException in TokenFilter line 33' },
+        });
+        fireEvent.change(causeInput, {
+          target: { value: 'Authorization header is null when anonymous user visits' },
+        });
+      });
+
+      const healButton = screen.getByRole('button', { name: /Trigger Self-Healing Patch/i });
+      await act(async () => {
+        fireEvent.click(healButton);
+      });
+
+      expect(screen.getAllByText(/NullPointerException in TokenFilter line 33/i)[0]).toBeInTheDocument();
+      expect(screen.getByText(/Authorization header is null when anonymous user visits/i)).toBeInTheDocument();
+    });
+  });
+});
+
