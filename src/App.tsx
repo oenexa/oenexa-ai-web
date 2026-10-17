@@ -78,7 +78,14 @@ import {
   AccountTree as AccountTreeIcon,
   Hub as HubIcon,
 } from '@mui/icons-material';
-import { TargetCapabilitiesTab, CodeWorkspaceTab, ArgonAgentTab, CollaborativeAgentsTab, ChatTab } from './components/tabs';
+import {
+  TargetCapabilitiesTab,
+  CodeWorkspaceTab,
+  ArgonAgentTab,
+  CollaborativeAgentsTab,
+  ChatTab,
+  RepositoryKnowledgeTab,
+} from './components/tabs';
 import {
   CodeContextAttachment,
   CodeArtifact,
@@ -198,10 +205,6 @@ public class Solution {
     },
     vectorChunksCount: 42,
   });
-  const [repoSearchQuery, setRepoSearchQuery] = useState<string>('Authentication and token filter');
-  const [repoSearchResults, setRepoSearchResults] = useState<ProjectKnowledgeChunk[]>([]);
-  const [repoSearching, setRepoSearching] = useState<boolean>(false);
-  const [indexingRepo, setIndexingRepo] = useState<boolean>(false);
 
 
   // Step 09: Local-First Air-Gapped Privacy & Multimodal Ingestion State
@@ -414,70 +417,6 @@ public class Solution {
     notify('Copied code to clipboard');
   };
 
-  // Phase 3: Index Repository Workspace
-  const handleIndexRepository = async () => {
-    setIndexingRepo(true);
-    try {
-      const files: Record<string, string> = {
-        'src/main/java/Solution.java': editorCode,
-        'domain/src/main/java/com/oenexa/domain/ChatDomain.java': '// Chat Domain Records',
-        'application/src/main/java/com/oenexa/application/IntelligentConversationService.java': '// Master Service',
-        'docker-compose.yml': 'services:\n  postgres:\n    image: postgres:16',
-      };
-
-      const res = await fetch('/api/v1/repository/index', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ repositoryId, files }),
-      });
-
-      if (res.ok) {
-        const data: RepositoryKnowledgeMap = await res.json();
-        setKnowledgeMap(data);
-        notify('Repository indexed into Vector Database with symbols & knowledge map!');
-      } else {
-        throw new Error('Index error');
-      }
-    } catch {
-      notify('Repository indexed into Vector Database with 42 code chunks & symbols!');
-    } finally {
-      setIndexingRepo(false);
-    }
-  };
-
-  const handleSearchRepository = async () => {
-    if (!repoSearchQuery.trim()) return;
-    setRepoSearching(true);
-    try {
-      const res = await fetch(`/api/v1/repository/${repositoryId}/search`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: repoSearchQuery, topK: 5 }),
-      });
-      if (res.ok) {
-        const data: ProjectKnowledgeChunk[] = await res.json();
-        setRepoSearchResults(data);
-      } else {
-        throw new Error('Search error');
-      }
-    } catch {
-      setRepoSearchResults([
-        {
-          chunkId: 'chk-1',
-          repositoryId,
-          filePath: 'src/main/java/Solution.java',
-          language: 'JAVA',
-          chunkIndex: 0,
-          content: editorCode,
-          embedding: [],
-          symbols: { Solution: 'CLASS', listActiveUsers: 'METHOD' },
-          createdAt: new Date().toISOString(),
-        },
-      ]);
-    } finally {
-      setRepoSearching(false);
-    }
-  };
 
   // Phase 2: User Memory Addition
   const handleAddUserMemory = async () => {
@@ -806,129 +745,14 @@ public class Solution {
 
       {/* Tab 4: Repository Understanding & Vector RAG (Phase 3) */}
       {activeTab === 4 && (
-        <Box sx={{ p: 3, maxWidth: 1200, margin: '0 auto' }}>
-          <Paper sx={{ p: 3, mb: 3, bgcolor: darkMode ? '#1e293b' : '#fff', borderRadius: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 1 }}>
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                  📂 Repository Understanding & Vector Knowledge Base
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Parses Java, Spring Boot, React, Angular, Vue, Docker, Kubernetes, Terraform, PostgreSQL, and MySQL.
-                </Typography>
-              </Box>
-              <Button
-                variant="contained"
-                startIcon={<Build />}
-                onClick={handleIndexRepository}
-                disabled={indexingRepo}
-              >
-                {indexingRepo ? 'Indexing Source Code...' : 'Index Current Repository'}
-              </Button>
-            </Box>
-
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-              <Grid item xs={12} sm={4}>
-                <Card variant="outlined" sx={{ bgcolor: darkMode ? '#0f172a' : '#f8fafc' }}>
-                  <CardContent>
-                    <Typography variant="caption" color="text.secondary">PRIMARY STACK</Typography>
-                    <Typography variant="h6" color="primary" sx={{ fontWeight: 800 }}>
-                      {knowledgeMap.primaryStack}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Card variant="outlined" sx={{ bgcolor: darkMode ? '#0f172a' : '#f8fafc' }}>
-                  <CardContent>
-                    <Typography variant="caption" color="text.secondary">VECTOR CHUNKS</Typography>
-                    <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                      {knowledgeMap.vectorChunksCount} Chunks Embedded
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Card variant="outlined" sx={{ bgcolor: darkMode ? '#0f172a' : '#f8fafc' }}>
-                  <CardContent>
-                    <Typography variant="caption" color="text.secondary">SYMBOLS EXTRACTED</Typography>
-                    <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                      {Object.keys(knowledgeMap.symbolIndex).length} Symbols
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid>
-
-            {/* Technologies & Modules */}
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>Detected Technologies:</Typography>
-              <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                {knowledgeMap.detectedTechnologies.map((t) => (
-                  <Chip key={t} label={t} color="primary" size="small" variant="outlined" />
-                ))}
-              </Box>
-            </Box>
-
-            {/* Extracted Symbols */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>Extracted Symbols Index:</Typography>
-              <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                {Object.entries(knowledgeMap.symbolIndex).map(([sym, typ]) => (
-                  <Chip key={sym} label={`${sym} (${typ})`} size="small" sx={{ bgcolor: darkMode ? '#334155' : '#e2e8f0' }} />
-                ))}
-              </Box>
-            </Box>
-
-            {/* Semantic Vector Search */}
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-              Semantic Vector Search (Cosine Similarity):
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <TextField
-                fullWidth
-                size="small"
-                placeholder="Search repository code, architecture, or schemas..."
-                value={repoSearchQuery}
-                onChange={(e) => setRepoSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearchRepository()}
-              />
-              <Button variant="contained" startIcon={<Search />} onClick={handleSearchRepository} disabled={repoSearching}>
-                Search
-              </Button>
-            </Box>
-          </Paper>
-
-          {repoSearchResults.length > 0 && (
-            <Paper sx={{ p: 3, bgcolor: darkMode ? '#1e293b' : '#fff', borderRadius: 2 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1.5 }}>
-                Semantic Search Results ({repoSearchResults.length} chunks matched):
-              </Typography>
-              <List>
-                {repoSearchResults.map((chunk, idx) => (
-                  <ListItem key={idx} alignItems="flex-start" sx={{ px: 0 }}>
-                    <ListItemText
-                      disableTypography
-                      primary={
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                          <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700 }}>
-                            {chunk.filePath} ({chunk.language})
-                          </Typography>
-                          <Chip label={`Chunk #${chunk.chunkIndex}`} size="small" sx={{ height: 18, fontSize: '0.65rem' }} />
-                        </Box>
-                      }
-                      secondary={
-                        <Typography variant="caption" component="pre" sx={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', p: 1, bgcolor: darkMode ? '#0f172a' : '#f8fafc', borderRadius: 1 }}>
-                          {chunk.content}
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Paper>
-          )}
-        </Box>
+        <RepositoryKnowledgeTab
+          darkMode={darkMode}
+          repositoryId={repositoryId}
+          editorCode={editorCode}
+          knowledgeMap={knowledgeMap}
+          setKnowledgeMap={setKnowledgeMap}
+          notify={notify}
+        />
       )}
 
       {/* Tab 5: AI Memory Inspector (Short-Term & Long-Term) */}
