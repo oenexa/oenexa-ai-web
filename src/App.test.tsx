@@ -411,3 +411,196 @@ describe('Feature: AI Product Manager & PRD Studio', () => {
   });
 });
 
+describe('Feature: Step 10 Target Capabilities (Claude, Gemini, Cursor, Devin, Copilot, Operator)', () => {
+  describe('Scenario: Navigate to Target Capabilities Studio and verify 6 pillars', () => {
+    it('Given the platform mounted, When clicking the Target Capabilities tab, Then the 6 pillars and quality gates are displayed', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const capabilitiesTab = screen.getByRole('tab', { name: /Target Capabilities/i });
+      await act(async () => {
+        fireEvent.click(capabilitiesTab);
+      });
+
+      expect(screen.getByText(/Target Capabilities: Next-Gen Autonomous AI Engineering Platform/i)).toBeInTheDocument();
+      expect(screen.getByText(/100% Zero-Mock Enforced/i)).toBeInTheDocument();
+      expect(screen.getByText(/JaCoCo Line Coverage: 100%/i)).toBeInTheDocument();
+      expect(screen.getByText(/v2.6.0-ARGON-MAX/i)).toBeInTheDocument();
+
+      // Verify sub-tabs
+      expect(screen.getByRole('tab', { name: /1\. Claude Reasoning/i })).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: /2\. Gemini Multimodal/i })).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: /3\. Cursor Coding/i })).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: /4\. Devin Task Execution/i })).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: /5\. GitHub Copilot/i })).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: /6\. OpenAI Operator/i })).toBeInTheDocument();
+    });
+  });
+
+  describe('Scenario: Claude-Level Tree-of-Thought Reasoning', () => {
+    it('Given the Claude Reasoning sub-tab, When executing reasoning, Then winning hypothesis and trade-offs are verified', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const capabilitiesTab = screen.getByRole('tab', { name: /Target Capabilities/i });
+      await act(async () => {
+        fireEvent.click(capabilitiesTab);
+      });
+
+      expect(screen.getByText(/Winning Architecture: Hexagonal Modular Monolith Architecture/i)).toBeInTheDocument();
+      expect(screen.getByText(/Evaluated Hypothesis Branches/i)).toBeInTheDocument();
+
+      const executeBtn = screen.getByRole('button', { name: /Execute Claude Reasoning/i });
+      await act(async () => {
+        fireEvent.click(executeBtn);
+      });
+
+      expect(screen.getByText(/Selected Hexagonal Monolith/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('Scenario: Gemini-Level Multimodal Intelligence (Vision & Audio)', () => {
+    it('Given Gemini Multimodal sub-tab, When selected, Then visual OCR components and speech directives are visible', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const capabilitiesTab = screen.getByRole('tab', { name: /Target Capabilities/i });
+      await act(async () => {
+        fireEvent.click(capabilitiesTab);
+      });
+
+      const multimodalTab = screen.getByRole('tab', { name: /2\. Gemini Multimodal/i });
+      await act(async () => {
+        fireEvent.click(multimodalTab);
+      });
+
+      expect(screen.getByText(/Visual Architecture Diagram OCR & Parsing/i)).toBeInTheDocument();
+      expect(screen.getByText(/Developer Speech Audio Directives/i)).toBeInTheDocument();
+      expect(screen.getByText(/Multimodal Context Fusion/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/ArgonAgentController/i).length).toBeGreaterThanOrEqual(1);
+
+      const fuseBtn = screen.getByRole('button', { name: /Re-Fuse Context/i });
+      await act(async () => {
+        fireEvent.click(fuseBtn);
+      });
+
+      expect(screen.getByText(/Gemini Unified Multimodal Engineering Context/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('Scenario: Cursor-Level Coding & Multi-File Atomic Patches', () => {
+    it('Given Cursor Coding sub-tab, When curating context and synthesizing patches, Then diffs and affected symbols are shown', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const capabilitiesTab = screen.getByRole('tab', { name: /Target Capabilities/i });
+      await act(async () => {
+        fireEvent.click(capabilitiesTab);
+      });
+
+      const cursorTab = screen.getByRole('tab', { name: /3\. Cursor Coding/i });
+      await act(async () => {
+        fireEvent.click(cursorTab);
+      });
+
+      expect(screen.getByText(/Cursor @Context Curation/i)).toBeInTheDocument();
+      expect(screen.getByText(/Atomic Multi-File Patch Generator/i)).toBeInTheDocument();
+      expect(screen.getByText(/Rollback Safe \(Atomic\)/i)).toBeInTheDocument();
+
+      const curateBtn = screen.getByRole('button', { name: /Curate/i });
+      await act(async () => {
+        fireEvent.click(curateBtn);
+      });
+
+      const patchBtn = screen.getByRole('button', { name: /Synthesize Multi-File Atomic Patch/i });
+      await act(async () => {
+        fireEvent.click(patchBtn);
+      });
+
+      expect(screen.getByText(/Cursor Atomic Patch:/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('Scenario: Devin-Level Autonomous Sandbox Task Execution', () => {
+    it('Given Devin Task Execution sub-tab, When launched, Then all 4 compilation and zero-mock verification stages succeed', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const capabilitiesTab = screen.getByRole('tab', { name: /Target Capabilities/i });
+      await act(async () => {
+        fireEvent.click(capabilitiesTab);
+      });
+
+      const devinTab = screen.getByRole('tab', { name: /4\. Devin Task Execution/i });
+      await act(async () => {
+        fireEvent.click(devinTab);
+      });
+
+      expect(screen.getByText(/Devin Autonomous Task Sandbox/i)).toBeInTheDocument();
+      expect(screen.getByText(/Enforce Strictly Zero-Mock Testing Policy/i)).toBeInTheDocument();
+
+      const launchDevinBtn = screen.getByRole('button', { name: /Launch Devin Autonomous Execution/i });
+      await act(async () => {
+        fireEvent.click(launchDevinBtn);
+      });
+
+      expect(screen.getByText(/Devin Execution Plan:/i)).toBeInTheDocument();
+      expect(screen.getByText(/Zero-Mock Regression Test Suite Execution/i)).toBeInTheDocument();
+      expect(screen.getByText(/141\/141 tasks executed successfully/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('Scenario: GitHub Copilot Inline Completion & OpenAI Operator Workflows', () => {
+    it('Given Copilot and Operator sub-tabs, When actions are triggered, Then suggestions and environment actions are verified', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const capabilitiesTab = screen.getByRole('tab', { name: /Target Capabilities/i });
+      await act(async () => {
+        fireEvent.click(capabilitiesTab);
+      });
+
+      // Test Copilot
+      const copilotTab = screen.getByRole('tab', { name: /5\. GitHub Copilot/i });
+      await act(async () => {
+        fireEvent.click(copilotTab);
+      });
+
+      expect(screen.getByText(/GitHub Copilot Inline Code Completion/i)).toBeInTheDocument();
+      expect(screen.getByText(/Ghost-Text Synthesis/i)).toBeInTheDocument();
+
+      const synthCopilotBtn = screen.getByRole('button', { name: /Synthesize Copilot Suggestion/i });
+      await act(async () => {
+        fireEvent.click(synthCopilotBtn);
+      });
+
+      expect(screen.getByText(/Candidate Suggestions/i)).toBeInTheDocument();
+
+      // Test Operator
+      const operatorTab = screen.getByRole('tab', { name: /6\. OpenAI Operator/i });
+      await act(async () => {
+        fireEvent.click(operatorTab);
+      });
+
+      expect(screen.getByText(/OpenAI Operator Delivery Workflows/i)).toBeInTheDocument();
+      expect(screen.getByText(/Orchestrated Environment Actions/i)).toBeInTheDocument();
+
+      const executeOpBtn = screen.getByRole('button', { name: /Execute Operator Workflow/i });
+      await act(async () => {
+        fireEvent.click(executeOpBtn);
+      });
+
+      expect(screen.getByText(/Operator Autonomous Delivery Workflow/i)).toBeInTheDocument();
+      expect(screen.getByText(/DOCKER_BUILD/i)).toBeInTheDocument();
+      expect(screen.getByText(/DB_MIGRATION/i)).toBeInTheDocument();
+    });
+  });
+});
+
+
