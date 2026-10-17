@@ -310,3 +310,104 @@ describe('Feature: Google Gemini 4 Argon Autonomous AI Agent', () => {
   });
 });
 
+describe('Feature: Local-First Air-Gapped Privacy & Multi-Model Invariant', () => {
+  describe('Scenario: Toggle between local-first and cloud-hybrid privacy mode', () => {
+    it('Given the platform starts in local-first mode, When the user clicks the air-gapped status chip, Then it switches to Cloud Hybrid Mode and back', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const airGappedChip = screen.getByText(/Air-Gapped: 100% Zero Leakage/i);
+      expect(airGappedChip).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(airGappedChip);
+      });
+
+      expect(screen.getByText(/Cloud Hybrid Mode/i)).toBeInTheDocument();
+
+      const cloudChip = screen.getByText(/Cloud Hybrid Mode/i);
+      await act(async () => {
+        fireEvent.click(cloudChip);
+      });
+
+      expect(screen.getByText(/Air-Gapped: 100% Zero Leakage/i)).toBeInTheDocument();
+    });
+  });
+});
+
+describe('Feature: Native Multimodal Context Ingestion', () => {
+  describe('Scenario: Attach diagram and document attachments to agent context', () => {
+    it('Given the user is on the Argon console, When clicking Attach Architecture Diagram and Attach Spec Document, Then attachment chips appear and can be removed', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const argonTab = screen.getByRole('tab', { name: /Gemini 4 Argon AI Agent/i });
+      await act(async () => {
+        fireEvent.click(argonTab);
+      });
+
+      const attachDiagramBtn = screen.getByRole('button', { name: /Attach Architecture Diagram/i });
+      const attachDocBtn = screen.getByRole('button', { name: /Attach Spec Document/i });
+
+      await act(async () => {
+        fireEvent.click(attachDiagramBtn);
+      });
+
+      expect(screen.getByText(/architecture-hexagonal-diagram\.png/i)).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(attachDocBtn);
+      });
+
+      expect(screen.getByText(/engineering-specs\.openapi\.yaml/i)).toBeInTheDocument();
+    });
+  });
+});
+
+describe('Feature: AI Product Manager & PRD Studio', () => {
+  describe('Scenario: Navigate to PRD Studio and synthesize autonomous PRD', () => {
+    it('Given the user opens the PRD Studio tab, When inspecting the default PRD, Then problem statement, key features, and INVEST user stories are rendered', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const prdTab = screen.getByRole('tab', { name: /AI Product Manager & PRD Studio/i });
+      await act(async () => {
+        fireEvent.click(prdTab);
+      });
+
+      expect(screen.getAllByText(/AI Product Manager & PRD Studio/i)[0]).toBeInTheDocument();
+      expect(screen.getByText(/Real-Time Collaborative Code Review Microservice/i)).toBeInTheDocument();
+      expect(screen.getByText(/Automated Real-Time AST Review/i)).toBeInTheDocument();
+      expect(screen.getByText(/5 Story Points/i)).toBeInTheDocument();
+    });
+
+    it('Given the user customizes the product directive, When clicking Synthesize Autonomous PRD, Then updated PRD and INVEST stories are created', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const prdTab = screen.getByRole('tab', { name: /AI Product Manager & PRD Studio/i });
+      await act(async () => {
+        fireEvent.click(prdTab);
+      });
+
+      const goalInput = screen.getByPlaceholderText(/e\.g\. Real-Time Collaborative Code Review Microservice/i);
+      await act(async () => {
+        fireEvent.change(goalInput, {
+          target: { value: 'Autonomous Microservice Generator with Air-Gapped Verification' },
+        });
+      });
+
+      const synthBtn = screen.getByRole('button', { name: /Synthesize Autonomous PRD & User Stories/i });
+      await act(async () => {
+        fireEvent.click(synthBtn);
+      });
+
+      expect(screen.getAllByText(/Autonomous Microservice Generator with Air-Gapped Verification/i).length).toBeGreaterThanOrEqual(1);
+    });
+  });
+});
+
