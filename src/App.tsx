@@ -78,7 +78,7 @@ import {
   AccountTree as AccountTreeIcon,
   Hub as HubIcon,
 } from '@mui/icons-material';
-import { TargetCapabilitiesTab, CodeWorkspaceTab, ArgonAgentTab } from './components/tabs';
+import { TargetCapabilitiesTab, CodeWorkspaceTab, ArgonAgentTab, CollaborativeAgentsTab } from './components/tabs';
 import {
   CodeContextAttachment,
   CodeArtifact,
@@ -248,10 +248,6 @@ public class Solution {
   const [repoSearching, setRepoSearching] = useState<boolean>(false);
   const [indexingRepo, setIndexingRepo] = useState<boolean>(false);
 
-  // Collaborative 7-Agent System State
-  const [pipelineGoal, setPipelineGoal] = useState<string>('Implement Real-Time Collaborative Code Review Microservice');
-  const [pipelineTasks, setPipelineTasks] = useState<AgentCollaborationTask[]>([]);
-  const [runningPipeline, setRunningPipeline] = useState<boolean>(false);
 
   // Step 09: Local-First Air-Gapped Privacy & Multimodal Ingestion State
   const [localFirstMode, setLocalFirstMode] = useState<boolean>(true);
@@ -806,88 +802,6 @@ public class Solution {
     notify(`Saved memory: [${newRecord.memoryKey}]`);
   };
 
-  // Collaborative 7-Agent Pipeline Execution
-  const handleRunAgentPipeline = async () => {
-    if (!pipelineGoal.trim()) return;
-    setRunningPipeline(true);
-    try {
-      const res = await fetch('/api/v1/agents/collaborate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({ pipelineId: 'pipe-' + Date.now(), goal: pipelineGoal }),
-      });
-
-      if (res.ok) {
-        const data: AgentCollaborationTask[] = await res.json();
-        setPipelineTasks(data);
-      } else {
-        throw new Error('Pipeline error');
-      }
-    } catch {
-      setPipelineTasks([
-        {
-          taskId: 'task-1',
-          agentType: 'ARCHITECTURE_AGENT',
-          taskDescription: 'Design system boundaries and component contracts',
-          inputPayload: pipelineGoal,
-          outputResult: 'Defined C4 Component diagrams, Hexagonal port boundaries, and RFC 7807 problem details.',
-          status: 'COMPLETED',
-          timestamp: new Date().toLocaleTimeString(),
-        },
-        {
-          taskId: 'task-2',
-          agentType: 'CODE_AGENT',
-          taskDescription: 'Implement production controllers, entities, and services',
-          inputPayload: pipelineGoal,
-          outputResult: 'Synthesized Spring REST Controller, Service interface, and JPA Entities with Java 25 records.',
-          status: 'COMPLETED',
-          timestamp: new Date().toLocaleTimeString(),
-        },
-        {
-          taskId: 'task-3',
-          agentType: 'TEST_AGENT',
-          taskDescription: 'Synthesize zero-mock JUnit 5 test suites ensuring 100% coverage',
-          inputPayload: pipelineGoal,
-          outputResult: 'Formulated 100% Zero-Mock unit test cases. Verified boundary conditions without mockito.',
-          status: 'COMPLETED',
-          timestamp: new Date().toLocaleTimeString(),
-        },
-        {
-          taskId: 'task-4',
-          agentType: 'SECURITY_AGENT',
-          taskDescription: 'Perform SAST security audit and OWASP Top 10 compliance review',
-          inputPayload: pipelineGoal,
-          outputResult: 'SAST Audit Passed: 0 vulnerabilities, 0 exposed tokens, JWT HS256 verified.',
-          status: 'COMPLETED',
-          timestamp: new Date().toLocaleTimeString(),
-        },
-        {
-          taskId: 'task-5',
-          agentType: 'DEVOPS_AGENT',
-          taskDescription: 'Configure Docker multi-stage build, K8s manifests, and CI/CD pipelines',
-          inputPayload: pipelineGoal,
-          outputResult: 'Multi-stage Dockerfile with eclipse-temurin:25, non-root user, and K8s Deployment manifests created.',
-          status: 'COMPLETED',
-          timestamp: new Date().toLocaleTimeString(),
-        },
-        {
-          taskId: 'task-6',
-          agentType: 'DOCUMENTATION_AGENT',
-          taskDescription: 'Generate architecture documentation and sequence diagrams',
-          inputPayload: pipelineGoal,
-          outputResult: 'Compiled Markdown technical documentation and Mermaid workflow sequence diagrams.',
-          status: 'COMPLETED',
-          timestamp: new Date().toLocaleTimeString(),
-        },
-      ]);
-    } finally {
-      setRunningPipeline(false);
-      notify('Collaborative 7-Agent Pipeline completed all steps successfully!');
-    }
-  };
 
   // Step 09: Native Multimodal Ingestion Handlers
   const handleAttachVoiceMemo = () => {
@@ -1160,100 +1074,11 @@ public class Solution {
 
       {/* Tab 2: 7 Collaborative Software Engineer Agents */}
       {activeTab === 2 && (
-        <Box sx={{ p: 3, maxWidth: 1200, margin: '0 auto' }}>
-          <Paper sx={{ p: 3, mb: 3, bgcolor: darkMode ? '#1e293b' : '#fff', borderRadius: 2 }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 800 }}>
-              🤖 Autonomous 7-Agent Engineering Pipeline (Argon & Devin AI Architecture)
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Coordinates 7 specialized software engineer agents collaboratively: Architecture Agent ➔ Code Agent ➔ Test Agent ➔ Security Agent ➔ DevOps Agent ➔ Documentation Agent.
-            </Typography>
-
-            <Grid container spacing={1.5} sx={{ mb: 2.5 }}>
-              {[
-                { name: 'Architecture Agent', desc: 'Hexagonal layer boundaries, C4 models, RFC 7807' },
-                { name: 'Code Agent', desc: 'Java 25 records, Spring Boot controllers, entities' },
-                { name: 'Bug Fix Agent', desc: 'Root cause analysis, nullability checks, non-breaking patches' },
-                { name: 'Test Agent', desc: '100% Zero-Mock JUnit 5 & BDD test synthesis' },
-                { name: 'DevOps Agent', desc: 'Multi-stage Docker, K8s manifests, EKS Terraform' },
-                { name: 'Documentation Agent', desc: 'Markdown API specifications, Mermaid diagrams' },
-                { name: 'Security Agent', desc: 'SAST scans, OWASP Top 10, token leakage audit' },
-              ].map((ag, idx) => (
-                <Grid item xs={12} sm={6} md={3} key={idx}>
-                  <Card variant="outlined" sx={{ bgcolor: darkMode ? '#0f172a' : '#f8fafc', height: '100%' }}>
-                    <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
-                      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'primary.main' }}>
-                        {ag.name}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {ag.desc}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-
-            <TextField
-              fullWidth
-              label="Engineering Objective / User Request"
-              value={pipelineGoal}
-              onChange={(e) => setPipelineGoal(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={<PlayArrow />}
-              onClick={handleRunAgentPipeline}
-              disabled={runningPipeline}
-            >
-              {runningPipeline ? 'Running 7-Agent Collaborative Pipeline...' : 'Execute Collaborative Pipeline'}
-            </Button>
-          </Paper>
-
-          {pipelineTasks.length > 0 && (
-            <Paper sx={{ p: 3, bgcolor: darkMode ? '#1e293b' : '#fff', borderRadius: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
-                Collaborative Pipeline Execution Results ({pipelineTasks.length} Stages Completed)
-              </Typography>
-              <List>
-                {pipelineTasks.map((task, idx) => (
-                  <React.Fragment key={task.taskId || idx}>
-                    <ListItem alignItems="flex-start" sx={{ px: 0 }}>
-                      <ListItemText
-                        disableTypography
-                        primary={
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                            <CheckCircle color="success" fontSize="small" />
-                            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'primary.main' }}>
-                              Stage {idx + 1}: {task.agentType}
-                            </Typography>
-                            <Chip label={task.status} color="success" size="small" sx={{ height: 18, fontSize: '0.65rem' }} />
-                            <Typography variant="caption" color="text.secondary">
-                              {task.timestamp}
-                            </Typography>
-                          </Box>
-                        }
-                        secondary={
-                          <Box sx={{ pl: 3 }}>
-                            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-                              <strong>Task:</strong> {task.taskDescription}
-                            </Typography>
-                            <Typography variant="body2" component="pre" sx={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', p: 1, bgcolor: darkMode ? '#0f172a' : '#f8fafc', borderRadius: 1 }}>
-                              {task.outputResult}
-                            </Typography>
-                          </Box>
-                        }
-                      />
-                    </ListItem>
-                    <Divider component="li" />
-                  </React.Fragment>
-                ))}
-              </List>
-            </Paper>
-          )}
-        </Box>
+        <CollaborativeAgentsTab
+          darkMode={darkMode}
+          token={token}
+          notify={notify}
+        />
       )}
 
       {/* Tab 3: Intelligent Multi-Model AI Assistant Chat (Claude / Argon AI Style) */}
