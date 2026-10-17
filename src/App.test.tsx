@@ -4,7 +4,7 @@ import React from 'react';
 import App from './App';
 
 /**
- * Behavior-Driven Development (BDD) Test Suite: OENEXA Enterprise Frontend
+ * Behavior-Driven Development (BDD) Test Suite: OENEXA Enterprise AI Agent Frontend
  */
 describe('Feature: Theme Switching & Workspace Health Diagnostics', () => {
   describe('Scenario: Initial application load and header rendering', () => {
@@ -41,9 +41,9 @@ describe('Feature: Theme Switching & Workspace Health Diagnostics', () => {
   });
 });
 
-describe('Feature: Pro-Grade Conversational AI Hub (Gemini 2.5)', () => {
+describe('Feature: Intelligent Conversational AI Hub (Multi-Model & Real Scenario)', () => {
   describe('Scenario: Navigate to AI Chat tab and interact with sessions', () => {
-    it('Given the user is on the Code Workspace, When they click the Chat tab, Then the Gemini Pro chat interface is displayed', async () => {
+    it('Given the user is on the Code Workspace, When they click the Chat tab, Then the intelligent chat interface is displayed', async () => {
       await act(async () => {
         render(<App />);
       });
@@ -56,7 +56,6 @@ describe('Feature: Pro-Grade Conversational AI Hub (Gemini 2.5)', () => {
 
       // Verify sessions and model selector are present
       expect(screen.getByText(/Sessions/i)).toBeInTheDocument();
-      expect(screen.getByText(/Gemini 2.5 Pro/i)).toBeInTheDocument();
       expect(screen.getByText(/Chain-of-Thought Reasoning/i)).toBeInTheDocument();
     });
 
@@ -70,7 +69,7 @@ describe('Feature: Pro-Grade Conversational AI Hub (Gemini 2.5)', () => {
         fireEvent.click(chatTab);
       });
 
-      const input = screen.getByPlaceholderText(/Ask Gemini Pro regarding architecture/i);
+      const input = screen.getByPlaceholderText(/Ask Claude, GPT, or Gemini Pro/i);
       await act(async () => {
         fireEvent.change(input, { target: { value: 'Synthesize tests for Solution class' } });
       });
@@ -123,6 +122,92 @@ describe('Feature: Code Workspace Backend Automations', () => {
       expect(screen.getByText(/Sessions/i)).toBeInTheDocument();
       // Attachment chip is present
       expect(screen.getByText(/Attached: src\/main\/java\/Solution\.java/i)).toBeInTheDocument();
+    });
+  });
+});
+
+describe('Feature: 7 Collaborative Software Engineer Agents Pipeline', () => {
+  describe('Scenario: Execute 7-Agent collaborative pipeline', () => {
+    it('Given the user opens the 7 Agents tab, When clicking Execute Collaborative Pipeline, Then all 6 stages run and complete', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const agentsTab = screen.getByRole('tab', { name: /7 Collaborative Agents/i });
+      await act(async () => {
+        fireEvent.click(agentsTab);
+      });
+
+      expect(screen.getByText(/Autonomous 7-Agent Engineering Pipeline/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Architecture Agent/i)[0]).toBeInTheDocument();
+
+      const runButton = screen.getByRole('button', { name: /Execute Collaborative Pipeline/i });
+      await act(async () => {
+        fireEvent.click(runButton);
+      });
+
+      expect(screen.getByText(/Collaborative Pipeline Execution Results/i)).toBeInTheDocument();
+      expect(screen.getByText(/Stage 1: ARCHITECTURE_AGENT/i)).toBeInTheDocument();
+      expect(screen.getByText(/Stage 2: CODE_AGENT/i)).toBeInTheDocument();
+    });
+  });
+});
+
+describe('Feature: Repository Understanding & Vector Knowledge Base', () => {
+  describe('Scenario: Index and search repository knowledge', () => {
+    it('Given the user opens the Repository Knowledge tab, When viewing the map, Then primary stack and symbols are displayed', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const repoTab = screen.getByRole('tab', { name: /Repository Knowledge & RAG/i });
+      await act(async () => {
+        fireEvent.click(repoTab);
+      });
+
+      expect(screen.getByText(/Repository Understanding & Vector Knowledge Base/i)).toBeInTheDocument();
+      expect(screen.getByText(/PRIMARY STACK/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/SPRING_BOOT/i).length).toBeGreaterThanOrEqual(1);
+
+      const indexButton = screen.getByRole('button', { name: /Index Current Repository/i });
+      await act(async () => {
+        fireEvent.click(indexButton);
+      });
+    });
+  });
+});
+
+describe('Feature: AI Memory Inspector (Short-Term & Long-Term)', () => {
+  describe('Scenario: Inspect and add persistent user memory', () => {
+    it('Given the user opens the AI Memory Inspector tab, When viewing memories, Then persistent user memories are visible and new memories can be saved', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const memoryTab = screen.getByRole('tab', { name: /AI Memory Inspector/i });
+      await act(async () => {
+        fireEvent.click(memoryTab);
+      });
+
+      expect(screen.getByText(/AI Memory Architecture/i)).toBeInTheDocument();
+      expect(screen.getByText(/ARCHITECTURE_STYLE/i)).toBeInTheDocument();
+      expect(screen.getByText(/TESTING_INVARIANT/i)).toBeInTheDocument();
+
+      const keyInput = screen.getByPlaceholderText(/e\.g\. DATABASE_CHOICE/i);
+      const valInput = screen.getByPlaceholderText(/e\.g\. Always use PostgreSQL 16/i);
+
+      await act(async () => {
+        fireEvent.change(keyInput, { target: { value: 'DEPLOY_ENV' } });
+        fireEvent.change(valInput, { target: { value: 'AWS EKS Kubernetes' } });
+      });
+
+      const saveButton = screen.getByRole('button', { name: /Save Memory/i });
+      await act(async () => {
+        fireEvent.click(saveButton);
+      });
+
+      expect(screen.getByText('DEPLOY_ENV')).toBeInTheDocument();
+      expect(screen.getByText('AWS EKS Kubernetes')).toBeInTheDocument();
     });
   });
 });
