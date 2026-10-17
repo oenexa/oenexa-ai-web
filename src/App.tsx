@@ -10,73 +10,27 @@ import {
   Tab,
   Paper,
   Button,
-  TextField,
   Chip,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Grid,
-  Card,
-  CardContent,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Tooltip,
   Alert,
   Snackbar,
-  Switch,
-  FormControlLabel,
-  Badge,
 } from '@mui/material';
 import {
   Brightness4,
   Brightness7,
-  PlayArrow,
-  Search,
   Chat as ChatIcon,
   Code as CodeIcon,
-  Timeline,
   ViewModule,
   Lock,
   ExitToApp,
   AccountCircle,
-  Send,
-  Add,
-  PushPin,
-  ForkRight,
-  Delete,
   Psychology,
-  Build,
-  ContentCopy,
-  AttachFile,
-  Security,
   Speed,
-  ExpandMore,
-  FolderOpen,
   Memory as MemoryIcon,
   SmartToy as SmartToyIcon,
   Storage as StorageIcon,
-  CheckCircle,
   Assignment as AssignmentIcon,
-  Mic as MicIcon,
-  Image as ImageIcon,
-  Description as DescriptionIcon,
-  Shield as ShieldIcon,
   CloudOff as CloudOffIcon,
   CloudQueue as CloudQueueIcon,
-  AutoFixHigh,
-  Terminal as TerminalIcon,
-  AccountTree as AccountTreeIcon,
-  Hub as HubIcon,
 } from '@mui/icons-material';
 import {
   TargetCapabilitiesTab,
@@ -86,27 +40,21 @@ import {
   ChatTab,
   RepositoryKnowledgeTab,
   MemoryInspectorTab,
+  PlatformModulesTab,
+  ProductManagerTab,
 } from './components/tabs';
+import { AuthDialog } from './components/auth';
 import {
   CodeContextAttachment,
   CodeArtifact,
-  ToolCall,
-  ToolResult,
   UserMemoryRecord,
-  ProjectKnowledgeChunk,
   RepositoryKnowledgeMap,
-  AgentCollaborationTask,
-  ConversationMetadata,
-  ChatMessage,
   ModuleInfo,
-  MultimodalType,
   MultimodalAttachment,
-  UserStory,
   ProductRequirementsDocument,
   LocalPrivacyConfig,
-  ArgonAutonomousGoalResponse,
-  TargetCapabilitiesOverview,
 } from './types';
+import { createDefaultPrd } from './services';
 
 export * from './types';
 
@@ -120,11 +68,6 @@ const App: React.FC = () => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('oenexa_token'));
   const [username, setUsername] = useState<string>(localStorage.getItem('oenexa_user') || 'engineer');
   const [authDialogOpen, setAuthDialogOpen] = useState<boolean>(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
-  const [authEmail, setAuthEmail] = useState<string>('');
-  const [authUsername, setAuthUsername] = useState<string>('admin');
-  const [authPassword, setAuthPassword] = useState<string>('Admin@Oenexa2026!');
-  const [authError, setAuthError] = useState<string>('');
 
   // Code Workspace State
   const [editorCode, setEditorCode] = useState<string>(`// OENEXA AI Engineer - Enterprise Autonomous Code Workspace
@@ -217,65 +160,8 @@ public class Solution {
   const [multimodalAttachments, setMultimodalAttachments] = useState<MultimodalAttachment[]>([]);
   const [isRecordingVoice, setIsRecordingVoice] = useState<boolean>(false);
 
-  // Step 09: AI Product Manager & PRD Studio State
-  const [prdGoalInput, setPrdGoalInput] = useState<string>(
-    'Real-Time Collaborative Code Review Microservice with Zero-Mock Invariant Verification'
-  );
-  const [prdAudienceInput, setPrdAudienceInput] = useState<string>(
-    'Enterprise Software Engineers & Cloud Architects'
-  );
-  const [currentPrd, setCurrentPrd] = useState<ProductRequirementsDocument | null>({
-    prdId: 'prd-default-1',
-    title: 'Real-Time Collaborative Code Review Microservice',
-    targetAudience: 'Enterprise Software Engineers & Cloud Architects',
-    problemStatement:
-      'Development teams require automated peer review with AST linting, zero-mock testing enforcement, and air-gapped security audit before pull request approval.',
-    keyFeatures: [
-      'Real-time WebSocket & SSE diff collaboration',
-      'AST code smells analysis and cyclomatic complexity scoring',
-      'Strictly Zero-Mock JUnit 5 test suite generation',
-      'Air-Gapped private inference with zero cloud data leaks',
-    ],
-    userStories: [
-      {
-        id: 'story-1',
-        title: 'Automated Real-Time AST Review',
-        asA: 'Staff Software Engineer',
-        iWant: 'the AI Agent to automatically inspect code smells and branch complexity on save',
-        soThat: 'architectural violations are prevented before code merge',
-        acceptanceCriteria: [
-          'Given a Java or TypeScript source file',
-          'When the developer triggers AST analysis',
-          'Then cyclomatic complexity and code smells are reported with 100% precision',
-        ],
-        storyPoints: 5,
-        status: 'READY_FOR_DEV',
-      },
-      {
-        id: 'story-2',
-        title: 'Air-Gapped Local Inference Execution',
-        asA: 'Security Architect',
-        iWant: 'all LLM and embedding calls to execute against local Ollama models',
-        soThat: 'no proprietary codebase telemetry or source code leaks outside the corporate firewall',
-        acceptanceCriteria: [
-          'Given localFirstMode is active',
-          'When an autonomous engineering goal is dispatched',
-          'Then external egress is blocked and local Ollama endpoint http://localhost:11434 is utilized',
-        ],
-        storyPoints: 8,
-        status: 'IN_PROGRESS',
-      },
-    ],
-    technicalConstraints: [
-      'PostgreSQL 16 + pgvector',
-      'Java 25 & Spring Boot 4.1.1 Hexagonal Monolith',
-      'Strictly Zero-Mock Testing Policy (no Mockito, no PowerMock)',
-      '100% JaCoCo line coverage enforcement',
-    ],
-    releaseRoadmap: 'v2.5.0 Enterprise Autonomous Release',
-    createdAt: new Date().toISOString(),
-  });
-  const [generatingPrd, setGeneratingPrd] = useState<boolean>(false);
+  // Step 09: AI Product Manager PRD State
+  const [currentPrd, setCurrentPrd] = useState<ProductRequirementsDocument | null>(createDefaultPrd());
 
   // Notification Toast
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
@@ -350,33 +236,11 @@ public class Solution {
     setSnackbarOpen(true);
   };
 
-  const handleAuthSubmit = async () => {
-    setAuthError('');
-    const endpoint = authMode === 'login' ? '/api/v1/auth/login' : '/api/v1/auth/register';
-    const payload = authMode === 'login'
-      ? { usernameOrEmail: authUsername, password: authPassword }
-      : { username: authUsername, email: authEmail, password: authPassword, fullName: authUsername };
-
-    try {
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setAuthError(data.error || 'Authentication failed');
-        return;
-      }
-      setToken(data.accessToken);
-      setUsername(authUsername);
-      localStorage.setItem('oenexa_token', data.accessToken);
-      localStorage.setItem('oenexa_user', authUsername);
-      setAuthDialogOpen(false);
-      notify(`Welcome back, ${authUsername}!`);
-    } catch {
-      setAuthError('Connection to authentication service failed');
-    }
+  const handleAuthSuccess = (payload: { token: string; username: string }) => {
+    setToken(payload.token);
+    setUsername(payload.username);
+    localStorage.setItem('oenexa_token', payload.token);
+    localStorage.setItem('oenexa_user', payload.username);
   };
 
   const handleLogout = () => {
@@ -466,88 +330,7 @@ public class Solution {
     notify('Removed multimodal attachment');
   };
 
-  // Step 09: AI Product Manager PRD Synthesis Handler
-  const handleGeneratePrd = async () => {
-    if (!prdGoalInput.trim()) return;
-    setGeneratingPrd(true);
-    try {
-      const res = await fetch('/api/v1/argon/prd', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({
-          goal: prdGoalInput,
-          targetAudience: prdAudienceInput || 'Enterprise Developers',
-        }),
-      });
-      if (res.ok) {
-        const data: ProductRequirementsDocument = await res.json();
-        setCurrentPrd(data);
-        notify('Synthesized Autonomous PRD & INVEST User Stories!');
-      } else {
-        throw new Error('PRD generation failed');
-      }
-    } catch {
-      // Dynamic fallback for offline/test resilience
-      const fallbackPrd: ProductRequirementsDocument = {
-        prdId: 'prd-' + Date.now(),
-        title: prdGoalInput.startsWith('Real-Time')
-          ? prdGoalInput
-          : `Autonomous Engineering Platform: ${prdGoalInput}`,
-        targetAudience: prdAudienceInput || 'Enterprise Software Engineers & Cloud Architects',
-        problemStatement: `Modern software engineering demands multi-turn autonomous reasoning, zero-mock testing, multimodal ingestion, and strict air-gapped privacy without cloud data leaks for ${prdGoalInput}.`,
-        keyFeatures: [
-          'Local-first air-gapped inference via Ollama with 0 external telemetry',
-          'Native multimodal ingestion (Voice speech directives, Architecture diagrams, Specification files)',
-          'AI Product Manager autonomous PRD synthesis and INVEST user stories',
-          '7-Stage collaborative ReAct plan DAG with self-healing reflection loops',
-        ],
-        userStories: [
-          {
-            id: 'story-gen-1',
-            title: `Implement Core Engine for ${prdGoalInput.slice(0, 30)}`,
-            asA: 'Staff Software Engineer',
-            iWant: 'to run local-first air-gapped agentic tasks with zero cloud leakage',
-            soThat: 'sensitive proprietary architectures remain completely secure',
-            acceptanceCriteria: [
-              'Given an air-gapped enterprise network',
-              'When an autonomous goal is launched with localFirstMode enabled',
-              'Then zero telemetry packets are transmitted to external endpoints',
-            ],
-            storyPoints: 5,
-            status: 'READY_FOR_DEV',
-          },
-          {
-            id: 'story-gen-2',
-            title: 'Native Multimodal Context Ingestion',
-            asA: 'Engineering Lead',
-            iWant: 'the AI Agent to ingest voice directives, architecture diagrams, and specification files',
-            soThat: 'end-to-end context is captured across multimodal engineering artifacts',
-            acceptanceCriteria: [
-              'Given an architecture diagram PNG or developer voice memo',
-              'When the multimodal attachment is processed',
-              'Then extracted text/spatial layout is embedded into the autonomous plan DAG',
-            ],
-            storyPoints: 8,
-            status: 'IN_PROGRESS',
-          },
-        ],
-        technicalConstraints: [
-          'PostgreSQL 16 + pgvector storage',
-          'Strictly Zero-Mock Testing Policy (no Mockito, no PowerMock)',
-          '100% JaCoCo line coverage verification',
-        ],
-        releaseRoadmap: 'v2.5.0 Enterprise Autonomous Release',
-        createdAt: new Date().toISOString(),
-      };
-      setCurrentPrd(fallbackPrd);
-      notify('Synthesized Autonomous PRD & INVEST User Stories!');
-    } finally {
-      setGeneratingPrd(false);
-    }
-  };
+
 
 
 
@@ -734,191 +517,21 @@ public class Solution {
 
       {/* Tab 6: Platform Modules (23) */}
       {activeTab === 6 && (
-        <Box sx={{ p: 3, maxWidth: 1200, margin: '0 auto' }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 800 }}>
-            🏛️ Enterprise Platform Modules (23 Active Services)
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Full capabilities matrix discovered dynamically from <code>/api/v1/modules</code> with 100% Zero-Mock Verification
-          </Typography>
-
-          <Grid container spacing={2}>
-            {modules.map((m) => (
-              <Grid item xs={12} sm={6} md={4} key={m.id}>
-                <Card sx={{ height: '100%', bgcolor: darkMode ? '#1e293b' : '#fff', borderRadius: 2 }}>
-                  <CardContent>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                        {m.displayName}
-                      </Typography>
-                      <Chip label={m.status} size="small" color={m.status === 'ACTIVE' ? 'success' : 'default'} />
-                    </Box>
-                    <Typography variant="caption" color="primary" sx={{ display: 'block', mb: 1, fontFamily: 'monospace' }}>
-                      id: {m.id}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                      {m.description}
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      {m.capabilities.map((cap) => (
-                        <Chip key={cap} label={cap} size="small" variant="outlined" />
-                      ))}
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+        <PlatformModulesTab
+          darkMode={darkMode}
+          modules={modules}
+        />
       )}
 
       {/* Tab 7: AI Product Manager & PRD Studio */}
       {activeTab === 7 && (
-        <Box sx={{ p: 3, maxWidth: 1400, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <Card elevation={2} sx={{ bgcolor: darkMode ? '#1e293b' : '#ffffff', borderRadius: 2 }}>
-            <CardContent sx={{ p: 3 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2, mb: 2 }}>
-                <Box>
-                  <Typography variant="h5" sx={{ fontWeight: 800, display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <AssignmentIcon color="primary" /> AI Product Manager & PRD Studio
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-                    Autonomous Product Requirements Synthesis • INVEST-Compliant User Stories • Gherkin Acceptance Criteria • Story Point Estimation
-                  </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                  <Chip label="PRODUCT_MANAGER_AGENT" color="primary" sx={{ fontWeight: 700 }} />
-                  <Chip label="INVEST Standard" color="success" variant="outlined" sx={{ fontWeight: 700 }} />
-                  <Chip label="Gherkin BDD" color="info" variant="outlined" sx={{ fontWeight: 700 }} />
-                </Box>
-              </Box>
-
-              <Divider sx={{ my: 2 }} />
-
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <TextField
-                  label="Product Engineering Objective / User Directive"
-                  placeholder="e.g. Real-Time Collaborative Code Review Microservice with Zero-Mock Invariant Verification"
-                  value={prdGoalInput}
-                  onChange={(e) => setPrdGoalInput(e.target.value)}
-                  fullWidth
-                  variant="outlined"
-                />
-                <TextField
-                  label="Target Audience / Stakeholders"
-                  placeholder="e.g. Enterprise Software Engineers & Cloud Architects"
-                  value={prdAudienceInput}
-                  onChange={(e) => setPrdAudienceInput(e.target.value)}
-                  fullWidth
-                  variant="outlined"
-                />
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Button
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    startIcon={generatingPrd ? <CircularProgress size={20} color="inherit" /> : <AssignmentIcon />}
-                    onClick={handleGeneratePrd}
-                    disabled={generatingPrd || !prdGoalInput.trim()}
-                    sx={{ px: 4, py: 1.2, fontWeight: 700, borderRadius: 2 }}
-                  >
-                    {generatingPrd ? 'Synthesizing PRD & User Stories...' : 'Synthesize Autonomous PRD & User Stories'}
-                  </Button>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-
-          {currentPrd && (
-            <Card elevation={2} sx={{ bgcolor: darkMode ? '#1e293b' : '#ffffff', borderRadius: 2 }}>
-              <CardContent sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 1 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                    📄 {currentPrd.title}
-                  </Typography>
-                  <Chip label={currentPrd.releaseRoadmap} color="primary" sx={{ fontWeight: 700 }} />
-                </Box>
-
-                <Typography variant="subtitle2" sx={{ color: 'text.secondary', mb: 1 }}>
-                  <strong>Target Audience:</strong> {currentPrd.targetAudience}
-                </Typography>
-
-                <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, bgcolor: darkMode ? '#0f172a' : '#f8fafc', mb: 3 }}>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5 }}>
-                    Problem Statement:
-                  </Typography>
-                  <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-                    {currentPrd.problemStatement}
-                  </Typography>
-                </Paper>
-
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1.5 }}>
-                  ✨ Key Platform Features
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.8, mb: 3 }}>
-                  {currentPrd.keyFeatures.map((feat, fIdx) => (
-                    <Box key={fIdx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <CheckCircle fontSize="small" color="primary" />
-                      <Typography variant="body2" sx={{ fontWeight: 600 }}>{feat}</Typography>
-                    </Box>
-                  ))}
-                </Box>
-
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1.5 }}>
-                  🧩 INVEST User Stories & Acceptance Criteria ({currentPrd.userStories.length})
-                </Typography>
-                <Grid container spacing={2} sx={{ mb: 3 }}>
-                  {currentPrd.userStories.map((story) => (
-                    <Grid item xs={12} md={6} key={story.id}>
-                      <Card variant="outlined" sx={{ bgcolor: darkMode ? '#0f172a' : '#f8fafc', borderRadius: 2, height: '100%' }}>
-                        <CardContent sx={{ p: 2 }}>
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'primary.main' }}>
-                              {story.title}
-                            </Typography>
-                            <Box sx={{ display: 'flex', gap: 0.5 }}>
-                              <Chip label={`${story.storyPoints} Story Points`} size="small" color="primary" />
-                              <Chip label={story.status} size="small" color="success" variant="outlined" />
-                            </Box>
-                          </Box>
-                          <Paper sx={{ p: 1.5, mb: 1.5, bgcolor: darkMode ? '#1e293b' : '#ffffff', border: 1, borderColor: 'divider' }}>
-                            <Typography variant="body2" sx={{ mb: 0.5 }}>
-                              <strong>As a</strong> {story.asA}
-                            </Typography>
-                            <Typography variant="body2" sx={{ mb: 0.5 }}>
-                              <strong>I want</strong> {story.iWant}
-                            </Typography>
-                            <Typography variant="body2">
-                              <strong>So that</strong> {story.soThat}
-                            </Typography>
-                          </Paper>
-
-                          <Typography variant="caption" sx={{ fontWeight: 700, display: 'block', mb: 0.5 }}>
-                            Gherkin Acceptance Criteria:
-                          </Typography>
-                          {story.acceptanceCriteria.map((crit, cIdx) => (
-                            <Typography key={cIdx} variant="caption" sx={{ display: 'block', color: 'text.secondary', fontFamily: 'monospace', mb: 0.2 }}>
-                              • {crit}
-                            </Typography>
-                          ))}
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Grid>
-
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
-                  ⚙️ Technical Constraints & Architecture Invariants
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                  {currentPrd.technicalConstraints.map((tc, tcIdx) => (
-                    <Chip key={tcIdx} label={tc} variant="outlined" color="info" size="small" />
-                  ))}
-                </Box>
-              </CardContent>
-            </Card>
-          )}
-        </Box>
+        <ProductManagerTab
+          darkMode={darkMode}
+          token={token}
+          currentPrd={currentPrd}
+          setCurrentPrd={setCurrentPrd}
+          notify={notify}
+        />
       )}
 
       {/* Tab 8: Target Capabilities (Claude, Gemini, Cursor, Devin, Copilot, Operator) */}
@@ -934,48 +547,12 @@ public class Solution {
 
 
       {/* Authentication Dialog */}
-      <Dialog open={authDialogOpen} onClose={() => setAuthDialogOpen(false)}>
-        <DialogTitle>{authMode === 'login' ? '🔐 Sign In to OENEXA' : '📝 Create Engineer Account'}</DialogTitle>
-        <DialogContent sx={{ pt: 1, minWidth: 320 }}>
-          {authError && <Typography color="error" variant="caption" sx={{ mb: 1, display: 'block' }}>{authError}</Typography>}
-          <TextField
-            fullWidth
-            margin="dense"
-            label="Username"
-            value={authUsername}
-            onChange={(e) => setAuthUsername(e.target.value)}
-          />
-          {authMode === 'register' && (
-            <TextField
-              fullWidth
-              margin="dense"
-              label="Email"
-              type="email"
-              value={authEmail}
-              onChange={(e) => setAuthEmail(e.target.value)}
-            />
-          )}
-          <TextField
-            fullWidth
-            margin="dense"
-            label="Password"
-            type="password"
-            value={authPassword}
-            onChange={(e) => setAuthPassword(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions sx={{ p: 2, justifyContent: 'space-between' }}>
-          <Button
-            size="small"
-            onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
-          >
-            {authMode === 'login' ? 'Need an account? Register' : 'Have an account? Sign in'}
-          </Button>
-          <Button variant="contained" onClick={handleAuthSubmit}>
-            {authMode === 'login' ? 'Sign In' : 'Register'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <AuthDialog
+        open={authDialogOpen}
+        onClose={() => setAuthDialogOpen(false)}
+        onAuthSuccess={handleAuthSuccess}
+        notify={notify}
+      />
 
       {/* Notification Toast */}
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)}>

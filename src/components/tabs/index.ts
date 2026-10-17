@@ -5,3 +5,5 @@ export * from './CollaborativeAgentsTab';
 export * from './ChatTab';
 export * from './RepositoryKnowledgeTab';
 export * from './MemoryInspectorTab';
+export * from './PlatformModulesTab';
+export * from './ProductManagerTab';

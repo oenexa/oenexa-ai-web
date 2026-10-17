@@ -5,3 +5,5 @@ export * from './agentCollaborationService';
 export * from './chatService';
 export * from './repositoryService';
 export * from './memoryService';
+export * from './modulesService';
+export * from './prdService';
