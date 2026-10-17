@@ -1,32 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Divider,
-  TextField,
-  Paper,
-  Button,
-  Chip,
-  FormControlLabel,
-  Switch,
-  CircularProgress,
-  Grid,
-  List,
-} from '@mui/material';
-import {
-  PlayArrow,
-  CheckCircle,
-  Code as CodeIcon,
-  Mic as MicIcon,
-  Image as ImageIcon,
-  Description as DescriptionIcon,
-  Assignment as AssignmentIcon,
-  Shield as ShieldIcon,
-  CloudOff as CloudOffIcon,
-  CloudQueue as CloudQueueIcon,
-} from '@mui/icons-material';
+import { Box, Grid } from '@mui/material';
 import {
   ArgonAutonomousGoalResponse,
   ArgonExecutionEvent,
@@ -37,6 +10,16 @@ import {
   ProductRequirementsDocument,
 } from '../../types';
 import { argonService } from '../../services';
+import {
+  ArgonGoalExecutionForm,
+  ArgonPhaseStepper,
+  ArgonPlanDagView,
+  ArgonThoughtTraceTerminal,
+  ArgonSelfHealingPanel,
+  ArgonArtifactsPanel,
+  ArgonPrdUserStoriesPanel,
+  ArgonPrivacyAuditCard,
+} from './argon';
 
 export interface ArgonAgentTabProps {
   darkMode: boolean;
@@ -369,604 +352,81 @@ export const ArgonAgentTab: React.FC<ArgonAgentTabProps> = ({
     }
   };
 
+  const planSteps = argonCurrentGoal?.plan?.steps || [];
+  const telemetryEvents = argonEvents.length > 0 ? argonEvents : argonCurrentGoal?.events || [];
+  const activeHealingCycles = argonHealingCycles.length > 0 ? argonHealingCycles : argonCurrentGoal?.selfHealingCycles || [];
+  const activeUserStories = argonCurrentGoal?.userStories || argonCurrentGoal?.prd?.userStories || [];
+
   return (
     <Box sx={{ p: 3, maxWidth: 1600, mx: 'auto', display: 'flex', flexDirection: 'column', gap: 3 }}>
-      {/* Header Card with Goal Launcher */}
-      <Card elevation={2} sx={{ bgcolor: darkMode ? '#1e293b' : '#ffffff', borderRadius: 2 }}>
-        <CardContent sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2, mb: 2 }}>
-            <Box>
-              <Typography variant="h5" sx={{ fontWeight: 800, display: 'flex', alignItems: 'center', gap: 1 }}>
-                🧬 Google Gemini 4 Argon Autonomous AI Agent
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-                Autonomous ReAct Goal Decomposition • Dynamic Multi-Persona DAG • Live Trace Telemetry • Self-Healing Reflection Loop
-              </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-              <Chip label="Gemini 4 ReAct Engine" color="primary" sx={{ fontWeight: 700 }} />
-              <Chip label="Self-Healing Reflection" color="success" sx={{ fontWeight: 700 }} />
-              <Chip label="7-Persona Coordination" variant="outlined" sx={{ fontWeight: 700 }} />
-              <Chip
-                icon={localFirstMode ? <CloudOffIcon /> : <CloudQueueIcon />}
-                label={localFirstMode ? "Air-Gapped: Ollama localhost:11434" : "Cloud Hybrid Active"}
-                color={localFirstMode ? "success" : "warning"}
-                sx={{ fontWeight: 700 }}
-              />
-              <Chip label="100% Zero-Mock Verified" color="info" variant="outlined" sx={{ fontWeight: 700 }} />
-            </Box>
-          </Box>
+      {/* 1. Goal Configuration & Multimodal Tray */}
+      <ArgonGoalExecutionForm
+        darkMode={darkMode}
+        argonGoalInput={argonGoalInput}
+        setArgonGoalInput={setArgonGoalInput}
+        argonRunning={argonRunning}
+        localFirstMode={localFirstMode}
+        setLocalFirstMode={setLocalFirstMode}
+        argonAutonomousHealing={argonAutonomousHealing}
+        setArgonAutonomousHealing={setArgonAutonomousHealing}
+        argonExtendedThinking={argonExtendedThinking}
+        setArgonExtendedThinking={setArgonExtendedThinking}
+        multimodalAttachments={multimodalAttachments}
+        isRecordingVoice={isRecordingVoice}
+        handleAttachVoiceMemo={handleAttachVoiceMemo}
+        handleAttachDiagram={handleAttachDiagram}
+        handleAttachDocument={handleAttachDocument}
+        handleRemoveMultimodalAttachment={handleRemoveMultimodalAttachment}
+        onLaunch={handleLaunch}
+      />
 
-          <Divider sx={{ my: 2 }} />
+      {/* 2. Phase Stepper Timeline */}
+      <ArgonPhaseStepper darkMode={darkMode} argonActivePhase={argonActivePhase} />
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
-              label="Autonomous Engineering Goal (Argon Engine)"
-              placeholder="e.g. Refactor database entities to reactive Spring WebFlux and synthesize zero-mock test suite"
-              value={argonGoalInput}
-              onChange={(e) => setArgonGoalInput(e.target.value)}
-              fullWidth
-              variant="outlined"
-              multiline
-              rows={2}
-            />
-
-            {/* Native Multimodal Ingestion Tray */}
-            <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 2, bgcolor: darkMode ? '#0f172a' : '#f8fafc' }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, flexWrap: 'wrap', gap: 1 }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}>
-                  🎙️ Native Multimodal Context Ingestion (Voice Directives, Diagrams, Specs)
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    color="secondary"
-                    startIcon={isRecordingVoice ? <CircularProgress size={14} color="inherit" /> : <MicIcon />}
-                    onClick={handleAttachVoiceMemo}
-                    disabled={isRecordingVoice}
-                  >
-                    {isRecordingVoice ? 'Recording Directive...' : 'Record Voice Directive'}
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    color="info"
-                    startIcon={<ImageIcon />}
-                    onClick={handleAttachDiagram}
-                  >
-                    Attach Architecture Diagram
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    color="primary"
-                    startIcon={<DescriptionIcon />}
-                    onClick={handleAttachDocument}
-                  >
-                    Attach Spec Document
-                  </Button>
-                </Box>
-              </Box>
-
-              {multimodalAttachments.length > 0 ? (
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
-                  {multimodalAttachments.map((att) => (
-                    <Chip
-                      key={att.id}
-                      icon={att.type === 'AUDIO_VOICE' ? <MicIcon /> : att.type === 'IMAGE' ? <ImageIcon /> : <DescriptionIcon />}
-                      label={`${att.fileName} (${att.type})`}
-                      onDelete={() => handleRemoveMultimodalAttachment(att.id)}
-                      color={att.type === 'AUDIO_VOICE' ? 'secondary' : att.type === 'IMAGE' ? 'info' : 'primary'}
-                      variant="outlined"
-                      size="small"
-                    />
-                  ))}
-                </Box>
-              ) : (
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
-                  No multimodal attachments active. Click above to attach developer speech directives, architecture PNG diagrams, or OpenAPI specifications.
-                </Typography>
-              )}
-            </Paper>
-
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={localFirstMode}
-                      onChange={(e) => setLocalFirstMode(e.target.checked)}
-                      color="success"
-                    />
-                  }
-                  label="Air-Gapped Local Inference (Ollama llama3.3 / Zero Leakage)"
-                />
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={argonAutonomousHealing}
-                      onChange={(e) => setArgonAutonomousHealing(e.target.checked)}
-                      color="success"
-                    />
-                  }
-                  label="Autonomous Self-Healing Reflection"
-                />
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={argonExtendedThinking}
-                      onChange={(e) => setArgonExtendedThinking(e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="Gemini Extended Thinking (CoT)"
-                />
-              </Box>
-
-              <Button
-                variant="contained"
-                size="large"
-                color="primary"
-                startIcon={argonRunning ? <CircularProgress size={20} color="inherit" /> : <PlayArrow />}
-                onClick={() => handleLaunch()}
-                disabled={argonRunning || !argonGoalInput.trim()}
-                sx={{ px: 4, py: 1.2, fontWeight: 700, borderRadius: 2 }}
-              >
-                {argonRunning ? 'Executing Argon Reasoning Loop...' : 'Launch Autonomous Engineering Goal'}
-              </Button>
-            </Box>
-
-            {/* Quick Presets */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap', pt: 1 }}>
-              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>Quick Goals:</Typography>
-              <Chip
-                label="Fix Compilation NPE Bug & Patch"
-                size="small"
-                onClick={() => {
-                  setArgonGoalInput('Fix compilation NPE bug in payment service and apply minimal patch');
-                  handleLaunch('Fix compilation NPE bug in payment service and apply minimal patch');
-                }}
-                clickable
-              />
-              <Chip
-                label="Refactor to Hexagonal Architecture"
-                size="small"
-                onClick={() => {
-                  setArgonGoalInput('Refactor monolith domain records to Hexagonal Architecture with sealed contracts');
-                  handleLaunch('Refactor monolith domain records to Hexagonal Architecture with sealed contracts');
-                }}
-                clickable
-              />
-              <Chip
-                label="Synthesize 100% Zero-Mock Tests"
-                size="small"
-                onClick={() => {
-                  setArgonGoalInput('Synthesize zero-mock JUnit 5 test suite verifying 100% JaCoCo line coverage');
-                  handleLaunch('Synthesize zero-mock JUnit 5 test suite verifying 100% JaCoCo line coverage');
-                }}
-                clickable
-              />
-              <Chip
-                label="Multi-Stage Docker & K8s Pipeline"
-                size="small"
-                onClick={() => {
-                  setArgonGoalInput('Configure multi-stage Dockerfile and Kubernetes manifests with EKS terraform');
-                  handleLaunch('Configure multi-stage Dockerfile and Kubernetes manifests with EKS terraform');
-                }}
-                clickable
-              />
-            </Box>
-          </Box>
-        </CardContent>
-      </Card>
-
-      {/* Phase Stepper Timeline */}
-      <Paper elevation={1} sx={{ p: 2, bgcolor: darkMode ? '#1e293b' : '#ffffff', borderRadius: 2 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
-          {[
-            { phase: 'PLANNING', label: '1. PLANNING', desc: 'Goal Analysis & RAG Context' },
-            { phase: 'DECOMPOSITION', label: '2. DECOMPOSITION', desc: 'Dynamic Plan DAG across 7 Personas' },
-            { phase: 'TOOL_EXECUTION', label: '3. TOOL_EXECUTION', desc: 'Active Code & Architecture Tools' },
-            { phase: 'SELF_HEALING_VERIFICATION', label: '4. SELF_HEALING', desc: 'Reflection, Diagnostics & Patch' },
-            { phase: 'REFLECTION', label: '5. REFLECTION', desc: 'Invariants & Zero Regression Check' },
-            { phase: 'COMPLETED', label: '6. COMPLETED', desc: 'Goal Solved & Artifacts Extracted' },
-          ].map((step, idx) => {
-            const isCurrent = argonActivePhase === step.phase || argonActivePhase === 'COMPLETED';
-            return (
-              <Box
-                key={idx}
-                sx={{
-                  flex: '1 1 150px',
-                  p: 1.5,
-                  borderRadius: 1.5,
-                  border: 1,
-                  borderColor: isCurrent ? 'primary.main' : 'divider',
-                  bgcolor: isCurrent ? (darkMode ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)') : 'transparent',
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckCircle fontSize="small" color={isCurrent ? 'primary' : 'disabled'} />
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: isCurrent ? 'primary.main' : 'text.secondary' }}>
-                    {step.label}
-                  </Typography>
-                </Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.5 }}>
-                  {step.desc}
-                </Typography>
-              </Box>
-            );
-          })}
-        </Box>
-      </Paper>
-
-      {/* Main 2-Column Dashboard */}
+      {/* 3. Main Dashboard: Plan DAG, Telemetry, Self-Healing, and Artifacts */}
       <Grid container spacing={3}>
         {/* Left Column: Plan DAG & Live Trace Terminal */}
         <Grid item xs={12} lg={8} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          {/* Plan DAG */}
-          <Card elevation={2} sx={{ bgcolor: darkMode ? '#1e293b' : '#ffffff', borderRadius: 2 }}>
-            <CardContent sx={{ p: 2.5 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}>
-                  📋 Argon Autonomous Plan DAG (7 Personas)
-                </Typography>
-                <Chip
-                  label={`${(argonCurrentGoal?.plan?.steps || []).length} Ordered Tasks`}
-                  size="small"
-                  color="primary"
-                />
-              </Box>
-
-              <List sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                {(argonCurrentGoal?.plan?.steps || []).map((step, idx) => (
-                  <Paper
-                    key={step.stepId || idx}
-                    variant="outlined"
-                    sx={{
-                      p: 1.5,
-                      borderRadius: 2,
-                      bgcolor: darkMode ? '#0f172a' : '#f8fafc',
-                      borderColor: 'divider',
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <Chip label={`Step ${idx + 1}`} size="small" sx={{ fontWeight: 700 }} />
-                        <Chip
-                          label={step.agentPersona}
-                          size="small"
-                          color={
-                            step.agentPersona.includes('ARCH')
-                              ? 'primary'
-                              : step.agentPersona.includes('CODE')
-                              ? 'secondary'
-                              : step.agentPersona.includes('BUG')
-                              ? 'error'
-                              : step.agentPersona.includes('TEST')
-                              ? 'success'
-                              : step.agentPersona.includes('SEC')
-                              ? 'warning'
-                              : 'default'
-                          }
-                          sx={{ fontWeight: 700 }}
-                        />
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                          {step.description}
-                        </Typography>
-                      </Box>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Chip label={step.toolToInvoke || 'TOOL'} size="small" variant="outlined" />
-                        <Chip label={step.status} size="small" color="success" />
-                      </Box>
-                    </Box>
-                    {step.output && (
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          display: 'block',
-                          mt: 1,
-                          color: 'text.secondary',
-                          fontFamily: 'monospace',
-                          bgcolor: darkMode ? '#1e293b' : '#ffffff',
-                          p: 1,
-                          borderRadius: 1,
-                        }}
-                      >
-                        {step.output}
-                      </Typography>
-                    )}
-                  </Paper>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-
-          {/* Real-Time Agent Thought Trace & Telemetry Terminal */}
-          <Card elevation={2} sx={{ bgcolor: darkMode ? '#1e293b' : '#ffffff', borderRadius: 2 }}>
-            <CardContent sx={{ p: 2.5 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}>
-                  ⚡ Real-Time Thought Trace & Tool Telemetry
-                </Typography>
-                <Chip label="Live Telemetry Stream" size="small" color="info" variant="outlined" />
-              </Box>
-
-              <Box
-                sx={{
-                  p: 2,
-                  bgcolor: '#090d16',
-                  color: '#38bdf8',
-                  borderRadius: 2,
-                  fontFamily: 'JetBrains Mono, Fira Code, Consolas, monospace',
-                  fontSize: '0.8rem',
-                  height: 320,
-                  overflowY: 'auto',
-                  border: 1,
-                  borderColor: '#1e293b',
-                }}
-              >
-                {(argonEvents.length > 0 ? argonEvents : argonCurrentGoal?.events || []).map((evt, idx) => (
-                  <Box key={evt.eventId || idx} sx={{ mb: 1.5, pb: 1, borderBottom: '1px dashed #1e293b' }}>
-                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 0.5 }}>
-                      <span style={{ color: '#94a3b8' }}>[{evt.timestamp || '00:00:00'}]</span>
-                      <span style={{ color: '#a855f7', fontWeight: 'bold' }}>[{evt.phase}]</span>
-                      <span style={{ color: '#22c55e', fontWeight: 'bold' }}>[{evt.agentPersona}]</span>
-                      <span style={{ color: '#f59e0b' }}>tool: {evt.toolAction}</span>
-                    </Box>
-                    <Box sx={{ color: '#e2e8f0', pl: 2, whiteSpace: 'pre-wrap' }}>
-                      💭 {evt.thoughtProcess}
-                    </Box>
-                    {evt.outputSnippet && (
-                      <Box sx={{ color: '#64748b', pl: 2, fontStyle: 'italic', mt: 0.5 }}>
-                        ➔ {evt.outputSnippet}
-                      </Box>
-                    )}
-                  </Box>
-                ))}
-              </Box>
-            </CardContent>
-          </Card>
+          <ArgonPlanDagView darkMode={darkMode} steps={planSteps} />
+          <ArgonThoughtTraceTerminal darkMode={darkMode} events={telemetryEvents} />
         </Grid>
 
         {/* Right Column: Self-Healing Loop & Goal Metrics */}
         <Grid item xs={12} lg={4} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          {/* Self-Healing Reflection Loop */}
-          <Card elevation={2} sx={{ bgcolor: darkMode ? '#1e293b' : '#ffffff', borderRadius: 2 }}>
-            <CardContent sx={{ p: 2.5 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}>
-                  🛡️ Self-Healing Reflection Loop
-                </Typography>
-                <Chip
-                  label={`${(argonHealingCycles.length > 0 ? argonHealingCycles : argonCurrentGoal?.selfHealingCycles || []).length} Cycles`}
-                  size="small"
-                  color="success"
-                />
-              </Box>
-
-              {/* Healing Cycles List */}
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                {(argonHealingCycles.length > 0 ? argonHealingCycles : argonCurrentGoal?.selfHealingCycles || []).map((cycle, idx) => (
-                  <Paper
-                    key={cycle.cycleId || idx}
-                    variant="outlined"
-                    sx={{
-                      p: 1.5,
-                      borderRadius: 2,
-                      bgcolor: darkMode ? '#0f172a' : '#f8fafc',
-                      borderColor: 'divider',
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'success.main' }}>
-                        Cycle #{idx + 1}: Resolved ✅
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                        {cycle.timestamp}
-                      </Typography>
-                    </Box>
-
-                    <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', fontWeight: 600 }}>
-                      Issue Detected:
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 1, color: 'error.main', fontSize: '0.8rem' }}>
-                      {cycle.issueDetected}
-                    </Typography>
-
-                    <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', fontWeight: 600 }}>
-                      Root Cause Analysis:
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 1, fontSize: '0.8rem' }}>
-                      {cycle.rootCause}
-                    </Typography>
-
-                    <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', fontWeight: 600 }}>
-                      Unified Git Patch Diff:
-                    </Typography>
-                    <Box
-                      sx={{
-                        p: 1,
-                        bgcolor: '#090d16',
-                        color: '#4ade80',
-                        borderRadius: 1,
-                        fontFamily: 'monospace',
-                        fontSize: '0.75rem',
-                        whiteSpace: 'pre-wrap',
-                        overflowX: 'auto',
-                        mb: 1,
-                      }}
-                    >
-                      {cycle.patchDiff}
-                    </Box>
-
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      color="success"
-                      fullWidth
-                      onClick={() => onApplyPatchToEditor(cycle.patchDiff)}
-                    >
-                      Apply Patch to Editor
-                    </Button>
-                  </Paper>
-                ))}
-              </Box>
-
-              <Divider sx={{ my: 2 }} />
-
-              {/* Manual Trigger Form */}
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-                Simulate / Trigger Self-Healing Reflection:
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                <TextField
-                  label="Issue / Error Detected"
-                  placeholder="e.g. NullPointerException at line 42"
-                  value={manualIssueInput}
-                  onChange={(e) => setManualIssueInput(e.target.value)}
-                  size="small"
-                  fullWidth
-                />
-                <TextField
-                  label="Root Cause (Optional)"
-                  placeholder="e.g. Unchecked optional dereference"
-                  value={manualCauseInput}
-                  onChange={(e) => setManualCauseInput(e.target.value)}
-                  size="small"
-                  fullWidth
-                />
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  size="small"
-                  onClick={handleTriggerManualHeal}
-                  disabled={!manualIssueInput.trim()}
-                >
-                  Trigger Self-Healing Patch
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
-
-          {/* Goal Summary & Artifacts */}
-          <Card elevation={2} sx={{ bgcolor: darkMode ? '#1e293b' : '#ffffff', borderRadius: 2 }}>
-            <CardContent sx={{ p: 2.5 }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, mb: 1.5 }}>
-                📊 Goal Execution Metrics
-              </Typography>
-
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>Confidence Score:</Typography>
-                  <Chip label={`${((argonCurrentGoal?.confidenceScore || 0.99) * 100).toFixed(0)}% (Verified)`} color="success" size="small" />
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>Generated Artifacts:</Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                    {(argonCurrentGoal?.artifacts || []).length} Assets
-                  </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>Test Policy:</Typography>
-                  <Chip label="Zero Mocks" size="small" variant="outlined" />
-                </Box>
-              </Box>
-
-              <Divider sx={{ my: 1.5 }} />
-
-              {(argonCurrentGoal?.artifacts || []).map((art, idx) => (
-                <Box key={art.id || idx} sx={{ mb: 1 }}>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    fullWidth
-                    startIcon={<CodeIcon />}
-                    onClick={() => onApplyArtifactToEditor(art)}
-                  >
-                    Load {art.title} in Editor
-                  </Button>
-                </Box>
-              ))}
-            </CardContent>
-          </Card>
+          <ArgonSelfHealingPanel
+            darkMode={darkMode}
+            cycles={activeHealingCycles}
+            manualIssueInput={manualIssueInput}
+            setManualIssueInput={setManualIssueInput}
+            manualCauseInput={manualCauseInput}
+            setManualCauseInput={setManualCauseInput}
+            onTriggerManualHeal={handleTriggerManualHeal}
+            onApplyPatchToEditor={onApplyPatchToEditor}
+          />
+          <ArgonArtifactsPanel
+            darkMode={darkMode}
+            confidenceScore={argonCurrentGoal?.confidenceScore || 0.99}
+            artifacts={argonCurrentGoal?.artifacts || []}
+            onApplyArtifactToEditor={onApplyArtifactToEditor}
+          />
         </Grid>
       </Grid>
 
-      {/* AI Product Manager: Synthesized PRD & INVEST User Stories */}
+      {/* 4. AI Product Manager: Synthesized PRD & INVEST User Stories */}
       {argonCurrentGoal?.prd && (
-        <Card elevation={2} sx={{ bgcolor: darkMode ? '#1e293b' : '#ffffff', borderRadius: 2 }}>
-          <CardContent sx={{ p: 2.5 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <AssignmentIcon color="primary" /> AI Product Manager: Synthesized PRD & INVEST User Stories
-              </Typography>
-              <Chip label={argonCurrentGoal.prd.releaseRoadmap} color="primary" size="small" />
-            </Box>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5 }}>
-              {argonCurrentGoal.prd.title}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5 }}>
-              <strong>Target Audience:</strong> {argonCurrentGoal.prd.targetAudience}
-            </Typography>
-            <Paper variant="outlined" sx={{ bgcolor: darkMode ? '#0f172a' : '#f8fafc', p: 1.5, borderRadius: 1.5, mb: 2 }}>
-              <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-                <strong>Problem Statement:</strong> {argonCurrentGoal.prd.problemStatement}
-              </Typography>
-            </Paper>
-
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-              INVEST User Stories ({(argonCurrentGoal.userStories || argonCurrentGoal.prd.userStories || []).length})
-            </Typography>
-            <Grid container spacing={2}>
-              {(argonCurrentGoal.userStories || argonCurrentGoal.prd.userStories || []).map((story) => (
-                <Grid item xs={12} md={6} key={story.id}>
-                  <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 2, bgcolor: darkMode ? '#0f172a' : '#f8fafc' }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                      <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>{story.title}</Typography>
-                      <Chip label={`${story.storyPoints} Story Points`} size="small" color="primary" variant="outlined" />
-                    </Box>
-                    <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
-                      <strong>As a</strong> {story.asA}, <strong>I want</strong> {story.iWant}, <strong>So that</strong> {story.soThat}
-                    </Typography>
-                    <Typography variant="caption" sx={{ fontWeight: 700, display: 'block', mb: 0.5 }}>
-                      Gherkin Acceptance Criteria:
-                    </Typography>
-                    {story.acceptanceCriteria.map((crit, cIdx) => (
-                      <Typography key={cIdx} variant="caption" sx={{ display: 'block', color: 'text.secondary', fontFamily: 'monospace' }}>
-                        • {crit}
-                      </Typography>
-                    ))}
-                  </Paper>
-                </Grid>
-              ))}
-            </Grid>
-          </CardContent>
-        </Card>
+        <ArgonPrdUserStoriesPanel
+          darkMode={darkMode}
+          prd={argonCurrentGoal.prd}
+          userStories={activeUserStories}
+        />
       )}
 
-      {/* Air-Gapped Local Privacy & Zero Leakage Audit Card */}
+      {/* 5. Air-Gapped Local Privacy & Zero Leakage Audit Card */}
       {argonCurrentGoal?.privacyAudit && (
-        <Card elevation={2} sx={{ bgcolor: darkMode ? '#1e293b' : '#ffffff', borderRadius: 2 }}>
-          <CardContent sx={{ p: 2.5 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, flexWrap: 'wrap', gap: 1 }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <ShieldIcon color="success" /> Air-Gapped Local Privacy & Zero Leakage Audit
-              </Typography>
-              <Chip
-                label={argonCurrentGoal.privacyAudit.airGappedVerification ? 'VERIFIED AIR-GAPPED' : 'HYBRID'}
-                color="success"
-                size="small"
-              />
-            </Box>
-            <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', mt: 1 }}>
-              <Chip label={`Endpoint: ${argonCurrentGoal.privacyAudit.localModelEndpoint}`} size="small" variant="outlined" />
-              <Chip label={`Model: ${argonCurrentGoal.privacyAudit.selectedLocalModel}`} size="small" variant="outlined" />
-              <Chip label={`VRAM Allocation: ${argonCurrentGoal.privacyAudit.maxVramAllocationMb} MB`} size="small" variant="outlined" />
-              <Chip label="Telemetry: Disabled (0 Leakage)" color="success" size="small" variant="outlined" />
-            </Box>
-          </CardContent>
-        </Card>
+        <ArgonPrivacyAuditCard
+          darkMode={darkMode}
+          privacyAudit={argonCurrentGoal.privacyAudit}
+        />
       )}
     </Box>
   );

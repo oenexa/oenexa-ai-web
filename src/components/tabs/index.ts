@@ -7,3 +7,6 @@ export * from './RepositoryKnowledgeTab';
 export * from './MemoryInspectorTab';
 export * from './PlatformModulesTab';
 export * from './ProductManagerTab';
+export * from './argon';
+export * from './chat';
+export * from './capabilities';
