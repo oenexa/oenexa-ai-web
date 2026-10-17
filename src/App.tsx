@@ -1,37 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
   Box,
-  CircularProgress,
-  Tabs,
-  Tab,
-  Paper,
-  Button,
-  Chip,
   Alert,
   Snackbar,
 } from '@mui/material';
 import {
-  Brightness4,
-  Brightness7,
-  Chat as ChatIcon,
-  Code as CodeIcon,
-  ViewModule,
-  Lock,
-  ExitToApp,
-  AccountCircle,
-  Psychology,
-  Speed,
-  Memory as MemoryIcon,
-  SmartToy as SmartToyIcon,
-  Storage as StorageIcon,
-  Assignment as AssignmentIcon,
-  CloudOff as CloudOffIcon,
-  CloudQueue as CloudQueueIcon,
-} from '@mui/icons-material';
+  PlatformNavigationBar,
+  PlatformStatusBar,
+} from './components/navigation';
 import {
   TargetCapabilitiesTab,
   CodeWorkspaceTab,
@@ -337,90 +313,33 @@ public class Solution {
 
   return (
     <Box sx={{ flexGrow: 1, minHeight: '100vh', bgcolor: darkMode ? '#0f172a' : '#f8fafc', color: darkMode ? '#f8fafc' : '#0f172a' }}>
-      <AppBar position="static" color="primary" enableColorOnDark elevation={2}>
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <Typography variant="h6" component="div" sx={{ fontWeight: 800, letterSpacing: '-0.025em', display: 'flex', alignItems: 'center', gap: 1 }}>
-              ⚡ OENEXA AI Engineer
-            </Typography>
-            <Chip
-              label="Java 25 • Spring Boot 4.1.1 • Gemini Pro • Claude • GPT-4o • Devin AI"
-              size="small"
-              sx={{ bgcolor: 'rgba(255,255,255,0.15)', color: '#fff', fontWeight: 600, display: { xs: 'none', md: 'inline-flex' } }}
-            />
-          </Box>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            {token ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <AccountCircle fontSize="small" />
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>{username}</Typography>
-                <IconButton color="inherit" size="small" onClick={handleLogout} title="Logout">
-                  <ExitToApp fontSize="small" />
-                </IconButton>
-              </Box>
-            ) : (
-              <Button color="inherit" startIcon={<Lock />} onClick={() => setAuthDialogOpen(true)} size="small" variant="outlined" sx={{ borderColor: 'rgba(255,255,255,0.4)' }}>
-                Sign In
-              </Button>
-            )}
-
-            <IconButton color="inherit" onClick={toggleDarkMode} aria-label="toggle dark mode" size="small">
-              {darkMode ? <Brightness7 /> : <Brightness4 />}
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-
-      {/* Navigation Tabs */}
-      <Paper square elevation={1} sx={{ bgcolor: darkMode ? '#1e293b' : '#ffffff', borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={activeTab} onChange={(_, val) => setActiveTab(val)} textColor="primary" indicatorColor="primary" variant="scrollable">
-          <Tab icon={<CodeIcon />} iconPosition="start" label="Code Workspace" sx={{ fontWeight: 600 }} />
-          <Tab icon={<Psychology />} iconPosition="start" label="Gemini 4 Argon AI Agent" sx={{ fontWeight: 600 }} />
-          <Tab icon={<SmartToyIcon />} iconPosition="start" label="7 Collaborative Agents" sx={{ fontWeight: 600 }} />
-          <Tab icon={<ChatIcon />} iconPosition="start" label="AI Assistant Chat (Gemini Pro)" sx={{ fontWeight: 600 }} />
-          <Tab icon={<StorageIcon />} iconPosition="start" label="Repository Knowledge & RAG" sx={{ fontWeight: 600 }} />
-          <Tab icon={<MemoryIcon />} iconPosition="start" label="AI Memory Inspector" sx={{ fontWeight: 600 }} />
-          <Tab icon={<ViewModule />} iconPosition="start" label="Platform Modules (23)" sx={{ fontWeight: 600 }} />
-          <Tab icon={<AssignmentIcon />} iconPosition="start" label="AI Product Manager & PRD Studio" sx={{ fontWeight: 600 }} />
-          <Tab icon={<Speed />} iconPosition="start" label="Target Capabilities (Claude, Gemini, Cursor, Devin, Copilot, Operator)" sx={{ fontWeight: 600 }} />
-        </Tabs>
-      </Paper>
+      {/* Navigation Header & Tab Bar */}
+      <PlatformNavigationBar
+        darkMode={darkMode}
+        toggleDarkMode={toggleDarkMode}
+        token={token}
+        username={username}
+        onOpenAuthDialog={() => setAuthDialogOpen(true)}
+        onLogout={handleLogout}
+        activeTab={activeTab}
+        onTabChange={(tab) => setActiveTab(tab)}
+      />
 
       {/* Global Status Bar */}
-      <Box sx={{ px: 3, py: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: darkMode ? '#0f172a' : '#f1f5f9', borderBottom: 1, borderColor: 'divider' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-            Backend Service Health:
-          </Typography>
-          {loading ? (
-            <CircularProgress size={12} />
-          ) : (
-            <Chip label={health || 'UP (Healthy)'} size="small" color="success" variant="outlined" sx={{ height: 20, fontSize: '0.7rem' }} />
-          )}
-          <Chip label="PostgreSQL & pgvector" size="small" variant="outlined" sx={{ height: 20, fontSize: '0.7rem' }} />
-          <Chip label="Multi-Model Active" size="small" color="primary" variant="outlined" sx={{ height: 20, fontSize: '0.7rem' }} />
-          <Chip
-            icon={localFirstMode ? <CloudOffIcon /> : <CloudQueueIcon />}
-            label={localFirstMode ? "Air-Gapped: 100% Zero Leakage" : "Cloud Hybrid Mode"}
-            size="small"
-            color={localFirstMode ? "success" : "warning"}
-            clickable
-            onClick={() => {
-              setLocalFirstMode(!localFirstMode);
-              notify(
-                !localFirstMode
-                  ? '🔒 Enabled Air-Gapped Local-First Mode (Ollama llama3.3, 0 external leakage)'
-                  : '☁️ Switched to Cloud Hybrid Multi-Model Routing'
-              );
-            }}
-            sx={{ height: 20, fontSize: '0.7rem', fontWeight: 700 }}
-          />
-        </Box>
-        <Typography variant="caption" sx={{ color: 'text.secondary', display: { xs: 'none', sm: 'block' } }}>
-          23 Clean Hexagonal Monolith Modules • 100% Zero-Mock Line Coverage Enforced
-        </Typography>
-      </Box>
+      <PlatformStatusBar
+        darkMode={darkMode}
+        health={health}
+        loading={loading}
+        localFirstMode={localFirstMode}
+        onToggleLocalFirstMode={() => {
+          setLocalFirstMode(!localFirstMode);
+          notify(
+            !localFirstMode
+              ? '🔒 Enabled Air-Gapped Local-First Mode (Ollama llama3.3, 0 external leakage)'
+              : '☁️ Switched to Cloud Hybrid Multi-Model Routing'
+          );
+        }}
+      />
 
       {/* Tab 0: Code Workspace */}
       {activeTab === 0 && (
