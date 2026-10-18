@@ -26,6 +26,7 @@ import {
   SmartToy as SmartToyIcon,
   Storage as StorageIcon,
   Assignment as AssignmentIcon,
+  Bolt as BoltIcon,
 } from '@mui/icons-material';
 
 export interface PlatformNavigationBarProps {
@@ -184,6 +185,12 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
             icon={<Speed />}
             iconPosition="start"
             label="Target Capabilities (Claude, Gemini, Cursor, Devin, Copilot, Operator)"
+            sx={{ fontWeight: 600 }}
+          />
+          <Tab
+            icon={<BoltIcon />}
+            iconPosition="start"
+            label="⚡ Neo-GPT Agent OS (OpenAI Native)"
             sx={{ fontWeight: 600 }}
           />
         </Tabs>

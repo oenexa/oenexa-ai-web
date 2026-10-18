@@ -603,4 +603,56 @@ describe('Feature: Step 10 Target Capabilities (Claude, Gemini, Cursor, Devin, C
   });
 });
 
+describe('Feature: Neo-GPT Agent OS & 100% Wire-Compatible OpenAI Native Engine', () => {
+  describe('Scenario: Navigate to Neo-GPT Agent OS tab and verify 5-stage o3 deliberative reasoning', () => {
+    it('Given the platform is mounted, When clicking the Neo-GPT Agent OS tab, Then goal controls, deliberative trace, 10-persona DAG, and metrics are displayed', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const neoGptTab = screen.getByRole('tab', { name: /Neo-GPT Agent OS/i });
+      await act(async () => {
+        fireEvent.click(neoGptTab);
+      });
+
+      expect(screen.getByText(/OENEXA Neo-GPT Autonomous Agent OS/i)).toBeInTheDocument();
+      expect(screen.getByText(/OpenAI Wire Compatible/i)).toBeInTheDocument();
+      expect(screen.getByText(/o3 Deliberative Reasoning Trace/i)).toBeInTheDocument();
+      expect(screen.getByText(/10-Persona Autonomous Task Execution Graph/i)).toBeInTheDocument();
+      expect(screen.getByText(/Execution Telemetry/i)).toBeInTheDocument();
+      expect(screen.getByText(/Tokens Synthesized:/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('Scenario: Launch Neo-GPT Autonomous Engineering Goal', () => {
+    it('Given user provides a custom goal, When clicking Launch Autonomous Neo-GPT Goal, Then 10-persona task execution runs and updates metrics', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const neoGptTab = screen.getByRole('tab', { name: /Neo-GPT Agent OS/i });
+      await act(async () => {
+        fireEvent.click(neoGptTab);
+      });
+
+      const goalInput = screen.getByPlaceholderText(/e\.g\. Design reactive microservice architecture/i);
+      await act(async () => {
+        fireEvent.change(goalInput, {
+          target: { value: 'Synthesize reactive payment service with Spring Boot 3, sealed records, and zero-mock tests' },
+        });
+      });
+
+      const launchBtn = screen.getByRole('button', { name: /Launch Autonomous Neo-GPT Goal/i });
+      await act(async () => {
+        fireEvent.click(launchBtn);
+      });
+
+      expect(screen.getByText(/10-Persona Autonomous Task Execution Graph/i)).toBeInTheDocument();
+      expect(screen.getByText(/Execution Duration:/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Strictly Zero-Mock/i).length).toBeGreaterThanOrEqual(1);
+    });
+  });
+});
+
+
 

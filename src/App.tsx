@@ -18,6 +18,7 @@ import {
   MemoryInspectorTab,
   PlatformModulesTab,
   ProductManagerTab,
+  OpenAiNativeTab,
 } from './components/tabs';
 import { AuthDialog } from './components/auth';
 import {
@@ -460,6 +461,20 @@ public class Solution {
           token={token}
           repositoryId={repositoryId}
           multimodalAttachments={multimodalAttachments}
+          notify={notify}
+        />
+      )}
+
+      {/* Tab 9: Neo-GPT Agent OS (100% Wire-Compatible OpenAI Native Engine & o3 Reasoning) */}
+      {activeTab === 9 && (
+        <OpenAiNativeTab
+          darkMode={darkMode}
+          token={token}
+          username={username}
+          repositoryId={repositoryId}
+          localFirstMode={localFirstMode}
+          setLocalFirstMode={setLocalFirstMode}
+          onApplyArtifactToEditor={handleApplyArtifactToEditor}
           notify={notify}
         />
       )}
