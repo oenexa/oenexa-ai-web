@@ -77,14 +77,14 @@ export const ArgonGoalExecutionForm: React.FC<ArgonGoalExecutionFormProps> = ({
         >
           <Box>
             <Typography variant="h5" sx={{ fontWeight: 800, display: 'flex', alignItems: 'center', gap: 1 }}>
-              🧬 Google Gemini 4 Argon Autonomous AI Agent
+              🧬 OENEXA Neo-GPT Autonomous AI Agent
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
               Autonomous ReAct Goal Decomposition • Dynamic Multi-Persona DAG • Live Trace Telemetry • Self-Healing Reflection Loop
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            <Chip label="Gemini 4 ReAct Engine" color="primary" sx={{ fontWeight: 700 }} />
+            <Chip label="Neo-GPT ReAct Engine" color="primary" sx={{ fontWeight: 700 }} />
             <Chip label="Self-Healing Reflection" color="success" sx={{ fontWeight: 700 }} />
             <Chip label="7-Persona Coordination" variant="outlined" sx={{ fontWeight: 700 }} />
             <Chip
@@ -212,7 +212,7 @@ export const ArgonGoalExecutionForm: React.FC<ArgonGoalExecutionFormProps> = ({
                     color="primary"
                   />
                 }
-                label="Gemini Extended Thinking (CoT)"
+                label="OENEXA Extended Thinking (CoT)"
               />
             </Box>
 

@@ -105,7 +105,7 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
         <TextField
           fullWidth
           size="small"
-          placeholder="Ask Claude, GPT, or Gemini Pro regarding architecture, code refactoring, test synthesis, or security..."
+          placeholder="Ask OENEXA regarding architecture, code refactoring, test synthesis, or security..."
           value={chatInput}
           onChange={(e) => setChatInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && onSendMessage()}

@@ -69,7 +69,7 @@ describe('Feature: Intelligent Conversational AI Hub (Multi-Model & Real Scenari
         fireEvent.click(chatTab);
       });
 
-      const input = screen.getByPlaceholderText(/Ask Claude, GPT, or Gemini Pro/i);
+      const input = screen.getByPlaceholderText(/(Ask OENEXA|Ask Claude, GPT, or Gemini Pro)/i);
       await act(async () => {
         fireEvent.change(input, { target: { value: 'Synthesize tests for Solution class' } });
       });
