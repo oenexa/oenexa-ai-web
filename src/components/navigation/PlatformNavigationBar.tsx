@@ -69,7 +69,7 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
               ⚡ OENEXA AI Engineer
             </Typography>
             <Chip
-              label="Java 25 • Spring Boot 4.1.1 • Gemini Pro • Claude • GPT-4o • Devin AI"
+              label="Java 25 • Spring Boot 4.1.1 • OENEXA Neo-GPT Native Engine • Pure Own AI"
               size="small"
               sx={{
                 bgcolor: 'rgba(255,255,255,0.15)',
@@ -142,7 +142,7 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
           <Tab
             icon={<Psychology />}
             iconPosition="start"
-            label="Gemini 4 Argon AI Agent"
+            label="OENEXA Neo-GPT Autonomous Agent"
             sx={{ fontWeight: 600 }}
           />
           <Tab
@@ -154,7 +154,7 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
           <Tab
             icon={<ChatIcon />}
             iconPosition="start"
-            label="AI Assistant Chat (Gemini Pro)"
+            label="AI Assistant Chat (Neo-GPT Deliberative)"
             sx={{ fontWeight: 600 }}
           />
           <Tab

@@ -11,6 +11,7 @@ import {
 import {
   TargetCapabilitiesTab,
   CodeWorkspaceTab,
+  OenexaAgentTab,
   ArgonAgentTab,
   CollaborativeAgentsTab,
   ChatTab,
@@ -295,7 +296,7 @@ public class Solution {
       type: 'FILE_DOCUMENT',
       fileName: 'engineering-specs.openapi.yaml',
       mimeType: 'text/yaml',
-      extractedTextOrTranscript: 'OpenAPI 3.0 Specs: paths /api/v1/auth, /api/v1/argon/goals, /api/v1/argon/prd.',
+      extractedTextOrTranscript: 'OpenAPI 3.0 Specs: paths /api/v1/auth, /api/v1/agent/goals, /api/v1/agent/prd.',
       uploadedAt: new Date().toISOString(),
     };
     setMultimodalAttachments((prev) => [...prev, newAtt]);
@@ -336,8 +337,8 @@ public class Solution {
           setLocalFirstMode(!localFirstMode);
           notify(
             !localFirstMode
-              ? '🔒 Enabled Air-Gapped Local-First Mode (Ollama llama3.3, 0 external leakage)'
-              : '☁️ Switched to Cloud Hybrid Multi-Model Routing'
+              ? '🔒 Enabled Air-Gapped Sovereign Mode (In-Process Neural Engine, 0 external leakage)'
+              : '☁️ Switched to Local Hybrid Multi-Model Routing'
           );
         }}
       />
@@ -354,9 +355,9 @@ public class Solution {
         />
       )}
 
-      {/* Tab 1: Gemini 4 Argon Autonomous AI Agent */}
+      {/* Tab 1: OENEXA Neo-GPT Autonomous AI Agent */}
       {activeTab === 1 && (
-        <ArgonAgentTab
+        <OenexaAgentTab
           darkMode={darkMode}
           token={token}
           username={username}

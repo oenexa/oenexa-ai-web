@@ -212,20 +212,20 @@ describe('Feature: AI Memory Inspector (Short-Term & Long-Term)', () => {
   });
 });
 
-describe('Feature: Google Gemini 4 Argon Autonomous AI Agent', () => {
-  describe('Scenario: Navigate to Gemini 4 Argon AI Agent and inspect plan DAG & trace', () => {
-    it('Given the user opens the application, When clicking the Gemini 4 Argon tab, Then the autonomous plan DAG, telemetry, and self-healing loop are visible', async () => {
+describe('Feature: OENEXA Neo-GPT Autonomous AI Agent (Pure Own Engine)', () => {
+  describe('Scenario: Navigate to OENEXA Autonomous Agent and inspect plan DAG & trace', () => {
+    it('Given the user opens the application, When clicking the OENEXA Autonomous Agent tab, Then the autonomous plan DAG, telemetry, and self-healing loop are visible', async () => {
       await act(async () => {
         render(<App />);
       });
 
-      const argonTab = screen.getByRole('tab', { name: /Gemini 4 Argon AI Agent/i });
+      const oenexaTab = screen.getByRole('tab', { name: /(OENEXA Neo-GPT Autonomous Agent|Gemini 4 Argon)/i });
       await act(async () => {
-        fireEvent.click(argonTab);
+        fireEvent.click(oenexaTab);
       });
 
       // Verify Header & Stepper
-      expect(screen.getByText(/Google Gemini 4 Argon Autonomous AI Agent/i)).toBeInTheDocument();
+      expect(screen.getByText(/OENEXA Neo-GPT Autonomous AI Agent/i)).toBeInTheDocument();
       expect(screen.getByText(/1\. PLANNING/i)).toBeInTheDocument();
       expect(screen.getByText(/2\. DECOMPOSITION/i)).toBeInTheDocument();
       expect(screen.getByText(/3\. TOOL_EXECUTION/i)).toBeInTheDocument();
@@ -234,7 +234,7 @@ describe('Feature: Google Gemini 4 Argon Autonomous AI Agent', () => {
       expect(screen.getByText(/6\. COMPLETED/i)).toBeInTheDocument();
 
       // Verify Plan DAG
-      expect(screen.getByText(/Argon Autonomous Plan DAG/i)).toBeInTheDocument();
+      expect(screen.getByText(/OENEXA Autonomous Plan DAG/i)).toBeInTheDocument();
       expect(screen.getAllByText(/ARCHITECTURE_AGENT/i).length).toBeGreaterThanOrEqual(1);
       expect(screen.getAllByText(/CODE_AGENT/i).length).toBeGreaterThanOrEqual(1);
 
@@ -253,9 +253,9 @@ describe('Feature: Google Gemini 4 Argon Autonomous AI Agent', () => {
         render(<App />);
       });
 
-      const argonTab = screen.getByRole('tab', { name: /Gemini 4 Argon AI Agent/i });
+      const oenexaTab = screen.getByRole('tab', { name: /(OENEXA Neo-GPT Autonomous Agent|Gemini 4 Argon)/i });
       await act(async () => {
-        fireEvent.click(argonTab);
+        fireEvent.click(oenexaTab);
       });
 
       const goalInput = screen.getByPlaceholderText(/e\.g\. Refactor database entities to reactive Spring WebFlux/i);
@@ -282,13 +282,13 @@ describe('Feature: Google Gemini 4 Argon Autonomous AI Agent', () => {
         render(<App />);
       });
 
-      const argonTab = screen.getByRole('tab', { name: /Gemini 4 Argon AI Agent/i });
+      const oenexaTab = screen.getByRole('tab', { name: /(OENEXA Neo-GPT Autonomous Agent|Gemini 4 Argon)/i });
       await act(async () => {
-        fireEvent.click(argonTab);
+        fireEvent.click(oenexaTab);
       });
 
-      const issueInput = screen.getByPlaceholderText(/e\.g\. NullPointerException at line 42/i);
-      const causeInput = screen.getByPlaceholderText(/e\.g\. Unchecked optional dereference/i);
+      const issueInput = screen.getByPlaceholderText(/e\.g\. AssertionFailedError in AuthServiceTest: expected 200 got 500/i);
+      const causeInput = screen.getByPlaceholderText(/e\.g\. Missing defensive non-null check in token extraction/i);
 
       await act(async () => {
         fireEvent.change(issueInput, {
@@ -299,7 +299,7 @@ describe('Feature: Google Gemini 4 Argon Autonomous AI Agent', () => {
         });
       });
 
-      const healButton = screen.getByRole('button', { name: /Trigger Self-Healing Patch/i });
+      const healButton = screen.getByRole('button', { name: /Run Reflection Diagnostic & Synthesize Patch/i });
       await act(async () => {
         fireEvent.click(healButton);
       });
@@ -343,9 +343,9 @@ describe('Feature: Native Multimodal Context Ingestion', () => {
         render(<App />);
       });
 
-      const argonTab = screen.getByRole('tab', { name: /Gemini 4 Argon AI Agent/i });
+      const oenexaTab = screen.getByRole('tab', { name: /(OENEXA Neo-GPT Autonomous Agent|Gemini 4 Argon)/i });
       await act(async () => {
-        fireEvent.click(argonTab);
+        fireEvent.click(oenexaTab);
       });
 
       const attachDiagramBtn = screen.getByRole('button', { name: /Attach Architecture Diagram/i });
