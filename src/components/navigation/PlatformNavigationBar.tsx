@@ -184,13 +184,13 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
           <Tab
             icon={<Speed />}
             iconPosition="start"
-            label="Target Capabilities (Claude, Gemini, Cursor, Devin, Copilot, Operator)"
+            label="Target Capabilities (Deliberative, Multimodal, Sandbox, Automation)"
             sx={{ fontWeight: 600 }}
           />
           <Tab
             icon={<BoltIcon />}
             iconPosition="start"
-            label="⚡ Neo-GPT Agent OS (OpenAI Native)"
+            label="⚡ OENEXA Neo-GPT Agent OS (Pure Native)"
             sx={{ fontWeight: 600 }}
           />
         </Tabs>

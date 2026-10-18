@@ -8,3 +8,5 @@ export * from './repositoryService';
 export * from './memoryService';
 export * from './modulesService';
 export * from './prdService';
+export * from './oenexaCognitiveService';
+export * from './openAiNativeService';

@@ -20,6 +20,7 @@ import {
   PlatformModulesTab,
   ProductManagerTab,
   OpenAiNativeTab,
+  OenexaAgentOsTab,
 } from './components/tabs';
 import { AuthDialog } from './components/auth';
 import {
@@ -466,9 +467,9 @@ public class Solution {
         />
       )}
 
-      {/* Tab 9: Neo-GPT Agent OS (100% Wire-Compatible OpenAI Native Engine & o3 Reasoning) */}
+      {/* Tab 9: OENEXA Neo-GPT Agent OS (Pure Own Native Engine & 5-Stage Deliberation) */}
       {activeTab === 9 && (
-        <OpenAiNativeTab
+        <OenexaAgentOsTab
           darkMode={darkMode}
           token={token}
           username={username}

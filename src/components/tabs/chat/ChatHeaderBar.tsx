@@ -60,14 +60,12 @@ export const ChatHeaderBar: React.FC<ChatHeaderBarProps> = ({
             label="Model Engine"
             onChange={(e) => setSelectedModel(e.target.value)}
           >
-            <MenuItem value="auto">⚡ Auto (Autonomous Multi-Model Routing)</MenuItem>
-            <MenuItem value="claude-3-5-sonnet">Anthropic Claude 3.5 Sonnet (Coding & Reasoning)</MenuItem>
-            <MenuItem value="gpt-4o">OpenAI GPT-4o (Bug Fixing & Logic)</MenuItem>
-            <MenuItem value="gemini-2.5-pro">Gemini 2.5 Pro (Deep CoT & Architecture)</MenuItem>
-            <MenuItem value="gemini-2.5-flash">Gemini 2.5 Flash (Fast Execution)</MenuItem>
-            <MenuItem value="deepseek-v3">DeepSeek V3 (Fast Chat)</MenuItem>
-            <MenuItem value="mistral-large">Mistral Large (High Precision)</MenuItem>
-            <MenuItem value="llama-3.3-70b">Meta Llama 3.3 (Open Weights)</MenuItem>
+            <MenuItem value="auto">⚡ Auto (OENEXA Autonomous Cognitive Routing)</MenuItem>
+            <MenuItem value="oenexa-neo-gpt-o3-max">OENEXA Neo-GPT o3 Max (Deliberative Reasoning & Planning)</MenuItem>
+            <MenuItem value="oenexa-neo-gpt-coder-32b">OENEXA Neo-GPT Coder 32B (Code Synthesis & Refactoring)</MenuItem>
+            <MenuItem value="oenexa-neo-gpt-architect-70b">OENEXA Neo-GPT Architect 70B (Deep Invariants & C4 Modeling)</MenuItem>
+            <MenuItem value="oenexa-neo-gpt-reasoning-14b">OENEXA Neo-GPT Reasoning 14B (High-Speed Tree-of-Thought)</MenuItem>
+            <MenuItem value="oenexa-security-sast-v1">OENEXA Security SAST v1 (Vulnerability & Secrets Audit)</MenuItem>
             <MenuItem value="oenexa-expert-code-v1">OENEXA Custom Model (Specialist)</MenuItem>
           </Select>
         </FormControl>

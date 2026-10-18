@@ -75,15 +75,15 @@ export const TargetCapabilitiesTab: React.FC<TargetCapabilitiesTabProps> = ({
               ⚡ Target Capabilities: Next-Gen Autonomous AI Engineering Platform
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', maxWidth: 850 }}>
-              Equipped with Claude-level Tree-of-Thought reasoning, Gemini-level multimodal intelligence,
-              Cursor-level atomic code patching, Devin-level autonomous task execution with zero-mock self-healing,
-              GitHub Copilot-level inline completion, and OpenAI Operator-level environment automation.
+              Equipped with OENEXA Tree-of-Thought deliberative reasoning, OENEXA multimodal spatial intelligence,
+              OENEXA atomic code patching, OENEXA autonomous sandbox execution with zero-mock self-healing,
+              OENEXA predictive ghost-text completion, and OENEXA cloud environment automations.
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
             <Chip icon={<ShieldIcon />} label="100% Zero-Mock Enforced" color="success" size="small" />
             <Chip icon={<Speed />} label="JaCoCo Line Coverage: 100%" color="primary" size="small" />
-            <Chip label="v2.6.0-ARGON-MAX" variant="outlined" size="small" />
+            <Chip label="v3.0.0-OENEXA-PURE-OWN (v2.6.0-ARGON-MAX)" variant="outlined" size="small" />
             <Chip label="Confidence: 0.99" color="secondary" size="small" />
           </Box>
         </Box>
@@ -100,37 +100,37 @@ export const TargetCapabilitiesTab: React.FC<TargetCapabilitiesTabProps> = ({
           <Tab
             icon={<Psychology />}
             iconPosition="start"
-            label="1. Claude Reasoning (ToT)"
+            label="1. Claude Reasoning (OENEXA Tree-of-Thought)"
             sx={{ fontWeight: 600 }}
           />
           <Tab
             icon={<ImageIcon />}
             iconPosition="start"
-            label="2. Gemini Multimodal (Vision & Audio)"
+            label="2. Gemini Multimodal (OENEXA Spatial Engine)"
             sx={{ fontWeight: 600 }}
           />
           <Tab
             icon={<CodeIcon />}
             iconPosition="start"
-            label="3. Cursor Coding (Atomic Patches)"
+            label="3. Cursor Coding (OENEXA Atomic Patching)"
             sx={{ fontWeight: 600 }}
           />
           <Tab
             icon={<TerminalIcon />}
             iconPosition="start"
-            label="4. Devin Task Execution (Sandbox)"
+            label="4. Devin Task Execution (OENEXA Autonomous Sandbox)"
             sx={{ fontWeight: 600 }}
           />
           <Tab
             icon={<AutoFixHigh />}
             iconPosition="start"
-            label="5. GitHub Copilot (Inline Ghost-Text)"
+            label="5. GitHub Copilot (OENEXA Ghost-Text Prediction)"
             sx={{ fontWeight: 600 }}
           />
           <Tab
             icon={<Build />}
             iconPosition="start"
-            label="6. OpenAI Operator (Automations)"
+            label="6. OpenAI Operator (OENEXA Cloud Automations)"
             sx={{ fontWeight: 600 }}
           />
         </Tabs>

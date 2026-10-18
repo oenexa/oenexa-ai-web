@@ -27,11 +27,11 @@ export const createDefaultInitialMessage = (): ChatMessage => ({
   sender: 'AI Engineer',
   role: 'ASSISTANT',
   content:
-    'Welcome to OENEXA Intelligent AI Engineer. Powered by dynamic multi-model routing (Claude 3.5 Sonnet, GPT-4o, Gemini 2.5, DeepSeek V3), short/long-term memory in PostgreSQL, repository AST understanding, and 7 collaborative software engineer agents.',
+    'Welcome to OENEXA Intelligent AI Engineer. Powered by native deliberative routing (OENEXA Neo-GPT o3 Max, Neo-GPT Coder 32B, Neo-GPT Architect 70B, Neo-GPT Reasoning 14B), short/long-term memory in PostgreSQL, repository AST understanding, and 10 collaborative software engineer agents.',
   thoughtProcess:
-    '1. Intelligent conversation engine initialized.\n2. Loaded Short-Term sliding window (last 50 messages) and Long-Term memory store.\n3. Vector knowledge indexing active with cosine similarity.\n4. Multi-agent delegation active across 7 specialized software roles.',
-  model: 'gemini-2.5-pro',
-  provider: 'GEMINI',
+    '1. Intelligent conversation engine initialized.\n2. Loaded Short-Term sliding window (last 50 messages) and Long-Term memory store.\n3. Vector knowledge indexing active with cosine similarity.\n4. Multi-agent delegation active across 10 specialized software roles.',
+  model: 'oenexa-neo-gpt-o3-max',
+  provider: 'OENEXA_NEO_GPT',
   taskType: 'ARCHITECTURE',
   confidenceScore: 0.99,
   rankingScore: 0.98,
@@ -124,25 +124,25 @@ export const sendIntelligentChatMessage = async (
   // Dynamic resilient fallback
   const lower = message.toLowerCase();
   let detectedTask = 'FAST_CHAT';
-  let routedModel = 'deepseek-v3';
-  let routedProvider = 'DEEPSEEK';
+  let routedModel = 'oenexa-neo-gpt-reasoning-14b';
+  let routedProvider = 'OENEXA_NEO_GPT';
 
   if (lower.indexOf('architecture') !== -1) {
     detectedTask = 'ARCHITECTURE';
-    routedModel = 'gemini-2.5-pro';
-    routedProvider = 'GEMINI';
+    routedModel = 'oenexa-neo-gpt-architect-70b';
+    routedProvider = 'OENEXA_NEO_GPT';
   } else if (lower.indexOf('fix') !== -1 || lower.indexOf('bug') !== -1) {
     detectedTask = 'BUG_FIX';
-    routedModel = 'gpt-4o';
-    routedProvider = 'OPENAI_GPT';
+    routedModel = 'oenexa-neo-gpt-o3-max';
+    routedProvider = 'OENEXA_NEO_GPT';
   } else if (lower.indexOf('security') !== -1 || lower.indexOf('sast') !== -1) {
     detectedTask = 'SECURITY_AUDIT';
     routedModel = 'oenexa-security-sast-v1';
     routedProvider = 'OENEXA_CUSTOM';
   } else if (lower.indexOf('code') !== -1 || lower.indexOf('write') !== -1 || lower.indexOf('test') !== -1) {
     detectedTask = 'CODING';
-    routedModel = 'claude-3-5-sonnet';
-    routedProvider = 'ANTHROPIC_CLAUDE';
+    routedModel = 'oenexa-neo-gpt-coder-32b';
+    routedProvider = 'OENEXA_NEO_GPT';
   }
 
   const generatedArtifacts: CodeArtifact[] =
