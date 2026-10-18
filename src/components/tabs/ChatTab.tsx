@@ -12,6 +12,7 @@ import {
   createDefaultConversation,
   createDefaultInitialMessage,
   sendIntelligentChatMessage,
+  sendAutoChatStep,
 } from '../../services/chatService';
 import {
   ChatSessionSidebar,
@@ -65,6 +66,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   const [includeThinking, setIncludeThinking] = useState<boolean>(true);
   const [chatInput, setChatInput] = useState<string>('');
   const [chatLoading, setChatLoading] = useState<boolean>(false);
+  const [autoChatActive, setAutoChatActive] = useState<boolean>(false);
   const [messagesByConv, setMessagesByConv] = useState<Record<string, ChatMessage[]>>({
     'conv-default': [createDefaultInitialMessage()],
   });
@@ -205,6 +207,29 @@ export const ChatTab: React.FC<ChatTabProps> = ({
     }
   };
 
+  const handleAutoRunStep = async () => {
+    setChatLoading(true);
+    try {
+      const result = await sendAutoChatStep({
+        conversationId: activeConvId,
+        contextCode: pendingAttachment ? pendingAttachment.content : null,
+        goal: activeConversation?.title,
+        preferredModel: selectedModel,
+        includeThinking,
+        token,
+      });
+
+      setMessagesByConv((prev) => ({
+        ...prev,
+        [activeConvId]: [...(prev[activeConvId] || []), result.assistantMessage],
+      }));
+
+      notify('Auto-Chat executed next real-scenario engineering step!');
+    } finally {
+      setChatLoading(false);
+    }
+  };
+
   return (
     <Box sx={{ p: 2, height: 'calc(100vh - 170px)', display: 'flex', gap: 2 }}>
       {/* 1. Conversation Sessions Sidebar */}
@@ -239,6 +264,9 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           setSelectedModel={setSelectedModel}
           includeThinking={includeThinking}
           setIncludeThinking={setIncludeThinking}
+          autoChatActive={autoChatActive}
+          setAutoChatActive={setAutoChatActive}
+          onAutoRunStep={handleAutoRunStep}
         />
 
         {/* Streaming Messages & Code Artifacts */}

@@ -82,6 +82,40 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
           ))}
         </Box>
       )}
+      <Box sx={{ mb: 1, display: 'flex', gap: 0.8, flexWrap: 'wrap', alignItems: 'center' }}>
+        <Chip
+          label="⚡ Auto-Architect"
+          size="small"
+          clickable
+          color="primary"
+          variant="outlined"
+          onClick={() => onSendMessage('Architect system design blueprint with sealed records and zero-mock boundaries')}
+        />
+        <Chip
+          label="🧪 Auto-Synthesize Tests"
+          size="small"
+          clickable
+          color="success"
+          variant="outlined"
+          onClick={() => onSendMessage('Synthesize zero-mock JUnit 5 test suite verifying 100% line coverage')}
+        />
+        <Chip
+          label="🛡️ Auto-Audit Security"
+          size="small"
+          clickable
+          color="warning"
+          variant="outlined"
+          onClick={() => onSendMessage('Perform SAST security scan and vulnerability audit on the codebase')}
+        />
+        <Chip
+          label="🐳 Auto-DevOps Pipeline"
+          size="small"
+          clickable
+          color="info"
+          variant="outlined"
+          onClick={() => onSendMessage('Generate Docker and Kubernetes deployment pipeline for the container deployment')}
+        />
+      </Box>
 
       <Box sx={{ display: 'flex', gap: 1 }}>
         <IconButton

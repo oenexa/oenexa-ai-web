@@ -82,6 +82,27 @@ describe('Feature: Intelligent Conversational AI Hub (Multi-Model & Real Scenari
       // User message rendered
       expect(screen.getByText('Synthesize tests for Solution class')).toBeInTheDocument();
     });
+
+    it('Given the user is in AI Chat, When clicking Auto-Run Next Step, Then autonomous AI turn executes with high confidence', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const chatTab = screen.getByRole('tab', { name: /AI Assistant Chat/i });
+      await act(async () => {
+        fireEvent.click(chatTab);
+      });
+
+      expect(screen.getByText(/Auto-Chat \(Real Scenario\)/i)).toBeInTheDocument();
+
+      const autoRunBtn = screen.getByRole('button', { name: /Auto-Run Next Step/i });
+      await act(async () => {
+        fireEvent.click(autoRunBtn);
+      });
+
+      expect(screen.getByText(/AI Engineer \(Auto-Pilot\)/i)).toBeInTheDocument();
+      expect(screen.getByText(/OENEXA Auto-Chat Step/i)).toBeInTheDocument();
+    });
   });
 });
 
