@@ -126,7 +126,7 @@ export const createDefaultDevinPlan = (): DevinTaskExecutionPlan => ({
   zeroMockVerificationPassed: true,
   appliedPatch: {
     patchId: 'patch-atomic-1',
-    description: 'Cursor Atomic Patch: Refactor authentication to Argon token claims',
+    description: 'Cursor Atomic Patch: Refactor authentication to OENEXA token claims',
     fileDiffs: [
       {
         filePath: 'src/main/java/com/oenexa/security/AuthService.java',

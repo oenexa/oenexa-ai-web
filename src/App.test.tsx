@@ -338,7 +338,7 @@ describe('Feature: Local-First Air-Gapped Privacy & Multi-Model Invariant', () =
 
 describe('Feature: Native Multimodal Context Ingestion', () => {
   describe('Scenario: Attach diagram and document attachments to agent context', () => {
-    it('Given the user is on the Argon console, When clicking Attach Architecture Diagram and Attach Spec Document, Then attachment chips appear and can be removed', async () => {
+    it('Given the user is on the OENEXA Autonomous Agent console, When clicking Attach Architecture Diagram and Attach Spec Document, Then attachment chips appear and can be removed', async () => {
       await act(async () => {
         render(<App />);
       });
@@ -426,7 +426,7 @@ describe('Feature: Step 10 Target Capabilities (Claude, Gemini, Cursor, Devin, C
       expect(screen.getByText(/Target Capabilities: Next-Gen Autonomous AI Engineering Platform/i)).toBeInTheDocument();
       expect(screen.getByText(/100% Zero-Mock Enforced/i)).toBeInTheDocument();
       expect(screen.getByText(/JaCoCo Line Coverage: 100%/i)).toBeInTheDocument();
-      expect(screen.getByText(/v2.6.0-ARGON-MAX/i)).toBeInTheDocument();
+      expect(screen.getByText(/v3\.0\.0-OENEXA-PURE-OWN/i)).toBeInTheDocument();
 
       // Verify sub-tabs
       expect(screen.getByRole('tab', { name: /1\. Claude Reasoning/i })).toBeInTheDocument();
@@ -480,7 +480,7 @@ describe('Feature: Step 10 Target Capabilities (Claude, Gemini, Cursor, Devin, C
       expect(screen.getByText(/Visual Architecture Diagram OCR & Parsing/i)).toBeInTheDocument();
       expect(screen.getByText(/Developer Speech Audio Directives/i)).toBeInTheDocument();
       expect(screen.getByText(/Multimodal Context Fusion/i)).toBeInTheDocument();
-      expect(screen.getAllByText(/ArgonAgentController/i).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText(/OenexaAgentController/i).length).toBeGreaterThanOrEqual(1);
 
       const fuseBtn = screen.getByRole('button', { name: /Re-Fuse Context/i });
       await act(async () => {

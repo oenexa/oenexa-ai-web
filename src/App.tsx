@@ -12,7 +12,6 @@ import {
   TargetCapabilitiesTab,
   CodeWorkspaceTab,
   OenexaAgentTab,
-  ArgonAgentTab,
   CollaborativeAgentsTab,
   ChatTab,
   RepositoryKnowledgeTab,

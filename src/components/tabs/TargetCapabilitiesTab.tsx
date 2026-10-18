@@ -83,7 +83,7 @@ export const TargetCapabilitiesTab: React.FC<TargetCapabilitiesTabProps> = ({
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
             <Chip icon={<ShieldIcon />} label="100% Zero-Mock Enforced" color="success" size="small" />
             <Chip icon={<Speed />} label="JaCoCo Line Coverage: 100%" color="primary" size="small" />
-            <Chip label="v3.0.0-OENEXA-PURE-OWN (v2.6.0-ARGON-MAX)" variant="outlined" size="small" />
+            <Chip label="v3.0.0-OENEXA-PURE-OWN" variant="outlined" size="small" />
             <Chip label="Confidence: 0.99" color="secondary" size="small" />
           </Box>
         </Box>

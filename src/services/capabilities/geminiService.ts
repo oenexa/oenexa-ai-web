@@ -67,14 +67,14 @@ export const createDefaultVisionAnalysis = (): MultimodalVisionAnalysis => ({
   components: [
     {
       id: 'c-1',
-      name: 'ArgonAgentController',
+      name: 'OenexaAgentController',
       layerType: 'API_REST',
       boundingBox: 'x:50,y:100,w:220,h:80',
-      downstreamTargets: ['ArgonAutonomousAgentEngine'],
+      downstreamTargets: ['OenexaAutonomousAgentEngine'],
     },
     {
       id: 'c-2',
-      name: 'ArgonAutonomousAgentEngine',
+      name: 'OenexaAutonomousAgentEngine',
       layerType: 'APPLICATION_USE_CASE',
       boundingBox: 'x:320,y:100,w:260,h:100',
       downstreamTargets: ['ChatDomainRepository'],
@@ -88,7 +88,7 @@ export const createDefaultVisionAnalysis = (): MultimodalVisionAnalysis => ({
     },
   ],
   synthesizedMermaidOrC4:
-    'graph TD\n  A[API: ArgonAgentController] -->|Execute Goal| B[Application: ArgonAutonomousAgentEngine]\n  B -->|Persist Artifacts| C[Infrastructure: Postgres pgvector]\n  B -->|Local Inference| D[Local Ollama: llama3.3:latest]',
+    'graph TD\n  A[API: OenexaAgentController] -->|Execute Goal| B[Application: OenexaAutonomousAgentEngine]\n  B -->|Persist Artifacts| C[Infrastructure: Postgres pgvector]\n  B -->|Local Inference| D[Local Ollama: llama3.3:latest]',
   synthesizedCodeOrDdl:
     'CREATE TABLE IF NOT EXISTS visual_architecture_nodes (\n    node_id VARCHAR(64) PRIMARY KEY,\n    component_name VARCHAR(128) NOT NULL,\n    layer_type VARCHAR(64) NOT NULL\n);',
   confidence: 0.99,

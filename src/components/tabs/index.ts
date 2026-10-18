@@ -1,7 +1,6 @@
 export * from './TargetCapabilitiesTab';
 export * from './CodeWorkspaceTab';
 export * from './OenexaAgentTab';
-export * from './ArgonAgentTab';
 export * from './CollaborativeAgentsTab';
 export * from './ChatTab';
 export * from './RepositoryKnowledgeTab';
@@ -11,7 +10,6 @@ export * from './ProductManagerTab';
 export * from './OpenAiNativeTab';
 export * from './OenexaAgentOsTab';
 export * from './oenexa';
-export * from './argon';
 export * from './chat';
 export * from './capabilities';
 export * from './openai';
