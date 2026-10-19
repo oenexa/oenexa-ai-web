@@ -8,6 +8,7 @@ import { PlatformNavigationBar } from './components/navigation';
 import { ChatTab } from './components/tabs/ChatTab';
 import { AuthDialog } from './components/auth';
 import { SubscriptionBillingModal } from './components/billing/SubscriptionBillingModal';
+import { MemoryMcpTelemetryModal } from './components/telemetry/MemoryMcpTelemetryModal';
 import {
   CodeContextAttachment,
   CodeArtifact,
@@ -22,6 +23,7 @@ const App: React.FC = () => {
   const [username, setUsername] = useState<string>(localStorage.getItem('oenexa_user') || 'engineer');
   const [authDialogOpen, setAuthDialogOpen] = useState<boolean>(false);
   const [billingModalOpen, setBillingModalOpen] = useState<boolean>(false);
+  const [telemetryModalOpen, setTelemetryModalOpen] = useState<boolean>(false);
   const [pendingAttachment, setPendingAttachment] = useState<CodeContextAttachment | null>(null);
   const [multimodalAttachments, setMultimodalAttachments] = useState<MultimodalAttachment[]>([]);
   const [isRecordingVoice, setIsRecordingVoice] = useState<boolean>(false);
@@ -93,6 +95,7 @@ const App: React.FC = () => {
         username={username}
         onOpenAuthDialog={() => setAuthDialogOpen(true)}
         onOpenBilling={() => setBillingModalOpen(true)}
+        onOpenTelemetry={() => setTelemetryModalOpen(true)}
         onLogout={handleLogout}
         activeModel="deepseek-r1:8b"
       />
@@ -133,6 +136,14 @@ const App: React.FC = () => {
       <SubscriptionBillingModal
         open={billingModalOpen}
         onClose={() => setBillingModalOpen(false)}
+        darkMode={darkMode}
+        token={token}
+        notify={notify}
+      />
+
+      <MemoryMcpTelemetryModal
+        open={telemetryModalOpen}
+        onClose={() => setTelemetryModalOpen(false)}
         darkMode={darkMode}
         token={token}
         notify={notify}

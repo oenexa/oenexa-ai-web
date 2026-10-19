@@ -15,6 +15,7 @@ import {
   ExitToApp,
   AccountCircle,
   CreditCard,
+  Memory,
 } from '@mui/icons-material';
 
 export interface PlatformNavigationBarProps {
@@ -25,6 +26,7 @@ export interface PlatformNavigationBarProps {
   onOpenAuthDialog: () => void;
   onLogout: () => void;
   onOpenBilling?: () => void;
+  onOpenTelemetry?: () => void;
   activeModel?: string;
 }
 
@@ -36,6 +38,7 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
   onOpenAuthDialog,
   onLogout,
   onOpenBilling,
+  onOpenTelemetry,
   activeModel = 'deepseek-r1:8b',
 }) => {
   return (
@@ -100,6 +103,19 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
               sx={{ borderColor: 'rgba(255,255,255,0.4)' }}
             >
               Plans & Quotas
+            </Button>
+          )}
+
+          {onOpenTelemetry && (
+            <Button
+              color="inherit"
+              startIcon={<Memory />}
+              onClick={onOpenTelemetry}
+              size="small"
+              variant="outlined"
+              sx={{ borderColor: 'rgba(255,255,255,0.4)' }}
+            >
+              7-Layer Memory & MCP
             </Button>
           )}
 

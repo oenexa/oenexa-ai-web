@@ -11,6 +11,20 @@ const API_BASE_URL = 'http://localhost:8080/api/v1/ecosystem';
 
 const DEFAULT_AGENTS: AgentProfile[] = [
   {
+    agentType: 'PRODUCT_MANAGER',
+    displayName: 'Product Manager Agent',
+    roleDescription: 'Synthesizes Product Requirements Documents (PRDs), user stories, and Gherkin BDD specifications.',
+    primaryTools: ['PrdGenerator', 'UserStoryMapper', 'BddSpecifier'],
+    autonomyLevel: 'FULL_AUTONOMOUS',
+  },
+  {
+    agentType: 'ARCHITECT',
+    displayName: 'System Architect Agent',
+    roleDescription: 'Models C4 system architecture, defines hexagonal boundaries, and verifies scalability invariants.',
+    primaryTools: ['C4Modeler', 'HexagonalLinter', 'ScalabilityAuditor'],
+    autonomyLevel: 'FULL_AUTONOMOUS',
+  },
+  {
     agentType: 'RESEARCH',
     displayName: 'Research Agent',
     roleDescription: 'Explores technical landscape, performs literature and codebase discovery, synthesizes architecture options.',
@@ -25,11 +39,25 @@ const DEFAULT_AGENTS: AgentProfile[] = [
     autonomyLevel: 'FULL_AUTONOMOUS',
   },
   {
+    agentType: 'QA',
+    displayName: 'QA & Verification Agent',
+    roleDescription: 'Synthesizes 100% zero-mock unit and integration test suites with edge-case mutation coverage.',
+    primaryTools: ['TestSynthesizer', 'AssertionAuditor', 'MutationTester'],
+    autonomyLevel: 'POLICY_ENFORCED',
+  },
+  {
     agentType: 'SECURITY',
     displayName: 'Security Agent',
     roleDescription: 'Performs SAST, credential auditing, OWASP Top 10 mitigation, and cryptographic invariant checks.',
     primaryTools: ['SastAnalyzer', 'SecretScanner', 'OwaspValidator', 'JwtAuditor'],
     autonomyLevel: 'POLICY_ENFORCED',
+  },
+  {
+    agentType: 'DATA_ENGINEER',
+    displayName: 'Data Engineer Agent',
+    roleDescription: 'Designs PostgreSQL schemas, pgvector HNSW indexes, Kafka topic topologies, and analytical pipelines.',
+    primaryTools: ['SchemaDesigner', 'IndexOptimizer', 'KafkaPipelineAuthor'],
+    autonomyLevel: 'FULL_AUTONOMOUS',
   },
   {
     agentType: 'DEVOPS',
@@ -46,6 +74,13 @@ const DEFAULT_AGENTS: AgentProfile[] = [
     autonomyLevel: 'FULL_AUTONOMOUS',
   },
   {
+    agentType: 'CUSTOMER_SUPPORT',
+    displayName: 'Customer Support Agent',
+    roleDescription: 'Generates troubleshooting runbooks, diagnoses user operational queries, and ensures 99.99% availability.',
+    primaryTools: ['RunbookSynthesizer', 'FaqGenerator', 'SlaMonitor', 'IncidentDiagnostic'],
+    autonomyLevel: 'FULL_AUTONOMOUS',
+  },
+  {
     agentType: 'LEGAL_ASSISTANT',
     displayName: 'Legal Assistant Agent',
     roleDescription: 'Audits dependency licenses, verifies compliance with GDPR/CCPA, and drafts enterprise terms.',
@@ -57,13 +92,6 @@ const DEFAULT_AGENTS: AgentProfile[] = [
     displayName: 'Marketing Agent',
     roleDescription: 'Drafts product launch announcements, creates developer changelogs, and crafts developer marketing narratives.',
     primaryTools: ['ReleaseNotesSynthesizer', 'ChangelogAuthor', 'SocialContentPlanner', 'SeoOptimizer'],
-    autonomyLevel: 'FULL_AUTONOMOUS',
-  },
-  {
-    agentType: 'CUSTOMER_SUPPORT',
-    displayName: 'Customer Support Agent',
-    roleDescription: 'Generates troubleshooting runbooks, diagnoses user operational queries, and ensures 99.99% availability.',
-    primaryTools: ['RunbookSynthesizer', 'FaqGenerator', 'SlaMonitor', 'IncidentDiagnostic'],
     autonomyLevel: 'FULL_AUTONOMOUS',
   },
 ];

@@ -18,3 +18,5 @@ export * from './knowledgeService';
 export * from './voiceService';
 export * from './mediaAiService';
 export * from './billingService';
+export * from './memoryHierarchyService';
+export * from './mcpService';
