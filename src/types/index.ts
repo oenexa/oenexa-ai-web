@@ -8,3 +8,4 @@ export * from './auth';
 export * from './multiModel';
 export * from './aiEngineer';
 export * from './agentEcosystem';
+export * from './knowledge';
