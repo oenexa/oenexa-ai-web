@@ -11,13 +11,15 @@ import {
   Switch,
   Button,
 } from '@mui/material';
-import { SmartToy } from '@mui/icons-material';
-import { ConversationMetadata } from '../../../types';
+import { SmartToy, Speed, Savings, Psychology, GroupWork, Tune } from '@mui/icons-material';
+import { ConversationMetadata, OptimizationStrategy } from '../../../types';
 
 export interface ChatHeaderBarProps {
   activeConversation?: ConversationMetadata;
   selectedModel: string;
   setSelectedModel: (model: string) => void;
+  strategy?: OptimizationStrategy;
+  setStrategy?: (strategy: OptimizationStrategy) => void;
   includeThinking: boolean;
   setIncludeThinking: (val: boolean) => void;
   autoChatActive?: boolean;
@@ -29,6 +31,8 @@ export const ChatHeaderBar: React.FC<ChatHeaderBarProps> = ({
   activeConversation,
   selectedModel,
   setSelectedModel,
+  strategy = 'AUTO',
+  setStrategy,
   includeThinking,
   setIncludeThinking,
   autoChatActive = false,
@@ -53,27 +57,79 @@ export const ChatHeaderBar: React.FC<ChatHeaderBarProps> = ({
           {activeConversation?.title || 'Active Session'}
         </Typography>
         <Chip
-          label={selectedModel === 'auto' ? 'Auto-Routing AI' : selectedModel}
+          label={selectedModel === 'auto' ? 'Auto-Routing Engine' : selectedModel}
           size="small"
           color="primary"
           variant="outlined"
         />
+        {strategy && strategy !== 'AUTO' && (
+          <Chip
+            label={strategy.replace('_', ' ')}
+            size="small"
+            color="secondary"
+            variant="filled"
+            sx={{ fontSize: '0.65rem', height: 20 }}
+          />
+        )}
       </Box>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-        <FormControl size="small" sx={{ minWidth: 200 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, flexWrap: 'wrap' }}>
+        {/* Strategy Selector */}
+        {setStrategy && (
+          <FormControl size="small" sx={{ minWidth: 155 }}>
+            <InputLabel>Strategy</InputLabel>
+            <Select
+              value={strategy}
+              label="Strategy"
+              onChange={(e) => setStrategy(e.target.value as OptimizationStrategy)}
+            >
+              <MenuItem value="AUTO">
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
+                  <Tune sx={{ fontSize: 16 }} /> Auto-Adaptive
+                </Box>
+              </MenuItem>
+              <MenuItem value="COST_OPTIMIZED">
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
+                  <Savings sx={{ fontSize: 16, color: 'success.main' }} /> Cost Optimized
+                </Box>
+              </MenuItem>
+              <MenuItem value="SPEED_OPTIMIZED">
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
+                  <Speed sx={{ fontSize: 16, color: 'info.main' }} /> Speed Optimized
+                </Box>
+              </MenuItem>
+              <MenuItem value="QUALITY_REASONING">
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
+                  <Psychology sx={{ fontSize: 16, color: 'secondary.main' }} /> Frontier Reasoning
+                </Box>
+              </MenuItem>
+              <MenuItem value="MULTI_MODEL_COLLABORATION">
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
+                  <GroupWork sx={{ fontSize: 16, color: 'warning.main' }} /> Multi-Model Collab
+                </Box>
+              </MenuItem>
+            </Select>
+          </FormControl>
+        )}
+
+        {/* Model Selection Dropdown */}
+        <FormControl size="small" sx={{ minWidth: 215 }}>
           <InputLabel>Model Engine</InputLabel>
           <Select
             value={selectedModel}
             label="Model Engine"
             onChange={(e) => setSelectedModel(e.target.value)}
           >
-            <MenuItem value="deepseek-r1:8b">🤖 DeepSeek-R1 8B (Local Ollama • Active)</MenuItem>
-            <MenuItem value="qwen2.5-coder:7b">⚡ Qwen 2.5 Coder 7B (Local Ollama)</MenuItem>
-            <MenuItem value="auto">⚡ Auto (OENEXA Local Ollama Routing)</MenuItem>
-            <MenuItem value="oenexa-neo-gpt-o3-max">OENEXA Neo-GPT o3 Max (Deliberative)</MenuItem>
-            <MenuItem value="oenexa-neo-gpt-coder-32b">OENEXA Neo-GPT Coder 32B (Coding)</MenuItem>
-            <MenuItem value="oenexa-neo-gpt-architect-70b">OENEXA Neo-GPT Architect 70B (Architecture)</MenuItem>
+            <MenuItem value="deepseek-r1:8b">🤖 DeepSeek-R1 8B (Local Ollama • Air-Gapped)</MenuItem>
+            <MenuItem value="qwen-2.5-coder-32b">⚡ Qwen 2.5 Coder 32B (Qwen)</MenuItem>
+            <MenuItem value="oenexa-gpt-o3-max">🏛️ OENEXA GPT o3-max (Sovereign Frontier)</MenuItem>
+            <MenuItem value="claude-3-5-sonnet">🧠 Claude 3.5 Sonnet (Anthropic)</MenuItem>
+            <MenuItem value="gemini-2.5-flash">🚀 Gemini 2.5 Flash (Google • 1M Context)</MenuItem>
+            <MenuItem value="deepseek-v3">⚡ DeepSeek V3 (DeepSeek)</MenuItem>
+            <MenuItem value="llama-3.3-70b">🦙 Llama 3.3 70B (Meta)</MenuItem>
+            <MenuItem value="mistral-large">🌪️ Mistral Large (Mistral)</MenuItem>
+            <MenuItem value="oenexa-security-sast-v1">🛡️ OENEXA Security Specialist (SAST)</MenuItem>
+            <MenuItem value="auto">⚡ Auto (Multi-Model Router)</MenuItem>
           </Select>
         </FormControl>
 

@@ -11,3 +11,4 @@ export * from './oenexaCognitiveService';
 export * from './openAiNativeService';
 export * from './authService';
 export * from './conversationCoreService';
+export * from './multiModelService';

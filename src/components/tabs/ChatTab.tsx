@@ -9,6 +9,7 @@ import {
   UserMemoryRecord,
   ChatFolder,
   ParsedDocument,
+  OptimizationStrategy,
 } from '../../types';
 import {
   createDefaultConversation,
@@ -70,6 +71,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   const [conversations, setConversations] = useState<ConversationMetadata[]>([createDefaultConversation()]);
   const [activeConvId, setActiveConvId] = useState<string>('conv-default');
   const [selectedModel, setSelectedModel] = useState<string>('deepseek-r1:8b');
+  const [strategy, setStrategy] = useState<OptimizationStrategy>('AUTO');
   const [includeThinking, setIncludeThinking] = useState<boolean>(true);
   const [chatInput, setChatInput] = useState<string>('');
   const [chatLoading, setChatLoading] = useState<boolean>(false);
@@ -130,14 +132,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
     setMessagesByConv((prev) => ({
       ...prev,
       [newId]: [
-        {
-          id: 'msg-' + Date.now(),
-          sender: 'AI Engineer',
-          role: 'ASSISTANT',
-          content: 'Started a fresh engineering session with active memory and repository indexing. What would you like to build or analyze?',
-          model: selectedModel,
-          timestamp: new Date().toLocaleTimeString(),
-        },
+        { id: 'msg-' + Date.now(), sender: 'AI Engineer', role: 'ASSISTANT', content: 'Started a fresh engineering session with active memory and repository indexing. What would you like to build or analyze?', model: selectedModel, timestamp: new Date().toLocaleTimeString() },
       ],
     }));
     notify('Created new conversation session');
@@ -147,9 +142,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
     e.stopPropagation();
     const target = conversations.find((c) => c.conversationId === convId);
     const newPinned = !target?.pinned;
-    setConversations((prev) =>
-      prev.map((c) => (c.conversationId === convId ? { ...c, pinned: newPinned } : c))
-    );
+    setConversations((prev) => prev.map((c) => (c.conversationId === convId ? { ...c, pinned: newPinned } : c)));
     await toggleConversationPin(convId, newPinned, token);
   };
 
@@ -162,9 +155,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   const handleShareConversation = async (convId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     const { shareUrl } = await shareConversationSession(convId, token);
-    if (navigator?.clipboard?.writeText) {
-      navigator.clipboard.writeText(shareUrl).catch(() => {});
-    }
+    if (navigator?.clipboard?.writeText) navigator.clipboard.writeText(shareUrl).catch(() => {});
     notify(`Share link generated: ${shareUrl}`);
   };
 
@@ -356,6 +347,8 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           activeConversation={activeConversation}
           selectedModel={selectedModel}
           setSelectedModel={setSelectedModel}
+          strategy={strategy}
+          setStrategy={setStrategy}
           includeThinking={includeThinking}
           setIncludeThinking={setIncludeThinking}
           autoChatActive={autoChatActive}

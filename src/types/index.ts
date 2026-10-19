@@ -5,3 +5,4 @@ export * from './codeWorkspace';
 export * from './oenexaCognitiveTypes';
 export * from './openAiTypes';
 export * from './auth';
+export * from './multiModel';
