@@ -6,3 +6,4 @@ export * from './oenexaCognitiveTypes';
 export * from './openAiTypes';
 export * from './auth';
 export * from './multiModel';
+export * from './aiEngineer';

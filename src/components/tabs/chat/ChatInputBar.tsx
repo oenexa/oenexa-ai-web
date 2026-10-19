@@ -200,6 +200,22 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
             variant="outlined"
             onClick={() => onSendMessage('Generate Docker and Kubernetes deployment pipeline for the container deployment')}
           />
+          <Chip
+            label="🔍 Auto-Review PR"
+            size="small"
+            clickable
+            color="secondary"
+            variant="outlined"
+            onClick={() => onSendMessage('Review Pull Request diff for zero-mock compliance, security, and performance')}
+          />
+          <Chip
+            label="🛠️ Auto-Fix & Refactor"
+            size="small"
+            clickable
+            color="default"
+            variant="outlined"
+            onClick={() => onSendMessage('Refactor active code into defensive immutable records and fix NPE risks')}
+          />
         </Box>
 
         {/* Input Bar & Actions */}
