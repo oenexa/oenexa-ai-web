@@ -30,6 +30,7 @@ import {
   ChatMessageStream,
   ChatInputBar,
 } from './chat';
+import { VoiceAssistantModal } from '../voice/VoiceAssistantModal';
 
 export interface ChatTabProps {
   darkMode: boolean;
@@ -79,6 +80,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   const [folders, setFolders] = useState<ChatFolder[]>([]);
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
   const [parsedDocuments, setParsedDocuments] = useState<ParsedDocument[]>([]);
+  const [voiceModalOpen, setVoiceModalOpen] = useState<boolean>(false);
   const [messagesByConv, setMessagesByConv] = useState<Record<string, ChatMessage[]>>({
     'conv-default': [createDefaultInitialMessage()],
   });
@@ -379,12 +381,17 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           multimodalAttachments={multimodalAttachments}
           handleRemoveMultimodalAttachment={handleRemoveMultimodalAttachment}
           handleAttachCodeToChat={handleAttachCodeToChat}
-          handleAttachVoiceMemo={handleAttachVoiceMemo}
+          handleAttachVoiceMemo={() => setVoiceModalOpen(true)}
           handleAttachDiagram={handleAttachDiagram}
           isRecordingVoice={isRecordingVoice}
           onSendMessage={handleSendMessage}
         />
       </Paper>
+      <VoiceAssistantModal
+        open={voiceModalOpen} onClose={() => setVoiceModalOpen(false)}
+        darkMode={darkMode} token={token} notify={notify}
+        onTranscriptInsert={(text) => setChatInput((prev) => (prev ? `${prev} ${text}` : text))}
+      />
     </Box>
   );
 };

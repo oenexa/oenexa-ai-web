@@ -9,3 +9,4 @@ export * from './multiModel';
 export * from './aiEngineer';
 export * from './agentEcosystem';
 export * from './knowledge';
+export * from './voice';

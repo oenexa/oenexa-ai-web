@@ -15,3 +15,4 @@ export * from './multiModelService';
 export * from './aiEngineerService';
 export * from './agentEcosystemService';
 export * from './knowledgeService';
+export * from './voiceService';
