@@ -7,3 +7,4 @@ export * from './openAiTypes';
 export * from './auth';
 export * from './multiModel';
 export * from './aiEngineer';
+export * from './agentEcosystem';
