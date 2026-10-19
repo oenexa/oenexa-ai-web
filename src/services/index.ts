@@ -16,3 +16,4 @@ export * from './aiEngineerService';
 export * from './agentEcosystemService';
 export * from './knowledgeService';
 export * from './voiceService';
+export * from './mediaAiService';

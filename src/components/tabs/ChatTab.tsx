@@ -31,6 +31,7 @@ import {
   ChatInputBar,
 } from './chat';
 import { VoiceAssistantModal } from '../voice/VoiceAssistantModal';
+import { MediaStudioModal } from '../media/MediaStudioModal';
 
 export interface ChatTabProps {
   darkMode: boolean;
@@ -81,6 +82,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
   const [parsedDocuments, setParsedDocuments] = useState<ParsedDocument[]>([]);
   const [voiceModalOpen, setVoiceModalOpen] = useState<boolean>(false);
+  const [mediaModalOpen, setMediaModalOpen] = useState<boolean>(false);
   const [messagesByConv, setMessagesByConv] = useState<Record<string, ChatMessage[]>>({
     'conv-default': [createDefaultInitialMessage()],
   });
@@ -120,22 +122,15 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   const handleCreateNewConversation = () => {
     const newId = 'conv-' + Date.now();
     const newMeta: ConversationMetadata = {
-      conversationId: newId,
-      tenantId: 'default-tenant',
-      title: 'New AI Engineering Session',
-      model: selectedModel,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      messageCount: 0,
-      pinned: false,
+      conversationId: newId, tenantId: 'default-tenant', title: 'New AI Engineering Session',
+      model: selectedModel, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+      messageCount: 0, pinned: false,
     };
     setConversations((prev) => [newMeta, ...prev]);
     setActiveConvId(newId);
     setMessagesByConv((prev) => ({
       ...prev,
-      [newId]: [
-        { id: 'msg-' + Date.now(), sender: 'AI Engineer', role: 'ASSISTANT', content: 'Started a fresh engineering session with active memory and repository indexing. What would you like to build or analyze?', model: selectedModel, timestamp: new Date().toLocaleTimeString() },
-      ],
+      [newId]: [{ id: 'msg-' + Date.now(), sender: 'AI Engineer', role: 'ASSISTANT', content: 'Started a fresh engineering session with active memory. What would you like to build?', model: selectedModel, timestamp: new Date().toLocaleTimeString() }],
     }));
     notify('Created new conversation session');
   };
@@ -382,7 +377,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           handleRemoveMultimodalAttachment={handleRemoveMultimodalAttachment}
           handleAttachCodeToChat={handleAttachCodeToChat}
           handleAttachVoiceMemo={() => setVoiceModalOpen(true)}
-          handleAttachDiagram={handleAttachDiagram}
+          handleAttachDiagram={() => setMediaModalOpen(true)}
           isRecordingVoice={isRecordingVoice}
           onSendMessage={handleSendMessage}
         />
@@ -391,6 +386,11 @@ export const ChatTab: React.FC<ChatTabProps> = ({
         open={voiceModalOpen} onClose={() => setVoiceModalOpen(false)}
         darkMode={darkMode} token={token} notify={notify}
         onTranscriptInsert={(text) => setChatInput((prev) => (prev ? `${prev} ${text}` : text))}
+      />
+      <MediaStudioModal
+        open={mediaModalOpen} onClose={() => setMediaModalOpen(false)}
+        darkMode={darkMode} token={token} notify={notify}
+        onInsertImageIntoChat={(uri, prompt) => setChatInput((prev) => (prev ? `${prev}\n![${prompt}](${uri})` : `![${prompt}](${uri})`))}
       />
     </Box>
   );
