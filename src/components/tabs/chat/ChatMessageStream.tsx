@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -38,14 +38,24 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
   onApplyArtifactToEditor,
   onSendFollowUp,
 }) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof messagesEndRef.current?.scrollIntoView === 'function') {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, chatLoading]);
+
   return (
-    <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box sx={{ flexGrow: 1, overflowY: 'auto', p: { xs: 1.5, sm: 3 } }}>
+      <Box sx={{ maxWidth: '860px', width: '100%', mx: 'auto', display: 'flex', flexDirection: 'column', gap: 2.5 }}>
       {messages.map((msg) => (
         <Box
           key={msg.id}
           sx={{
             alignSelf: msg.sender === 'You' ? 'flex-end' : 'flex-start',
-            maxWidth: '85%',
+            maxWidth: msg.sender === 'You' ? '82%' : '100%',
+            width: msg.sender === 'You' ? 'auto' : '100%',
           }}
         >
           <Box
@@ -53,36 +63,28 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
               display: 'flex',
               alignItems: 'center',
               gap: 1,
-              mb: 0.5,
+              mb: 0.6,
               justifyContent: msg.sender === 'You' ? 'flex-end' : 'flex-start',
             }}
           >
             <Typography
               variant="caption"
-              sx={{ fontWeight: 700, color: msg.sender === 'You' ? 'primary.main' : 'secondary.main' }}
+              sx={{
+                fontWeight: 700,
+                fontSize: '0.8rem',
+                color: msg.sender === 'You' ? 'primary.main' : 'secondary.main',
+              }}
             >
-              {msg.sender}
+              {msg.sender === 'You' ? 'You' : msg.sender}
             </Typography>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.72rem' }}>
               {msg.timestamp}
             </Typography>
-            {msg.provider && (
-              <Chip label={msg.provider} size="small" color="primary" sx={{ height: 18, fontSize: '0.65rem' }} />
-            )}
-            {msg.taskType && (
+            {msg.model && (
               <Chip
-                label={msg.taskType}
+                label={msg.model}
                 size="small"
-                color="info"
                 variant="outlined"
-                sx={{ height: 18, fontSize: '0.65rem' }}
-              />
-            )}
-            {msg.rankingScore && (
-              <Chip
-                label={`Rank: ${(msg.rankingScore * 100).toFixed(0)}%`}
-                size="small"
-                color="success"
                 sx={{ height: 18, fontSize: '0.65rem' }}
               />
             )}
@@ -120,28 +122,53 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
           {/* Collapsible Chain-of-Thought (CoT) */}
           {msg.thoughtProcess && (
             <Accordion
+              defaultExpanded={false}
               sx={{
                 mb: 1.5,
-                bgcolor: darkMode ? '#0f172a' : '#f8fafc',
+                bgcolor: darkMode ? 'rgba(15, 23, 42, 0.6)' : 'rgba(241, 245, 249, 0.7)',
                 border: 1,
-                borderColor: 'divider',
+                borderColor: darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+                borderRadius: '10px !important',
+                overflow: 'hidden',
                 '&:before': { display: 'none' },
+                boxShadow: 'none',
               }}
             >
-              <AccordionSummary expandIcon={<ExpandMore fontSize="small" />} sx={{ minHeight: 32, py: 0 }}>
-                <Typography
-                  variant="caption"
-                  sx={{ display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 700, color: 'secondary.main' }}
-                >
-                  <Psychology fontSize="small" sx={{ fontSize: 14 }} />
-                  Chain-of-Thought Reasoning
-                </Typography>
+              <AccordionSummary expandIcon={<ExpandMore fontSize="small" />} sx={{ minHeight: 34, py: 0.5, px: 1.5 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Psychology fontSize="small" sx={{ fontSize: 16, color: 'secondary.main' }} />
+                  <Typography
+                    variant="caption"
+                    sx={{ fontWeight: 700, color: 'text.secondary', letterSpacing: '0.02em' }}
+                  >
+                    🧠 Deliberative Chain-of-Thought Reasoning
+                  </Typography>
+                  <Chip
+                    label="Sovereign CoT"
+                    size="small"
+                    sx={{
+                      height: 18,
+                      fontSize: '0.62rem',
+                      bgcolor: darkMode ? 'rgba(147, 51, 234, 0.2)' : '#f3e8ff',
+                      color: 'secondary.main',
+                    }}
+                  />
+                </Box>
               </AccordionSummary>
-              <AccordionDetails sx={{ pt: 0, pb: 1 }}>
+              <AccordionDetails sx={{ pt: 0, pb: 1.5, px: 2 }}>
                 <Typography
                   variant="caption"
                   component="pre"
-                  sx={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', color: 'text.secondary' }}
+                  sx={{
+                    whiteSpace: 'pre-wrap',
+                    fontFamily: 'Consolas, "Fira Code", monospace',
+                    fontSize: '0.75rem',
+                    lineHeight: 1.6,
+                    color: darkMode ? '#cbd5e1' : '#475569',
+                    p: 1.5,
+                    borderRadius: 1,
+                    bgcolor: darkMode ? '#0b0f19' : '#f8fafc',
+                  }}
                 >
                   {msg.thoughtProcess}
                 </Typography>
@@ -168,15 +195,31 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
 
           {/* Message Bubble */}
           <Paper
+            elevation={0}
             sx={{
-              p: 2,
-              bgcolor: msg.sender === 'You' ? (darkMode ? '#1e3a8a' : '#e0e7ff') : (darkMode ? '#1e293b' : '#f8fafc'),
+              p: 2.2,
+              bgcolor:
+                msg.sender === 'You'
+                  ? (darkMode ? '#1e3a8a' : '#e0e7ff')
+                  : (darkMode ? '#1e293b' : '#ffffff'),
               border: 1,
-              borderColor: 'divider',
-              borderRadius: 2,
+              borderColor:
+                msg.sender === 'You'
+                  ? (darkMode ? '#2563eb' : '#bfdbfe')
+                  : (darkMode ? '#334155' : '#e2e8f0'),
+              borderRadius: msg.sender === 'You' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+              boxShadow: msg.sender === 'You' ? 'none' : (darkMode ? '0 2px 8px rgba(0,0,0,0.25)' : '0 1px 3px rgba(0,0,0,0.04)'),
             }}
           >
-            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+            <Typography
+              variant="body1"
+              sx={{
+                whiteSpace: 'pre-wrap',
+                lineHeight: 1.7,
+                fontSize: '0.93rem',
+                color: msg.sender === 'You' ? (darkMode ? '#ffffff' : '#1e3a8a') : 'text.primary',
+              }}
+            >
               {msg.content}
             </Typography>
           </Paper>
@@ -279,13 +322,15 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
       ))}
 
       {chatLoading && (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}>
-          <CircularProgress size={16} />
-          <Typography variant="caption" color="text.secondary">
-            AI Agent is reasoning across multi-turn memory & repository knowledge...
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1.5 }}>
+          <CircularProgress size={18} />
+          <Typography variant="body2" color="text.secondary">
+            AI Agent is reasoning and synthesizing next response...
           </Typography>
         </Box>
       )}
+        <div ref={messagesEndRef} />
+      </Box>
     </Box>
   );
 };

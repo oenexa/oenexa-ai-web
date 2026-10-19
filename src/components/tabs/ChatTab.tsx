@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Paper } from '@mui/material';
 import {
   ChatMessage,
@@ -70,9 +70,32 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   const [messagesByConv, setMessagesByConv] = useState<Record<string, ChatMessage[]>>({
     'conv-default': [createDefaultInitialMessage()],
   });
+  const autoStepCountRef = useRef<number>(0);
 
   const activeMessages = messagesByConv[activeConvId] || [];
   const activeConversation = conversations.find((c) => c.conversationId === activeConvId);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    if (autoChatActive && !chatLoading) {
+      if (autoStepCountRef.current >= 10) {
+        setAutoChatActive(false);
+        autoStepCountRef.current = 0;
+        notify('Auto-Chat completed 10 continuous autonomous reasoning cycles.');
+        return;
+      }
+      const lastMsg = activeMessages[activeMessages.length - 1];
+      if (!lastMsg || lastMsg.role === 'ASSISTANT') {
+        timer = setTimeout(() => {
+          autoStepCountRef.current += 1;
+          handleAutoRunStep();
+        }, 1500);
+      }
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [autoChatActive, chatLoading, activeMessages.length]);
 
   const handleCreateNewConversation = () => {
     const newId = 'conv-' + Date.now();
@@ -154,6 +177,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
     const textToSend = presetText || chatInput;
     if (!textToSend.trim() && !pendingAttachment) return;
 
+    autoStepCountRef.current = 0;
     setChatInput('');
     const userMsgId = 'user-' + Date.now();
     const userMessage: ChatMessage = {
