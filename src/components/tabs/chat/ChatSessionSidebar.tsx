@@ -65,7 +65,7 @@ export const ChatSessionSidebar: React.FC<ChatSessionSidebarProps> = ({
           Sessions
         </Typography>
         <Button size="small" startIcon={<Add />} variant="contained" onClick={onCreateNewConversation}>
-          New
+          New Chat
         </Button>
       </Box>
       <List sx={{ flexGrow: 1, overflowY: 'auto', p: 1 }}>

@@ -24,24 +24,24 @@ export interface ChatServiceResponse {
 
 export const createDefaultInitialMessage = (): ChatMessage => ({
   id: 'msg-init',
-  sender: 'AI Engineer',
+  sender: 'OENEXA AI',
   role: 'ASSISTANT',
   content:
-    'Welcome to OENEXA Intelligent AI Engineer. Powered by native deliberative routing (OENEXA Neo-GPT o3 Max, Neo-GPT Coder 32B, Neo-GPT Architect 70B, Neo-GPT Reasoning 14B), short/long-term memory in PostgreSQL, repository AST understanding, and 10 collaborative software engineer agents.',
+    "Hello! I'm OENEXA, powered by your local DeepSeek-R1 model via Ollama. I'm ready to help you write code, analyze software systems, debug issues, or answer any technical questions with 100% privacy and zero cloud dependencies.\n\nHow can I help you today?",
   thoughtProcess:
-    '1. Intelligent conversation engine initialized.\n2. Loaded Short-Term sliding window (last 50 messages) and Long-Term memory store.\n3. Vector knowledge indexing active with cosine similarity.\n4. Multi-agent delegation active across 10 specialized software roles.',
-  model: 'oenexa-neo-gpt-o3-max',
-  provider: 'OENEXA_NEO_GPT',
-  taskType: 'ARCHITECTURE',
+    '1. Connected to local Ollama inference daemon.\n2. Model: deepseek-r1:8b loaded and ready.\n3. Sovereign air-gapped execution active.',
+  model: 'deepseek-r1:8b',
+  provider: 'OLLAMA_LOCAL',
+  taskType: 'FAST_CHAT',
   confidenceScore: 0.99,
   rankingScore: 0.98,
-  intent: 'SYSTEM_READY',
-  contextSummary: 'Session initialized with repository knowledge and memory enabled.',
+  intent: 'READY',
+  contextSummary: 'Local DeepSeek-R1 session active.',
   followUps: [
-    'Analyze current editor code AST & cyclomatic complexity',
-    'Run collaborative 7-agent software engineering pipeline',
-    'Index repository for vector knowledge & symbol map',
-    'Inspect Short-Term & Long-Term AI Memory',
+    'Write a Python script to parse JSON and CSV files',
+    'Explain how to design a REST API with Spring Boot',
+    'How do I fix a Java NullPointerException?',
+    'Explain quantum computing in simple terms',
   ],
   timestamp: new Date().toLocaleTimeString(),
 });

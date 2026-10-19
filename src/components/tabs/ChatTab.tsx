@@ -62,7 +62,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
     createDefaultConversation(),
   ]);
   const [activeConvId, setActiveConvId] = useState<string>('conv-default');
-  const [selectedModel, setSelectedModel] = useState<string>('auto');
+  const [selectedModel, setSelectedModel] = useState<string>('deepseek-r1:8b');
   const [includeThinking, setIncludeThinking] = useState<boolean>(true);
   const [chatInput, setChatInput] = useState<string>('');
   const [chatLoading, setChatLoading] = useState<boolean>(false);

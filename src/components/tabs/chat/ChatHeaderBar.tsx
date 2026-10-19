@@ -68,13 +68,12 @@ export const ChatHeaderBar: React.FC<ChatHeaderBarProps> = ({
             label="Model Engine"
             onChange={(e) => setSelectedModel(e.target.value)}
           >
-            <MenuItem value="auto">⚡ Auto (OENEXA Autonomous Cognitive Routing)</MenuItem>
-            <MenuItem value="oenexa-neo-gpt-o3-max">OENEXA Neo-GPT o3 Max (Deliberative Reasoning & Planning)</MenuItem>
-            <MenuItem value="oenexa-neo-gpt-coder-32b">OENEXA Neo-GPT Coder 32B (Code Synthesis & Refactoring)</MenuItem>
-            <MenuItem value="oenexa-neo-gpt-architect-70b">OENEXA Neo-GPT Architect 70B (Deep Invariants & C4 Modeling)</MenuItem>
-            <MenuItem value="oenexa-neo-gpt-reasoning-14b">OENEXA Neo-GPT Reasoning 14B (High-Speed Tree-of-Thought)</MenuItem>
-            <MenuItem value="oenexa-security-sast-v1">OENEXA Security SAST v1 (Vulnerability & Secrets Audit)</MenuItem>
-            <MenuItem value="oenexa-expert-code-v1">OENEXA Custom Model (Specialist)</MenuItem>
+            <MenuItem value="deepseek-r1:8b">🤖 DeepSeek-R1 8B (Local Ollama • Active)</MenuItem>
+            <MenuItem value="qwen2.5-coder:7b">⚡ Qwen 2.5 Coder 7B (Local Ollama)</MenuItem>
+            <MenuItem value="auto">⚡ Auto (OENEXA Local Ollama Routing)</MenuItem>
+            <MenuItem value="oenexa-neo-gpt-o3-max">OENEXA Neo-GPT o3 Max (Deliberative)</MenuItem>
+            <MenuItem value="oenexa-neo-gpt-coder-32b">OENEXA Neo-GPT Coder 32B (Coding)</MenuItem>
+            <MenuItem value="oenexa-neo-gpt-architect-70b">OENEXA Neo-GPT Architect 70B (Architecture)</MenuItem>
           </Select>
         </FormControl>
 
