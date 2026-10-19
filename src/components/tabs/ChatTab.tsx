@@ -7,6 +7,8 @@ import {
   CodeContextAttachment,
   MultimodalAttachment,
   UserMemoryRecord,
+  ChatFolder,
+  ParsedDocument,
 } from '../../types';
 import {
   createDefaultConversation,
@@ -14,6 +16,13 @@ import {
   sendIntelligentChatMessage,
   sendAutoChatStep,
 } from '../../services/chatService';
+import {
+  fetchChatFolders,
+  createChatFolder,
+  toggleConversationPin,
+  shareConversationSession,
+  toggleMessageReaction,
+} from '../../services/conversationCoreService';
 import {
   ChatSessionSidebar,
   ChatHeaderBar,
@@ -58,15 +67,16 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   setUserMemories,
   notify,
 }) => {
-  const [conversations, setConversations] = useState<ConversationMetadata[]>([
-    createDefaultConversation(),
-  ]);
+  const [conversations, setConversations] = useState<ConversationMetadata[]>([createDefaultConversation()]);
   const [activeConvId, setActiveConvId] = useState<string>('conv-default');
   const [selectedModel, setSelectedModel] = useState<string>('deepseek-r1:8b');
   const [includeThinking, setIncludeThinking] = useState<boolean>(true);
   const [chatInput, setChatInput] = useState<string>('');
   const [chatLoading, setChatLoading] = useState<boolean>(false);
   const [autoChatActive, setAutoChatActive] = useState<boolean>(false);
+  const [folders, setFolders] = useState<ChatFolder[]>([]);
+  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
+  const [parsedDocuments, setParsedDocuments] = useState<ParsedDocument[]>([]);
   const [messagesByConv, setMessagesByConv] = useState<Record<string, ChatMessage[]>>({
     'conv-default': [createDefaultInitialMessage()],
   });
@@ -74,6 +84,12 @@ export const ChatTab: React.FC<ChatTabProps> = ({
 
   const activeMessages = messagesByConv[activeConvId] || [];
   const activeConversation = conversations.find((c) => c.conversationId === activeConvId);
+
+  useEffect(() => {
+    fetchChatFolders(token).then((res) => {
+      if (res && res.length > 0) setFolders(res);
+    });
+  }, [token]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -109,7 +125,6 @@ export const ChatTab: React.FC<ChatTabProps> = ({
       messageCount: 0,
       pinned: false,
     };
-
     setConversations((prev) => [newMeta, ...prev]);
     setActiveConvId(newId);
     setMessagesByConv((prev) => ({
@@ -119,8 +134,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           id: 'msg-' + Date.now(),
           sender: 'AI Engineer',
           role: 'ASSISTANT',
-          content:
-            'Started a fresh engineering session with active memory and repository indexing. What would you like to build or analyze?',
+          content: 'Started a fresh engineering session with active memory and repository indexing. What would you like to build or analyze?',
           model: selectedModel,
           timestamp: new Date().toLocaleTimeString(),
         },
@@ -129,11 +143,58 @@ export const ChatTab: React.FC<ChatTabProps> = ({
     notify('Created new conversation session');
   };
 
-  const handleTogglePin = (convId: string, e: React.MouseEvent) => {
+  const handleTogglePin = async (convId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    const target = conversations.find((c) => c.conversationId === convId);
+    const newPinned = !target?.pinned;
     setConversations((prev) =>
-      prev.map((c) => (c.conversationId === convId ? { ...c, pinned: !c.pinned } : c))
+      prev.map((c) => (c.conversationId === convId ? { ...c, pinned: newPinned } : c))
     );
+    await toggleConversationPin(convId, newPinned, token);
+  };
+
+  const handleCreateFolder = async (name: string, color?: string) => {
+    const created = await createChatFolder({ name, color }, token);
+    setFolders((prev) => [...prev, created]);
+    notify(`Created folder "${name}"`);
+  };
+
+  const handleShareConversation = async (convId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const { shareUrl } = await shareConversationSession(convId, token);
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+    notify(`Share link generated: ${shareUrl}`);
+  };
+
+  const handleToggleReaction = async (messageId: string, emoji: string) => {
+    const currentMsgs = messagesByConv[activeConvId] || [];
+    const msgIdx = currentMsgs.findIndex((m) => m.id === messageId);
+    if (msgIdx === -1) return;
+
+    setMessagesByConv((prev) => {
+      const convMsgs = [...(prev[activeConvId] || [])];
+      const targetMsg = { ...convMsgs[msgIdx] };
+      const currentReactions = { ...(targetMsg.reactions || {}) };
+      const isCurrent = targetMsg.userReaction === emoji;
+
+      if (isCurrent) {
+        currentReactions[emoji] = Math.max(0, (currentReactions[emoji] || 1) - 1);
+        targetMsg.userReaction = undefined;
+      } else {
+        if (targetMsg.userReaction && currentReactions[targetMsg.userReaction]) {
+          currentReactions[targetMsg.userReaction] = Math.max(0, currentReactions[targetMsg.userReaction] - 1);
+        }
+        currentReactions[emoji] = (currentReactions[emoji] || 0) + 1;
+        targetMsg.userReaction = emoji;
+      }
+      targetMsg.reactions = currentReactions;
+      convMsgs[msgIdx] = targetMsg;
+      return { ...prev, [activeConvId]: convMsgs };
+    });
+
+    await toggleMessageReaction(activeConvId, msgIdx, emoji, token);
   };
 
   const handleForkConversation = (convId: string, e: React.MouseEvent) => {
@@ -174,11 +235,19 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   };
 
   const handleSendMessage = async (presetText?: string) => {
-    const textToSend = presetText || chatInput;
-    if (!textToSend.trim() && !pendingAttachment) return;
+    let textToSend = presetText || chatInput;
+    if (!textToSend.trim() && !pendingAttachment && parsedDocuments.length === 0) return;
+
+    if (parsedDocuments.length > 0) {
+      const docContext = parsedDocuments
+        .map((d) => `[Document ${d.fileName} (${d.type})]:\n${d.extractedContent}`)
+        .join('\n\n');
+      textToSend = textToSend ? `${textToSend}\n\n---\n${docContext}` : docContext;
+    }
 
     autoStepCountRef.current = 0;
     setChatInput('');
+    setParsedDocuments([]);
     const userMsgId = 'user-' + Date.now();
     const userMessage: ChatMessage = {
       id: userMsgId,
@@ -247,7 +316,6 @@ export const ChatTab: React.FC<ChatTabProps> = ({
         ...prev,
         [activeConvId]: [...(prev[activeConvId] || []), result.assistantMessage],
       }));
-
       notify('Auto-Chat executed next real-scenario engineering step!');
     } finally {
       setChatLoading(false);
@@ -256,19 +324,22 @@ export const ChatTab: React.FC<ChatTabProps> = ({
 
   return (
     <Box sx={{ p: 2, height: 'calc(100vh - 170px)', display: 'flex', gap: 2 }}>
-      {/* 1. Conversation Sessions Sidebar */}
       <ChatSessionSidebar
         darkMode={darkMode}
         conversations={conversations}
         activeConvId={activeConvId}
+        folders={folders}
+        selectedFolderId={selectedFolderId}
+        onSelectFolder={setSelectedFolderId}
+        onCreateFolder={handleCreateFolder}
         onSelectConversation={setActiveConvId}
         onCreateNewConversation={handleCreateNewConversation}
         onTogglePin={handleTogglePin}
         onForkConversation={handleForkConversation}
         onDeleteConversation={handleDeleteConversation}
+        onShareConversation={handleShareConversation}
       />
 
-      {/* 2. Main Chat Conversation Area */}
       <Paper
         sx={{
           flexGrow: 1,
@@ -281,7 +352,6 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           borderColor: 'divider',
         }}
       >
-        {/* Model Selection & CoT Switch */}
         <ChatHeaderBar
           activeConversation={activeConversation}
           selectedModel={selectedModel}
@@ -293,7 +363,6 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           onAutoRunStep={handleAutoRunStep}
         />
 
-        {/* Streaming Messages & Code Artifacts */}
         <ChatMessageStream
           darkMode={darkMode}
           messages={activeMessages}
@@ -301,9 +370,9 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           onCopyCode={onCopyCode}
           onApplyArtifactToEditor={onApplyArtifactToEditor}
           onSendFollowUp={handleSendMessage}
+          onToggleReaction={handleToggleReaction}
         />
 
-        {/* Input Bar with Context & Attachments */}
         <ChatInputBar
           darkMode={darkMode}
           chatInput={chatInput}
@@ -311,6 +380,9 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           chatLoading={chatLoading}
           pendingAttachment={pendingAttachment}
           setPendingAttachment={setPendingAttachment}
+          parsedDocuments={parsedDocuments}
+          onRemoveParsedDocument={(id) => setParsedDocuments((prev) => prev.filter((d) => d.documentId !== id))}
+          onAddParsedDocument={(doc) => setParsedDocuments((prev) => [...prev, doc])}
           multimodalAttachments={multimodalAttachments}
           handleRemoveMultimodalAttachment={handleRemoveMultimodalAttachment}
           handleAttachCodeToChat={handleAttachCodeToChat}

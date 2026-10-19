@@ -82,7 +82,11 @@ export interface ConversationMetadata {
   createdAt: string;
   updatedAt: string;
   messageCount: number;
-  pinned: boolean;
+  pinned?: boolean;
+  folderId?: string;
+  folderName?: string;
+  isShared?: boolean;
+  shareToken?: string;
 }
 
 export interface ChatMessage {
@@ -106,6 +110,37 @@ export interface ChatMessage {
   intent?: string;
   timestamp: string;
   isStreaming?: boolean;
+  reactions?: Record<string, number>;
+  userReaction?: string;
+}
+
+export interface ChatFolder {
+  id: string;
+  name: string;
+  color: string;
+  tenantId?: string;
+  userId?: string;
+  createdAt: string;
+}
+
+export interface ParsedDocument {
+  documentId: string;
+  fileName: string;
+  type: 'PDF' | 'DOCX' | 'TXT' | 'XLSX' | 'CSV' | 'JSON' | 'XML' | 'IMAGE' | 'ZIP' | 'CODE';
+  sizeBytes: number;
+  mimeType: string;
+  extractedContent: string;
+  summary: string;
+  tokenCount: number;
+}
+
+export interface SharedConversationView {
+  shareToken: string;
+  title: string;
+  model: string;
+  createdAt: string;
+  messages: ChatMessage[];
+  viewCount: number;
 }
 
 export interface ModuleInfo {

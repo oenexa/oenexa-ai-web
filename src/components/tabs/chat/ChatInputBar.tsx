@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   Box,
   TextField,
@@ -12,8 +12,17 @@ import {
   Mic as MicIcon,
   Image as ImageIcon,
   Description as DescriptionIcon,
+  UploadFile,
+  Code as CodeIcon,
+  TableChart,
+  PictureAsPdf,
 } from '@mui/icons-material';
-import { CodeContextAttachment, MultimodalAttachment } from '../../../types';
+import {
+  CodeContextAttachment,
+  MultimodalAttachment,
+  ParsedDocument,
+} from '../../../types';
+import { parseFileAttachment } from '../../../services/conversationCoreService';
 
 export interface ChatInputBarProps {
   darkMode: boolean;
@@ -22,6 +31,9 @@ export interface ChatInputBarProps {
   chatLoading: boolean;
   pendingAttachment: CodeContextAttachment | null;
   setPendingAttachment: (att: CodeContextAttachment | null) => void;
+  parsedDocuments?: ParsedDocument[];
+  onRemoveParsedDocument?: (id: string) => void;
+  onAddParsedDocument?: (doc: ParsedDocument) => void;
   multimodalAttachments: MultimodalAttachment[];
   handleRemoveMultimodalAttachment: (id: string) => void;
   handleAttachCodeToChat: () => void;
@@ -38,6 +50,9 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
   chatLoading,
   pendingAttachment,
   setPendingAttachment,
+  parsedDocuments = [],
+  onRemoveParsedDocument,
+  onAddParsedDocument,
   multimodalAttachments,
   handleRemoveMultimodalAttachment,
   handleAttachCodeToChat,
@@ -46,9 +61,58 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
   isRecordingVoice,
   onSendMessage,
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !onAddParsedDocument) return;
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        const fullDataUrl = reader.result as string;
+        const base64 = fullDataUrl.includes(',') ? fullDataUrl.split(',')[1] : fullDataUrl;
+        const parsed = await parseFileAttachment({
+          fileName: file.name,
+          base64Content: base64,
+        });
+        onAddParsedDocument(parsed);
+      } catch (err) {
+        console.error('Failed to parse file attachment:', err);
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const getDocIcon = (type: ParsedDocument['type']) => {
+    switch (type) {
+      case 'PDF':
+        return <PictureAsPdf fontSize="small" sx={{ fontSize: 13 }} />;
+      case 'XLSX':
+      case 'CSV':
+        return <TableChart fontSize="small" sx={{ fontSize: 13 }} />;
+      case 'ZIP':
+      case 'CODE':
+        return <CodeIcon fontSize="small" sx={{ fontSize: 13 }} />;
+      default:
+        return <DescriptionIcon fontSize="small" sx={{ fontSize: 13 }} />;
+    }
+  };
+
   return (
     <Box sx={{ p: { xs: 1.5, sm: 2 }, borderTop: 1, borderColor: 'divider', bgcolor: darkMode ? '#1e293b' : '#ffffff' }}>
       <Box sx={{ maxWidth: '860px', width: '100%', mx: 'auto' }}>
+        {/* Hidden File Input for Multi-format Documents */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          accept=".pdf,.docx,.txt,.xlsx,.csv,.json,.xml,.zip,image/*"
+          onChange={handleFileInputChange}
+        />
+
+        {/* Pending Code Context Attachment */}
         {pendingAttachment && (
           <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
             <Chip
@@ -61,6 +125,24 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
           </Box>
         )}
 
+        {/* Parsed Multi-format Document Chips */}
+        {parsedDocuments.length > 0 && (
+          <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+            {parsedDocuments.map((doc) => (
+              <Chip
+                key={doc.documentId}
+                icon={getDocIcon(doc.type)}
+                label={`${doc.fileName} (${doc.type} • ~${doc.tokenCount} tokens)`}
+                onDelete={() => onRemoveParsedDocument && onRemoveParsedDocument(doc.documentId)}
+                color="secondary"
+                size="small"
+                variant="outlined"
+              />
+            ))}
+          </Box>
+        )}
+
+        {/* Multimodal Attachments */}
         {multimodalAttachments.length > 0 && (
           <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
             {multimodalAttachments.map((att) => (
@@ -84,6 +166,7 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
           </Box>
         )}
 
+        {/* Quick Engineering Prompts */}
         <Box sx={{ mb: 1.5, display: 'flex', gap: 0.8, flexWrap: 'wrap', alignItems: 'center' }}>
           <Chip
             label="⚡ Auto-Architect"
@@ -119,35 +202,49 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
           />
         </Box>
 
+        {/* Input Bar & Actions */}
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-end' }}>
           <IconButton
+            title="Upload Document or Codebase (PDF, DOCX, XLSX, CSV, JSON, XML, ZIP, Image)"
+            color={parsedDocuments.length > 0 ? 'secondary' : 'default'}
+            onClick={() => fileInputRef.current?.click()}
+            size="small"
+            sx={{ mb: 0.5 }}
+          >
+            <UploadFile />
+          </IconButton>
+
+          <IconButton
+            title="Attach current editor code"
             color={pendingAttachment ? 'primary' : 'default'}
             onClick={handleAttachCodeToChat}
-            title="Attach current editor code"
             size="small"
             sx={{ mb: 0.5 }}
           >
             <AttachFile />
           </IconButton>
+
           <IconButton
+            title="Record Developer Voice Directive"
             color={isRecordingVoice ? 'secondary' : 'default'}
             onClick={handleAttachVoiceMemo}
-            title="Record Developer Voice Directive"
             disabled={isRecordingVoice}
             size="small"
             sx={{ mb: 0.5 }}
           >
             <MicIcon />
           </IconButton>
+
           <IconButton
+            title="Attach Architecture Diagram"
             color="default"
             onClick={handleAttachDiagram}
-            title="Attach Architecture Diagram"
             size="small"
             sx={{ mb: 0.5 }}
           >
             <ImageIcon />
           </IconButton>
+
           <TextField
             fullWidth
             multiline
@@ -159,7 +256,7 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                if (chatInput.trim() || pendingAttachment) {
+                if (chatInput.trim() || pendingAttachment || parsedDocuments.length > 0) {
                   onSendMessage();
                 }
               }
@@ -170,11 +267,12 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
               },
             }}
           />
+
           <Button
             variant="contained"
             endIcon={<Send />}
             onClick={() => onSendMessage()}
-            disabled={chatLoading || (!chatInput.trim() && !pendingAttachment)}
+            disabled={chatLoading || (!chatInput.trim() && !pendingAttachment && parsedDocuments.length === 0)}
             sx={{ minWidth: 90, height: 40, mb: 0.3 }}
           >
             Send

@@ -9,3 +9,5 @@ export * from './modulesService';
 export * from './prdService';
 export * from './oenexaCognitiveService';
 export * from './openAiNativeService';
+export * from './authService';
+export * from './conversationCoreService';
