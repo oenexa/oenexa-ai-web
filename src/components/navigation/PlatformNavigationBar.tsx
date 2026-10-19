@@ -14,6 +14,7 @@ import {
   Lock,
   ExitToApp,
   AccountCircle,
+  CreditCard,
 } from '@mui/icons-material';
 
 export interface PlatformNavigationBarProps {
@@ -23,6 +24,7 @@ export interface PlatformNavigationBarProps {
   username: string;
   onOpenAuthDialog: () => void;
   onLogout: () => void;
+  onOpenBilling?: () => void;
   activeModel?: string;
 }
 
@@ -33,6 +35,7 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
   username,
   onOpenAuthDialog,
   onLogout,
+  onOpenBilling,
   activeModel = 'deepseek-r1:8b',
 }) => {
   return (
@@ -84,6 +87,19 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
               sx={{ borderColor: 'rgba(255,255,255,0.4)' }}
             >
               Sign In
+            </Button>
+          )}
+
+          {onOpenBilling && (
+            <Button
+              color="inherit"
+              startIcon={<CreditCard />}
+              onClick={onOpenBilling}
+              size="small"
+              variant="outlined"
+              sx={{ borderColor: 'rgba(255,255,255,0.4)' }}
+            >
+              Plans & Quotas
             </Button>
           )}
 

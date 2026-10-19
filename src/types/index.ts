@@ -11,3 +11,4 @@ export * from './agentEcosystem';
 export * from './knowledge';
 export * from './voice';
 export * from './mediaAi';
+export * from './billing';

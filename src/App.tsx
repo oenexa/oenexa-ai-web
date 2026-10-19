@@ -7,6 +7,7 @@ import {
 import { PlatformNavigationBar } from './components/navigation';
 import { ChatTab } from './components/tabs/ChatTab';
 import { AuthDialog } from './components/auth';
+import { SubscriptionBillingModal } from './components/billing/SubscriptionBillingModal';
 import {
   CodeContextAttachment,
   CodeArtifact,
@@ -20,6 +21,7 @@ const App: React.FC = () => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('oenexa_token'));
   const [username, setUsername] = useState<string>(localStorage.getItem('oenexa_user') || 'engineer');
   const [authDialogOpen, setAuthDialogOpen] = useState<boolean>(false);
+  const [billingModalOpen, setBillingModalOpen] = useState<boolean>(false);
   const [pendingAttachment, setPendingAttachment] = useState<CodeContextAttachment | null>(null);
   const [multimodalAttachments, setMultimodalAttachments] = useState<MultimodalAttachment[]>([]);
   const [isRecordingVoice, setIsRecordingVoice] = useState<boolean>(false);
@@ -90,6 +92,7 @@ const App: React.FC = () => {
         token={token}
         username={username}
         onOpenAuthDialog={() => setAuthDialogOpen(true)}
+        onOpenBilling={() => setBillingModalOpen(true)}
         onLogout={handleLogout}
         activeModel="deepseek-r1:8b"
       />
@@ -124,6 +127,14 @@ const App: React.FC = () => {
           localStorage.setItem('oenexa_user', user);
           notify(`Welcome back, ${user}!`);
         }}
+        notify={notify}
+      />
+
+      <SubscriptionBillingModal
+        open={billingModalOpen}
+        onClose={() => setBillingModalOpen(false)}
+        darkMode={darkMode}
+        token={token}
         notify={notify}
       />
 
