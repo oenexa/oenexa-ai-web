@@ -6,15 +6,18 @@ export interface CodeContextAttachment {
   startLine?: number;
   endLine?: number;
   content: string;
+  codeSnippet?: string;
   branch?: string;
 }
 
 export interface CodeArtifact {
   id: string;
-  title: string;
+  title?: string;
+  name?: string;
   filePath: string;
   language: string;
-  code: string;
+  code?: string;
+  content?: string;
   action: 'CREATE' | 'PATCH';
 }
 
@@ -91,7 +94,7 @@ export interface ConversationMetadata {
 
 export interface ChatMessage {
   id: string;
-  sender: 'You' | 'AI Engineer';
+  sender: 'You' | 'AI Engineer' | 'OENEXA AI' | 'AI Engineer (Auto-Pilot)';
   role: 'USER' | 'ASSISTANT' | 'TOOL';
   content: string;
   thoughtProcess?: string;

@@ -285,5 +285,7 @@ function getSampleToolOutput(agentType: EnterpriseAgentType, goal: string): stri
       return `Generated release note: OENEXA v2.0 Enterprise Platform Released for ${goal}.`;
     case 'CUSTOMER_SUPPORT':
       return `Troubleshooting guide prepared with runbook for 99.99% availability.`;
+    default:
+      return `Executed autonomous task for ${agentType} on goal: ${goal}.`;
   }
 }

@@ -25,6 +25,7 @@ import {
   Psychology,
   SyncAlt,
   VerifiedUser,
+  Memory,
 } from '@mui/icons-material';
 import {
   AgentProfile,

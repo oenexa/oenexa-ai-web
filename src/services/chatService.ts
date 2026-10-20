@@ -302,7 +302,7 @@ export const sendAutoChatStep = async (
     conversationId,
     preferredModel,
     includeThinking,
-    attachment: contextCode ? { filePath: 'src/main/java/Solution.java', codeSnippet: contextCode } : null,
+    attachment: contextCode ? { filePath: 'src/main/java/Solution.java', content: contextCode, codeSnippet: contextCode } : null,
   });
 
   const assistantMsg: ChatMessage = {

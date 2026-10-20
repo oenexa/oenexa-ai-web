@@ -49,6 +49,7 @@ const App: React.FC = () => {
       filePath: 'src/main/java/Solution.java',
       startLine: 1,
       endLine: 25,
+      content: '// Attached Code Context for OENEXA Simple Chat',
       codeSnippet: '// Attached Code Context for OENEXA Simple Chat',
     });
     notify('Code attached to Chat context');

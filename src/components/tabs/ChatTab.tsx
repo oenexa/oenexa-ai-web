@@ -98,7 +98,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   }, [token]);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout | null = null;
+    let timer: ReturnType<typeof setTimeout> | null = null;
     if (autoChatActive && !chatLoading) {
       if (autoStepCountRef.current >= 10) {
         setAutoChatActive(false);
@@ -316,7 +316,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
     try {
       const result = await sendAutoChatStep({
         conversationId: activeConvId,
-        contextCode: pendingAttachment ? pendingAttachment.codeSnippet : null,
+        contextCode: pendingAttachment ? (pendingAttachment.codeSnippet || pendingAttachment.content) : null,
         goal: activeConversation?.title,
         preferredModel: selectedModel,
         includeThinking,

@@ -322,7 +322,7 @@ graph TD
   } else {
     // Dynamic Contextual Technical Response for Any Request
     const title = attachment ? attachment.filePath.split('/').pop() || 'Solution.java' : 'Solution.java';
-    const code = attachment?.codeSnippet || `package com.oenexa.workspace;
+    const code = attachment?.codeSnippet || attachment?.content || `package com.oenexa.workspace;
 
 import java.util.Objects;
 import java.util.UUID;

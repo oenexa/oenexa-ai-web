@@ -270,12 +270,12 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, flexWrap: 'wrap', gap: 1 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <CodeIcon fontSize="small" color="primary" />
-                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>{art.title}</Typography>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>{art.title || art.name || 'Artifact'}</Typography>
                           <Chip label={art.action} size="small" color={art.action === 'CREATE' ? 'success' : 'warning'} sx={{ height: 18, fontSize: '0.65rem' }} />
                           <Chip label={art.language} size="small" variant="outlined" sx={{ height: 18, fontSize: '0.65rem' }} />
                         </Box>
                         <Box sx={{ display: 'flex', gap: 0.5 }}>
-                          <Button size="small" startIcon={<ContentCopy />} onClick={() => onCopyCode(art.code)}>
+                          <Button size="small" startIcon={<ContentCopy />} onClick={() => onCopyCode(art.code || art.content || '')}>
                             Copy
                           </Button>
                           <Button size="small" variant="contained" startIcon={<FolderOpen />} onClick={() => onApplyArtifactToEditor(art)}>
@@ -298,7 +298,7 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
                           fontSize: '0.78rem',
                         }}
                       >
-                        {art.code}
+                        {art.code || art.content || ''}
                       </Typography>
                     </Paper>
                   ))}
