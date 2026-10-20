@@ -21,10 +21,14 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': path.resolve(__dirname, 'src'),
       },
+      preserveSymlinks: true,
     },
     server: {
       port: 3000,
       host: '0.0.0.0',
+      fs: {
+        allow: ['..'],
+      },
       proxy: {
         '/api': {
           target: backendTarget,
