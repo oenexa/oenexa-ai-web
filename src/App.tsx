@@ -82,8 +82,8 @@ const App: React.FC = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        bgcolor: darkMode ? '#0f172a' : '#f8fafc',
-        color: darkMode ? '#f1f5f9' : '#0f172a',
+        bgcolor: darkMode ? '#09090b' : '#fafafa',
+        color: darkMode ? '#f4f4f5' : '#09090b',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -100,7 +100,7 @@ const App: React.FC = () => {
         activeModel="deepseek-r1:8b"
       />
 
-      <Box sx={{ flex: 1, p: 2, display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <ChatTab
           darkMode={darkMode}
           token={token}

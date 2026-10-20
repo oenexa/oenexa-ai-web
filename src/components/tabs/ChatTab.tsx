@@ -122,15 +122,27 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   const handleCreateNewConversation = () => {
     const newId = 'conv-' + Date.now();
     const newMeta: ConversationMetadata = {
-      conversationId: newId, tenantId: 'default-tenant', title: 'New AI Engineering Session',
-      model: selectedModel, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
-      messageCount: 0, pinned: false,
+      conversationId: newId,
+      tenantId: 'default-tenant',
+      title: 'New AI Engineering Session',
+      model: selectedModel,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      messageCount: 0,
+      pinned: false,
     };
     setConversations((prev) => [newMeta, ...prev]);
     setActiveConvId(newId);
     setMessagesByConv((prev) => ({
       ...prev,
-      [newId]: [{ id: 'msg-' + Date.now(), sender: 'AI Engineer', role: 'ASSISTANT', content: 'Started a fresh engineering session with active memory. What would you like to build?', model: selectedModel, timestamp: new Date().toLocaleTimeString() }],
+      [newId]: [{
+        id: 'msg-' + Date.now(),
+        sender: 'AI Engineer',
+        role: 'ASSISTANT',
+        content: 'Started a fresh engineering session with active memory. What would you like to build?',
+        model: selectedModel,
+        timestamp: new Date().toLocaleTimeString(),
+      }],
     }));
     notify('Created new conversation session');
   };
@@ -246,6 +258,17 @@ export const ChatTab: React.FC<ChatTabProps> = ({
       timestamp: new Date().toLocaleTimeString(),
     };
 
+    // Auto-update conversation title if it's the initial session title
+    setConversations((prev) =>
+      prev.map((c) => {
+        if (c.conversationId === activeConvId && (c.title === 'New AI Engineering Session' || c.messageCount === 0)) {
+          const generatedTitle = textToSend.length > 36 ? textToSend.substring(0, 36) + '...' : textToSend;
+          return { ...c, title: generatedTitle, messageCount: c.messageCount + 1 };
+        }
+        return c;
+      })
+    );
+
     setMessagesByConv((prev) => ({
       ...prev,
       [activeConvId]: [...(prev[activeConvId] || []), userMessage],
@@ -293,7 +316,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
     try {
       const result = await sendAutoChatStep({
         conversationId: activeConvId,
-        contextCode: pendingAttachment ? pendingAttachment.content : null,
+        contextCode: pendingAttachment ? pendingAttachment.codeSnippet : null,
         goal: activeConversation?.title,
         preferredModel: selectedModel,
         includeThinking,
@@ -311,7 +334,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   };
 
   return (
-    <Box sx={{ p: 2, height: 'calc(100vh - 170px)', display: 'flex', gap: 2 }}>
+    <Box sx={{ p: { xs: 1, md: 1.5 }, height: 'calc(100vh - 80px)', display: 'flex', gap: { xs: 1, md: 2 } }}>
       <ChatSessionSidebar
         darkMode={darkMode}
         conversations={conversations}
@@ -329,15 +352,17 @@ export const ChatTab: React.FC<ChatTabProps> = ({
       />
 
       <Paper
+        elevation={0}
         sx={{
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          bgcolor: darkMode ? '#1e293b' : '#ffffff',
-          borderRadius: 2,
+          bgcolor: darkMode ? '#18181b' : '#ffffff',
+          borderRadius: 3,
           overflow: 'hidden',
           border: 1,
-          borderColor: 'divider',
+          borderColor: darkMode ? '#27272a' : '#e4e4e7',
+          boxShadow: darkMode ? '0 4px 20px rgba(0,0,0,0.3)' : '0 1px 6px rgba(0,0,0,0.05)',
         }}
       >
         <ChatHeaderBar
@@ -382,14 +407,22 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           onSendMessage={handleSendMessage}
         />
       </Paper>
+
       <VoiceAssistantModal
-        open={voiceModalOpen} onClose={() => setVoiceModalOpen(false)}
-        darkMode={darkMode} token={token} notify={notify}
+        open={voiceModalOpen}
+        onClose={() => setVoiceModalOpen(false)}
+        darkMode={darkMode}
+        token={token}
+        notify={notify}
         onTranscriptInsert={(text) => setChatInput((prev) => (prev ? `${prev} ${text}` : text))}
       />
+
       <MediaStudioModal
-        open={mediaModalOpen} onClose={() => setMediaModalOpen(false)}
-        darkMode={darkMode} token={token} notify={notify}
+        open={mediaModalOpen}
+        onClose={() => setMediaModalOpen(false)}
+        darkMode={darkMode}
+        token={token}
+        notify={notify}
         onInsertImageIntoChat={(uri, prompt) => setChatInput((prev) => (prev ? `${prev}\n![${prompt}](${uri})` : `![${prompt}](${uri})`))}
       />
     </Box>

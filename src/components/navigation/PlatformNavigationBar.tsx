@@ -42,8 +42,17 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
   activeModel = 'deepseek-r1:8b',
 }) => {
   return (
-    <AppBar position="static" color="primary" enableColorOnDark elevation={2}>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    <AppBar
+      position="static"
+      elevation={0}
+      sx={{
+        bgcolor: darkMode ? '#18181b' : '#ffffff',
+        color: darkMode ? '#f4f4f5' : '#18181b',
+        borderBottom: 1,
+        borderColor: darkMode ? '#27272a' : '#e4e4e7',
+      }}
+    >
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', minHeight: '56px !important', px: { xs: 1.5, sm: 2 } }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <Typography
             variant="h6"
@@ -54,6 +63,8 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
               display: 'flex',
               alignItems: 'center',
               gap: 1,
+              fontSize: '1.05rem',
+              color: darkMode ? '#f4f4f5' : '#09090b',
             }}
           >
             ⚡ OENEXA Chat
@@ -62,17 +73,20 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
             label={`🟢 ${activeModel} • Local Ollama`}
             size="small"
             sx={{
-              bgcolor: 'rgba(255,255,255,0.18)',
-              color: '#fff',
+              bgcolor: darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+              color: 'inherit',
               fontWeight: 600,
+              fontSize: '0.72rem',
+              border: 1,
+              borderColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
             }}
           />
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
           {token ? (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <AccountCircle fontSize="small" />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
+              <AccountCircle fontSize="small" sx={{ color: 'text.secondary' }} />
               <Typography variant="body2" sx={{ fontWeight: 600 }}>
                 {username}
               </Typography>
@@ -87,7 +101,11 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
               onClick={onOpenAuthDialog}
               size="small"
               variant="outlined"
-              sx={{ borderColor: 'rgba(255,255,255,0.4)' }}
+              sx={{
+                textTransform: 'none',
+                borderColor: darkMode ? '#3f3f46' : '#d4d4d8',
+                borderRadius: 1.5,
+              }}
             >
               Sign In
             </Button>
@@ -100,7 +118,12 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
               onClick={onOpenBilling}
               size="small"
               variant="outlined"
-              sx={{ borderColor: 'rgba(255,255,255,0.4)' }}
+              sx={{
+                textTransform: 'none',
+                borderColor: darkMode ? '#3f3f46' : '#d4d4d8',
+                borderRadius: 1.5,
+                display: { xs: 'none', sm: 'inline-flex' },
+              }}
             >
               Plans & Quotas
             </Button>
@@ -113,7 +136,12 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
               onClick={onOpenTelemetry}
               size="small"
               variant="outlined"
-              sx={{ borderColor: 'rgba(255,255,255,0.4)' }}
+              sx={{
+                textTransform: 'none',
+                borderColor: darkMode ? '#3f3f46' : '#d4d4d8',
+                borderRadius: 1.5,
+                display: { xs: 'none', md: 'inline-flex' },
+              }}
             >
               7-Layer Memory & MCP
             </Button>
@@ -124,8 +152,9 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
             onClick={toggleDarkMode}
             aria-label="toggle dark mode"
             size="small"
+            sx={{ p: 0.8 }}
           >
-            {darkMode ? <Brightness7 /> : <Brightness4 />}
+            {darkMode ? <Brightness7 fontSize="small" /> : <Brightness4 fontSize="small" />}
           </IconButton>
         </Box>
       </Toolbar>
