@@ -24,9 +24,12 @@ import MemoryIcon from '@mui/icons-material/Memory';
 import StorageIcon from '@mui/icons-material/Storage';
 import BuildIcon from '@mui/icons-material/Build';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PsychologyIcon from '@mui/icons-material/Psychology';
 import {
-  MemoryHierarchyStats,
-  getMemoryHierarchyStats,
+  MemoryEngineV2Stats,
+  DataMovementTrace,
+  getMemoryEngineV2Stats,
+  queryMemoryEngineV2,
 } from '../../services/memoryHierarchyService';
 import {
   McpToolDefinition,
@@ -49,34 +52,45 @@ export const MemoryMcpTelemetryModal: React.FC<MemoryMcpTelemetryModalProps> = (
   token,
   notify,
 }) => {
-  const [stats, setStats] = useState<MemoryHierarchyStats | null>(null);
+  const [stats, setStats] = useState<MemoryEngineV2Stats | null>(null);
   const [tools, setTools] = useState<McpToolDefinition[]>([]);
   const [executingTool, setExecutingTool] = useState<string | null>(null);
+  const [simulationTrace, setSimulationTrace] = useState<DataMovementTrace | null>(null);
+  const [simulating, setSimulating] = useState(false);
 
   useEffect(() => {
     if (open) {
-      getMemoryHierarchyStats(token).then(setStats);
+      getMemoryEngineV2Stats(token).then(setStats);
       listMcpTools(token).then(setTools);
     }
   }, [open, token]);
 
   const handleTestTool = async (toolName: string) => {
     setExecutingTool(toolName);
-    const result = await executeMcpTool(toolName, { testScenario: 'V4 Verification' }, token);
+    const result = await executeMcpTool(toolName, { testScenario: 'V2/V4 Verification' }, token);
     setExecutingTool(null);
     if (notify) {
       notify(result.content[0]?.text || `Executed ${toolName}`);
     }
   };
 
-  const TIERS = [
-    { tier: 'L1', name: 'CPU L1/L2/L3', latency: '< 1ns', desc: 'Registers & Hardware Primitives', color: '#38bdf8' },
-    { tier: 'L2', name: 'JVM Heap RAM', latency: '< 50ns', desc: 'Active Session Working Memory', color: '#4ade80' },
-    { tier: 'L3', name: 'Redis Cache', latency: '< 1ms', desc: 'Distributed Session Tokens', color: '#facc15' },
-    { tier: 'L4', name: 'NVMe SSD MMAP', latency: '< 20μs', desc: 'Large Repository Context (MemorySegment)', color: '#fb923c' },
-    { tier: 'L5', name: 'PostgreSQL 17', latency: '< 5ms', desc: 'Partitioned Durable RDBMS', color: '#a78bfa' },
-    { tier: 'L6', name: 'pgvector HNSW', latency: '< 15ms', desc: '1536-dim Semantic Embeddings', color: '#f472b6' },
-    { tier: 'L7', name: 'MinIO / S3', latency: '< 50ms', desc: 'Cold Archive Blob Storage', color: '#94a3b8' },
+  const handleRunSimulation = async () => {
+    setSimulating(true);
+    const trace = await queryMemoryEngineV2('default-ws', 'UserService.java', token);
+    setSimulationTrace(trace);
+    setSimulating(false);
+    if (notify) {
+      notify(`6-Step Data Movement simulated: Resolved in ${trace.resolvedTier} (${(trace.totalDurationNanos / 1000).toFixed(1)}μs)`);
+    }
+  };
+
+  const BRAIN_TIERS = [
+    { tier: 'L1', name: 'Current Thought', tech: 'Registers/Tensors', latency: '< 1ns', color: '#38bdf8' },
+    { tier: 'L2', name: 'Active Thought', tech: 'Ultra-Hot Ring Buffer', latency: '< 50ns', color: '#4ade80' },
+    { tier: 'RAM', name: 'Working Memory', tech: 'JVM 64GB Heap', latency: '< 100ns', color: '#a3e635' },
+    { tier: 'COMP', name: 'Short-Term Memory', tech: 'ZSTD Extended Pool', latency: '< 5μs', color: '#facc15' },
+    { tier: 'SSD', name: 'Long-Term Memory', tech: 'NVMe Gen5 Zero-Copy Mmap', latency: '< 25μs', color: '#fb923c' },
+    { tier: 'KNOW', name: 'Permanent Knowledge', tech: 'PostgreSQL/Qdrant/MinIO', latency: '1-15ms', color: '#a78bfa' },
   ];
 
   return (
@@ -92,9 +106,9 @@ export const MemoryMcpTelemetryModal: React.FC<MemoryMcpTelemetryModalProps> = (
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <MemoryIcon color="primary" />
+          <PsychologyIcon sx={{ color: '#38bdf8' }} />
           <Typography variant="h6" fontWeight="bold">
-            OENEXA V4: 7-Layer Memory & MCP Inspector
+            OENEXA Memory Engine V2: SSD-First AI Memory & MCP
           </Typography>
         </Box>
         <IconButton onClick={onClose} size="small" sx={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
@@ -103,53 +117,53 @@ export const MemoryMcpTelemetryModal: React.FC<MemoryMcpTelemetryModalProps> = (
       </DialogTitle>
 
       <DialogContent sx={{ bgcolor: darkMode ? '#020617' : '#ffffff', color: darkMode ? '#e2e8f0' : '#1e293b', py: 3 }}>
-        {/* Memory Gauges */}
+        {/* Effective Memory & Gauges */}
         <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <StorageIcon fontSize="small" color="secondary" /> 7-Layer Memory Hierarchy & NVMe SSD Context Cache
+          <StorageIcon fontSize="small" color="secondary" /> 6-Layer Brain Analogy Hierarchy (64GB RAM + 4TB SSD = 740GB AI Memory)
         </Typography>
 
         <Grid container spacing={2} sx={{ mb: 3 }}>
           <Grid item xs={12} sm={4}>
             <Card variant="outlined" sx={{ bgcolor: darkMode ? '#0f172a' : '#f8fafc' }}>
               <CardContent sx={{ py: 1.5 }}>
-                <Typography variant="caption" color="text.secondary">Cache Hit Ratio</Typography>
-                <Typography variant="h5" fontWeight="bold" sx={{ color: '#4ade80' }}>
-                  {stats ? `${stats.cacheHitRatio}%` : '98.4%'}
-                </Typography>
-                <LinearProgress variant="determinate" value={stats ? stats.cacheHitRatio : 98.4} color="success" sx={{ mt: 1 }} />
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Card variant="outlined" sx={{ bgcolor: darkMode ? '#0f172a' : '#f8fafc' }}>
-              <CardContent sx={{ py: 1.5 }}>
-                <Typography variant="caption" color="text.secondary">NVMe L4 MMAP Buffer</Typography>
-                <Typography variant="h5" fontWeight="bold" sx={{ color: '#fb923c' }}>
-                  {stats ? `${(stats.nvmeMmapSizeBytes / 1073741824).toFixed(1)} GB` : '4.0 GB'}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">Supports Datasets &gt; Physical RAM</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Card variant="outlined" sx={{ bgcolor: darkMode ? '#0f172a' : '#f8fafc' }}>
-              <CardContent sx={{ py: 1.5 }}>
-                <Typography variant="caption" color="text.secondary">Total Indexed Memory</Typography>
+                <Typography variant="caption" color="text.secondary">Effective AI Working Memory</Typography>
                 <Typography variant="h5" fontWeight="bold" sx={{ color: '#38bdf8' }}>
-                  {stats ? stats.totalEntries.toLocaleString() : '1,842'} Records
+                  {stats ? `${(stats.totalEffectiveMemoryBytes / 1073741824).toFixed(0)} GB` : '740 GB'}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">Across All 7 Tiers</Typography>
+                <Typography variant="caption" sx={{ color: '#4ade80' }}>Physical RAM: 64 GB (+11.5x Multiplier)</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Card variant="outlined" sx={{ bgcolor: darkMode ? '#0f172a' : '#f8fafc' }}>
+              <CardContent sx={{ py: 1.5 }}>
+                <Typography variant="caption" color="text.secondary">Context Compression Ratio</Typography>
+                <Typography variant="h5" fontWeight="bold" sx={{ color: '#4ade80' }}>
+                  {stats ? `${stats.compressionRatio}%` : '76.4%'}
+                </Typography>
+                <LinearProgress variant="determinate" value={stats ? stats.compressionRatio : 76.4} color="success" sx={{ mt: 1 }} />
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Card variant="outlined" sx={{ bgcolor: darkMode ? '#0f172a' : '#f8fafc' }}>
+              <CardContent sx={{ py: 1.5 }}>
+                <Typography variant="caption" color="text.secondary">Predictive Prefetch Hits</Typography>
+                <Typography variant="h5" fontWeight="bold" sx={{ color: '#fb923c' }}>
+                  {stats ? stats.prefetchHits : '812'}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">Virtual Thread Async Fetching</Typography>
               </CardContent>
             </Card>
           </Grid>
         </Grid>
 
-        {/* 7-Tier Topology */}
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
-          {TIERS.map((t) => (
+        {/* 6-Layer Cognitive Topology */}
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2.5 }}>
+          {BRAIN_TIERS.map((t) => (
             <Chip
               key={t.tier}
-              label={`${t.tier}: ${t.name} (${t.latency})`}
+              label={`${t.tier}: ${t.name} • ${t.tech} (${t.latency})`}
               sx={{
                 bgcolor: darkMode ? '#0f172a' : '#f1f5f9',
                 color: t.color,
@@ -159,6 +173,46 @@ export const MemoryMcpTelemetryModal: React.FC<MemoryMcpTelemetryModalProps> = (
               size="small"
             />
           ))}
+        </Box>
+
+        {/* 6-Step Data Movement Simulator */}
+        <Box sx={{ mb: 3, p: 2, borderRadius: 1.5, border: darkMode ? '1px solid #1e293b' : '1px solid #e2e8f0', bgcolor: darkMode ? '#090d16' : '#f8fafc' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+            <Typography variant="subtitle2" fontWeight="bold" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <MemoryIcon fontSize="small" sx={{ color: '#38bdf8' }} /> 6-Step Deterministic Data Movement Algorithm
+            </Typography>
+            <Button
+              size="small"
+              variant="contained"
+              disabled={simulating}
+              onClick={handleRunSimulation}
+              sx={{ textTransform: 'none', py: 0.3 }}
+            >
+              {simulating ? 'Simulating...' : 'Simulate Data Movement'}
+            </Button>
+          </Box>
+          {simulationTrace && (
+            <Box sx={{ fontSize: '0.82rem', fontFamily: 'monospace' }}>
+              <Typography variant="caption" color="primary" fontWeight="bold">
+                Query: {simulationTrace.queryKey} | Resolved: {simulationTrace.resolvedTier} | Duration: {(simulationTrace.totalDurationNanos / 1000).toFixed(1)}μs
+              </Typography>
+              <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                {simulationTrace.steps.map((s) => (
+                  <Box key={s.stepNumber} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Chip
+                      size="small"
+                      label={`Step ${s.stepNumber}`}
+                      color={s.status === 'FOUND' ? 'success' : 'default'}
+                      sx={{ height: 20, fontSize: '0.7rem' }}
+                    />
+                    <Typography variant="caption" sx={{ color: s.status === 'FOUND' ? '#4ade80' : '#94a3b8' }}>
+                      {s.stepName}: {s.details} ({(s.latencyNanos / 1000).toFixed(1)}μs)
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          )}
         </Box>
 
         {/* MCP v1.0 Tools */}
