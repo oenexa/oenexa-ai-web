@@ -1,6 +1,6 @@
 # OENEXA AI Engineer UI – Development Process, Prompts & Operating Manual
 
-> **Scope:** Frontend Development Process, UI AI Agent Prompts, Component Architecture, and Quality Standards for `oenexa-ai-engineer-frontend`.  
+> **Scope:** Frontend Development Process, UI AI Agent Prompts, Component Architecture, and Quality Standards for `oenexa-ai-web`.  
 > **Target Runtime:** React 18 | Vite 5 | TypeScript | Tailwind CSS | Material-UI 5 | Monaco Editor  
 
 ---

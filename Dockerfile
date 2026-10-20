@@ -1,7 +1,8 @@
 # ==============================================================================
-# OENEXA AI Engineer Frontend - Multi-Stage Container Image
+# OENEXA AI Web - Multi-Stage Container Image
 # Stage 1: Build React/Vite UI with Node 22 LTS
 # Stage 2: Serve static bundle via Nginx with reverse proxy to backend
+# Repository: github.com/oenexa/oenexa-ai-web
 # ==============================================================================
 
 # ---------- Stage 1: Build Frontend Assets ----------

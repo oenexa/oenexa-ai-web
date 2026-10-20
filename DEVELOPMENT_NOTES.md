@@ -1,7 +1,7 @@
 # OENEXA AI Engineer UI - Development Notes & Architecture Log
 
-> **Component Role:** `[AI-FE] 💻` (Frontend UI)  
-> **Paired Backend Service:** `[AI-BE] ⚡` [`oenexa-ai-engineer-backend`](../oenexa-ai-engineer-backend) (`http://localhost:8080/api`)  
+> **Component Role:** `[AI-WEB] 💻` (Frontend UI)  
+> **Paired Backend Service:** `[AI-CORE] ⚡` [`oenexa-ai-core`](../oenexa-ai-core) (`http://localhost:8080/api`)  
 > **Frontend Stack:** React 18, Vite 5, TypeScript, Tailwind CSS, Material-UI 5, Monaco Editor  
 > **Backend Stack:** Java 25+, Spring Boot 4.1.1, Spring MVC REST  
 > **Master Ecosystem Directory:** [`AI_AGENT_DEVELOPER_REPO_MAPPING.md`](../AI_AGENT_DEVELOPER_REPO_MAPPING.md)  
@@ -12,7 +12,7 @@
 
 ### 1.1 Directory Structure
 ```
-oenexa-ai-engineer-frontend/
+oenexa-ai-web/
 ├── src/
 │   ├── App.tsx          # Main layout: AppBar, dark mode toggle, backend health monitor, Monaco Editor
 │   ├── main.tsx         # React root initialization
