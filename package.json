@@ -1,7 +1,8 @@
 {
-  "name": "oenexa-ui",
+  "name": "oenexa-ai-engineer-frontend",
   "version": "0.1.0",
   "private": true,
+  "description": "OENEXA AI Engineer Platform Frontend — World-Class AI Operating System UI",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

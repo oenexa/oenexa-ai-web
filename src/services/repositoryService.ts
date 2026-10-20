@@ -4,13 +4,13 @@ export const createDefaultKnowledgeMap = (repositoryId: string): RepositoryKnowl
   repositoryId,
   primaryStack: 'SPRING_BOOT',
   detectedTechnologies: ['SPRING_BOOT', 'JAVA', 'REACT', 'GRADLE', 'DOCKER', 'POSTGRESQL'],
-  modules: ['domain', 'application', 'infrastructure', 'api', 'oenexa-chat', 'oenexa-core', 'oenexa-rag'],
+  modules: ['domain', 'application', 'infrastructure', 'api'],
   fileTree: [
     'domain/src/main/java/com/oenexa/domain/ChatDomain.java',
     'application/src/main/java/com/oenexa/application/IntelligentConversationService.java',
     'infrastructure/src/main/java/com/oenexa/infrastructure/persistence/entity/ChatMessageEntity.java',
     'api/src/main/java/com/oenexa/api/IntelligentChatController.java',
-    'oenexa-ui/src/App.tsx',
+    'oenexa-ai-engineer-frontend/src/App.tsx',
     'docker-compose.yml',
   ],
   symbolIndex: {
