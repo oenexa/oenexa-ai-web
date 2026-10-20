@@ -1,7 +1,7 @@
-# OENEXA AI Engineer — Frontend Platform
+# OENEXA AI Web — Frontend Platform
 
-> **Component:** `[AI-FE] 💻` OENEXA AI Engineer Frontend  
-> **Repository:** `oenexa-ai-engineer-frontend`  
+> **Component:** `[AI-WEB] 💻` OENEXA AI Web Frontend  
+> **Repository:** `oenexa-ai-web`  
 > **Framework:** React 18 & Vite 5 | TypeScript | Tailwind CSS | Monaco Editor  
 > **Architecture:** Decoupled Autonomous AI Operating System UI  
 
@@ -9,7 +9,7 @@
 
 ## 🚀 Overview
 
-The **OENEXA AI Engineer Frontend** is a modern, responsive web application for the OENEXA AI Operating System. It provides real-time collaboration with the 10-Agent Autonomous Ecosystem, 7-layer memory hierarchy telemetry, Model Context Protocol (MCP v1.0) inspection, Monaco code editing, audio transcription, SVG diagram generation, and subscription quota monitoring.
+The **OENEXA AI Web Frontend** is a modern, responsive web application for the OENEXA AI Operating System. It provides real-time collaboration with the 10-Agent Autonomous Ecosystem, 7-layer memory hierarchy telemetry, Model Context Protocol (MCP v1.0) inspection, Monaco code editing, audio transcription, SVG diagram generation, and subscription quota monitoring.
 
 ## 🛠️ Technology Stack
 
@@ -21,14 +21,14 @@ The **OENEXA AI Engineer Frontend** is a modern, responsive web application for 
 - **Protocol & Memory:** MCP v1.0 Client Tools & 7-Layer Memory Hierarchy Telemetry Modal
 - **Multimodal:** Real-time microphone audio transcription, speech synthesis, vision OCR, SVG architecture generation
 - **Testing:** Vitest & React Testing Library (Zero-Mock Policy, 100% In-Process Real Verification)
-- **Architecture:** Polyrepo decoupled frontend communicating with `oenexa-ai-engineer-backend` via reverse proxy (`/api`).
+- **Architecture:** Polyrepo decoupled frontend communicating with `oenexa-ai-core` via reverse proxy (`/api`).
 
 ---
 
 ## 📁 Project Structure
 
 ```text
-oenexa-ai-engineer-frontend/
+oenexa-ai-web/
 ├── src/
 │   ├── components/      # UI components, modals, and telemetry views
 │   ├── services/        # Decoupled HTTP API client services

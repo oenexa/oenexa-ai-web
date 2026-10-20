@@ -10,7 +10,7 @@ export const createDefaultKnowledgeMap = (repositoryId: string): RepositoryKnowl
     'application/src/main/java/com/oenexa/application/IntelligentConversationService.java',
     'infrastructure/src/main/java/com/oenexa/infrastructure/persistence/entity/ChatMessageEntity.java',
     'api/src/main/java/com/oenexa/api/IntelligentChatController.java',
-    'oenexa-ai-engineer-frontend/src/App.tsx',
+    'oenexa-ai-web/src/App.tsx',
     'docker-compose.yml',
   ],
   symbolIndex: {
