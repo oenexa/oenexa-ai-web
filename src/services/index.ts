@@ -20,3 +20,4 @@ export * from './mediaAiService';
 export * from './billingService';
 export * from './memoryHierarchyService';
 export * from './mcpService';
+export * from './autonomousIssueHandlingService';
