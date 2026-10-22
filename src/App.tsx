@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import { PlatformNavigationBar } from './components/navigation';
 import { ChatTab } from './components/tabs/ChatTab';
-import { AntigravityAgentSwarmTab } from './components/tabs/AntigravityAgentSwarmTab';
+import { OenexaAgentSwarmTab } from './components/tabs/OenexaAgentSwarmTab';
 import { AuthDialog } from './components/auth';
 import { SubscriptionBillingModal } from './components/billing/SubscriptionBillingModal';
 import { MemoryMcpTelemetryModal } from './components/telemetry/MemoryMcpTelemetryModal';
@@ -126,7 +126,7 @@ const App: React.FC = () => {
           />
         ) : (
           <Box sx={{ flex: 1, overflowY: 'auto' }}>
-            <AntigravityAgentSwarmTab
+            <OenexaAgentSwarmTab
               darkMode={darkMode}
               token={token}
               notify={notify}

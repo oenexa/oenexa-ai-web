@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   content: [
     './src/**/*.{js,ts,jsx,tsx}',
     './index.html'
@@ -6,6 +6,6 @@ module.exports = {
   theme: {
     extend: {},
   },
-  darkMode: 'class', // enable dark mode via class
+  darkMode: 'class',
   plugins: [],
 };

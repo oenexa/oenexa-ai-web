@@ -162,8 +162,8 @@ describe('Feature: OENEXA Simple Chat Application', () => {
     });
   });
 
-  describe('Scenario: Antigravity Multi-Agent Virtual Thread Swarm', () => {
-    it('Given the user is on the platform, When clicking Swarm Threads, Then the Antigravity concurrent agent cockpit mounts and can dispatch swarm', async () => {
+  describe('Scenario: OENEXA Multi-Agent Virtual Thread Swarm', () => {
+    it('Given the user is on the platform, When clicking Swarm Threads, Then the OENEXA concurrent agent cockpit mounts and can dispatch swarm', async () => {
       await act(async () => {
         render(<App />);
       });
@@ -173,7 +173,7 @@ describe('Feature: OENEXA Simple Chat Application', () => {
         fireEvent.click(swarmBtn);
       });
 
-      expect(screen.getByText(/Antigravity Multi-Agent Swarm/i)).toBeInTheDocument();
+      expect(screen.getByText(/OENEXA Multi-Agent Swarm/i)).toBeInTheDocument();
       expect(screen.getByText(/Java 25 Virtual Threads/i)).toBeInTheDocument();
 
       const dispatchBtn = screen.getByRole('button', { name: /Dispatch Swarm/i });

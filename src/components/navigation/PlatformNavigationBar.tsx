@@ -87,7 +87,7 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
           />
         </Box>
 
-        {/* View Switcher: Chat vs Antigravity Swarm Threads */}
+        {/* View Switcher: Chat vs OENEXA Swarm Threads */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, bgcolor: darkMode ? 'rgba(255,255,255,0.05)' : '#f1f5f9', p: 0.4, borderRadius: 2 }}>
           <Button
             size="small"

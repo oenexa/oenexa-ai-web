@@ -58,7 +58,7 @@ export const synthesizePrd = async (
   token?: string | null
 ): Promise<ProductRequirementsDocument> => {
   try {
-    const res = await fetch('/api/v1/argon/prd', {
+    const res = await fetch('/api/v1/autonomous/prd', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

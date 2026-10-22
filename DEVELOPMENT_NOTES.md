@@ -4,11 +4,11 @@
 > **Repository:** `C:\workspace\oenexarepo\oenexa-ai-web` | `github.com/oenexa/oenexa-ai-web`  
 > **Paired Backend Service:** `[AI-CORE] ⚡` [`oenexa-ai-core`](../oenexa-ai-core) (`http://localhost:8080/api`)  
 > **Frontend Stack:** React 18 | Vite 5 | TypeScript | Tailwind CSS | Material-UI 5 | Monaco Editor | Vitest (Zero Mocks)  
-> **Design Language:** Antigravity Cockpit (Obsidian/Slate dark mode, Cyan glows, Real scenario chat, Minimalist HUD)
+> **Design Language:** OENEXA Minimalist Cockpit (Obsidian/Slate dark mode, Cyan status glows, Real scenario chat, Minimalist HUD)
 
 ---
 
-## 1. System Overview & Antigravity UX
+## 1. System Overview & Minimalist UX
 
 OENEXA AI Web delivers a streamlined, distraction-free cockpit for interacting with autonomous multi-agent engineering swarms.
 
@@ -29,7 +29,7 @@ oenexa-ai-web/
 ├── src/
 │   ├── components/
 │   │   ├── navigation/        # PlatformNavigationBar with Chat vs Swarm Threads switcher
-│   │   └── tabs/              # AntigravityAgentSwarmTab (< 400 lines SRP)
+│   │   └── tabs/              # OenexaAgentSwarmTab (< 400 lines SRP)
 │   ├── services/
 │   │   ├── agentThreadOrchestratorService.ts  # /api/v4/agents/swarm client with air-gapped fallback
 │   │   ├── memoryHierarchyService.ts          # 6-tier SSD-first memory telemetry
@@ -54,7 +54,7 @@ oenexa-ai-web/
   - Stage 3: Verification & Deployment
 * **View Switcher:**
   - `💬 Chat`: Real scenario conversational AI assistant with multi-turn context.
-  - `⚡ Swarm Threads`: Live Antigravity multi-agent virtual thread orchestrator.
+  - `⚡ Swarm Threads`: Live OENEXA multi-agent virtual thread orchestrator.
 
 ---
 

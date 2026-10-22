@@ -4,7 +4,7 @@ import {
   fetchActiveThreads,
 } from './agentThreadOrchestratorService';
 
-describe('Feature: Antigravity Multi-Agent Thread Orchestration Service', () => {
+describe('Feature: OENEXA Multi-Agent Thread Orchestration Service', () => {
   it('should execute concurrent agent swarm using virtual thread logic with speedup', async () => {
     const result = await executeConcurrentSwarm({
       goalTitle: 'Build Distributed High-Throughput Event Mesh',

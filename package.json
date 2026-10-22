@@ -2,6 +2,7 @@
   "name": "oenexa-ai-web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "OENEXA AI Web — World-Class AI Operating System Web Interface",
   "scripts": {
     "dev": "vite",

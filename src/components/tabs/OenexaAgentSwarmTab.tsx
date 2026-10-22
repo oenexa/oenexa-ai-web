@@ -28,7 +28,7 @@ import {
 } from '../../types/agentEcosystem';
 import { executeConcurrentSwarm } from '../../services/agentThreadOrchestratorService';
 
-export interface AntigravityAgentSwarmTabProps {
+export interface OenexaAgentSwarmTabProps {
   darkMode: boolean;
   token?: string | null;
   notify?: (msg: string) => void;
@@ -56,7 +56,7 @@ const AGENT_COLORS: Record<EnterpriseAgentType, string> = {
   LEGAL_ASSISTANT: '#6366f1',
 };
 
-export const AntigravityAgentSwarmTab: React.FC<AntigravityAgentSwarmTabProps> = ({
+export const OenexaAgentSwarmTab: React.FC<OenexaAgentSwarmTabProps> = ({
   darkMode,
   token,
   notify,
@@ -96,12 +96,12 @@ export const AntigravityAgentSwarmTab: React.FC<AntigravityAgentSwarmTabProps> =
 
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, maxWidth: 1200, mx: 'auto' }}>
-      {/* Sleek Antigravity Header */}
+      {/* Sleek OENEXA Minimalist Cockpit Header */}
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5, flexWrap: 'wrap' }}>
           <PsychologyIcon sx={{ color: '#38bdf8', fontSize: 30 }} />
           <Typography variant="h5" sx={{ fontWeight: 800, letterSpacing: '-0.5px' }}>
-            Antigravity Multi-Agent Swarm
+            OENEXA Multi-Agent Swarm
           </Typography>
           <Chip
             icon={<BoltIcon sx={{ fontSize: '1rem !important' }} />}
