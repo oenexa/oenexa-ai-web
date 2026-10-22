@@ -79,10 +79,13 @@ export interface ReflectStepRequest {
 
 export type AgentThreadState = 'IDLE' | 'RUNNING' | 'WAITING' | 'COMPLETED' | 'FAILED';
 
+export type SwarmExecutionStrategy = 'PARALLEL_MAX_SPEED' | 'PHASED_PIPELINE';
+
 export interface AgentThreadExecutionRecord {
   threadId: string;
   threadName: string;
   agentType: EnterpriseAgentType;
+  stageName?: string;
   taskDescription: string;
   state: AgentThreadState;
   startEpochMs: number;
@@ -107,5 +110,6 @@ export interface ConcurrentAgentSwarmResult {
 export interface SwarmExecutionRequest {
   goalTitle: string;
   goalObjective?: string;
+  strategy?: SwarmExecutionStrategy;
   targetAgents?: EnterpriseAgentType[];
 }

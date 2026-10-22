@@ -11,6 +11,7 @@ import {
   LinearProgress,
   IconButton,
   Tooltip,
+  ButtonGroup,
 } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -19,9 +20,11 @@ import PsychologyIcon from '@mui/icons-material/Psychology';
 import BoltIcon from '@mui/icons-material/Bolt';
 import MemoryIcon from '@mui/icons-material/Memory';
 import SpeedIcon from '@mui/icons-material/Speed';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import {
   ConcurrentAgentSwarmResult,
   EnterpriseAgentType,
+  SwarmExecutionStrategy,
 } from '../../types/agentEcosystem';
 import { executeConcurrentSwarm } from '../../services/agentThreadOrchestratorService';
 
@@ -59,14 +62,16 @@ export const AntigravityAgentSwarmTab: React.FC<AntigravityAgentSwarmTabProps> =
   notify,
 }) => {
   const [goal, setGoal] = useState('Enterprise E-Commerce Microservices with CQRS');
+  const [strategy, setStrategy] = useState<SwarmExecutionStrategy>('PARALLEL_MAX_SPEED');
   const [loading, setLoading] = useState(false);
   const [swarmResult, setSwarmResult] = useState<ConcurrentAgentSwarmResult | null>(null);
+  const [filterState, setFilterState] = useState<string>('ALL');
 
   const handleLaunchSwarm = async () => {
     if (!goal.trim()) return;
     setLoading(true);
     try {
-      const result = await executeConcurrentSwarm({ goalTitle: goal }, token);
+      const result = await executeConcurrentSwarm({ goalTitle: goal, strategy }, token);
       setSwarmResult(result);
       if (notify) {
         notify(`Concurrent swarm completed: ${result.activeThreadCount} virtual threads converged in ${result.wallClockDurationMs}ms (${result.speedupFactor}x speedup)`);
@@ -78,16 +83,22 @@ export const AntigravityAgentSwarmTab: React.FC<AntigravityAgentSwarmTabProps> =
 
   const handleCopyArtifacts = () => {
     if (!swarmResult) return;
-    const text = swarmResult.consolidatedArtifacts.join('\n');
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(swarmResult.consolidatedArtifacts.join('\n'));
     if (notify) notify('Consolidated artifact list copied to clipboard');
   };
+
+  const displayedThreads = swarmResult
+    ? swarmResult.threadRecords.filter((t) => {
+        if (filterState === 'ALL') return true;
+        return t.state === filterState || t.stageName?.includes(filterState);
+      })
+    : [];
 
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, maxWidth: 1200, mx: 'auto' }}>
       {/* Sleek Antigravity Header */}
       <Box sx={{ mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5, flexWrap: 'wrap' }}>
           <PsychologyIcon sx={{ color: '#38bdf8', fontSize: 30 }} />
           <Typography variant="h5" sx={{ fontWeight: 800, letterSpacing: '-0.5px' }}>
             Antigravity Multi-Agent Swarm
@@ -106,11 +117,11 @@ export const AntigravityAgentSwarmTab: React.FC<AntigravityAgentSwarmTabProps> =
           />
         </Box>
         <Typography variant="body2" color="text.secondary">
-          Dispatches autonomous specialized agents concurrently across sub-tasks using structured virtual thread logic.
+          High-throughput concurrent agent orchestrator executing multi-agent pipelines with zero OS thread starvation.
         </Typography>
       </Box>
 
-      {/* Floating Goal Input Bar */}
+      {/* Floating Goal Input Bar & Strategy Bar */}
       <Card
         variant="outlined"
         sx={{
@@ -121,7 +132,7 @@ export const AntigravityAgentSwarmTab: React.FC<AntigravityAgentSwarmTabProps> =
           borderColor: darkMode ? '#1e293b' : '#e2e8f0',
         }}
       >
-        <Box sx={{ display: 'flex', gap: 1.5, mb: 1.5 }}>
+        <Box sx={{ display: 'flex', gap: 1.5, mb: 1.5, flexDirection: { xs: 'column', sm: 'row' } }}>
           <TextField
             fullWidth
             size="small"
@@ -148,31 +159,53 @@ export const AntigravityAgentSwarmTab: React.FC<AntigravityAgentSwarmTabProps> =
               borderRadius: 1.5,
               bgcolor: '#0284c7',
               '&:hover': { bgcolor: '#0369a1' },
+              whiteSpace: 'nowrap',
             }}
           >
             {loading ? 'Dispatching...' : 'Dispatch Swarm'}
           </Button>
         </Box>
 
-        {/* Quick Goal Templates */}
-        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-            Presets:
-          </Typography>
-          {TEMPLATE_GOALS.map((tpl, i) => (
-            <Chip
-              key={i}
-              label={tpl}
-              size="small"
-              onClick={() => setGoal(tpl)}
-              sx={{
-                fontSize: '0.72rem',
-                cursor: 'pointer',
-                bgcolor: darkMode ? '#0f172a' : '#f1f5f9',
-                '&:hover': { bgcolor: darkMode ? '#1e293b' : '#e2e8f0' },
-              }}
-            />
-          ))}
+        {/* Strategy Switcher & Quick Goal Presets */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+              Presets:
+            </Typography>
+            {TEMPLATE_GOALS.map((tpl, i) => (
+              <Chip
+                key={i}
+                label={tpl}
+                size="small"
+                onClick={() => setGoal(tpl)}
+                sx={{
+                  fontSize: '0.72rem',
+                  cursor: 'pointer',
+                  bgcolor: darkMode ? '#0f172a' : '#f1f5f9',
+                  '&:hover': { bgcolor: darkMode ? '#1e293b' : '#e2e8f0' },
+                }}
+              />
+            ))}
+          </Box>
+
+          <ButtonGroup size="small" variant="outlined" sx={{ mt: { xs: 1, md: 0 } }}>
+            <Button
+              onClick={() => setStrategy('PARALLEL_MAX_SPEED')}
+              variant={strategy === 'PARALLEL_MAX_SPEED' ? 'contained' : 'outlined'}
+              startIcon={<BoltIcon fontSize="small" />}
+              sx={{ textTransform: 'none', fontSize: '0.75rem', fontWeight: 700 }}
+            >
+              Parallel Max Speed
+            </Button>
+            <Button
+              onClick={() => setStrategy('PHASED_PIPELINE')}
+              variant={strategy === 'PHASED_PIPELINE' ? 'contained' : 'outlined'}
+              startIcon={<AccountTreeIcon fontSize="small" />}
+              sx={{ textTransform: 'none', fontSize: '0.75rem', fontWeight: 700 }}
+            >
+              Phased Pipeline
+            </Button>
+          </ButtonGroup>
         </Box>
       </Card>
 
@@ -180,7 +213,7 @@ export const AntigravityAgentSwarmTab: React.FC<AntigravityAgentSwarmTabProps> =
         <Box sx={{ mb: 3 }}>
           <LinearProgress color="primary" sx={{ borderRadius: 1 }} />
           <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', mt: 1, color: '#38bdf8' }}>
-            ⚡ Java 25 Virtual Threads executing multi-agent tasks concurrently in parallel...
+            ⚡ Java 25 Virtual Threads executing multi-agent tasks concurrently in parallel ({strategy})...
           </Typography>
         </Box>
       )}
@@ -251,7 +284,7 @@ export const AntigravityAgentSwarmTab: React.FC<AntigravityAgentSwarmTabProps> =
       {/* Concurrent Virtual Thread Cards Grid */}
       {swarmResult && (
         <Grid container spacing={2}>
-          {swarmResult.threadRecords.map((t) => {
+          {displayedThreads.map((t) => {
             const color = AGENT_COLORS[t.agentType] || '#38bdf8';
             return (
               <Grid item xs={12} md={6} key={t.threadId}>
@@ -267,7 +300,7 @@ export const AntigravityAgentSwarmTab: React.FC<AntigravityAgentSwarmTabProps> =
                 >
                   <CardContent sx={{ p: 2 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                         <Chip
                           label={t.agentType.replace('_', ' ')}
                           size="small"
@@ -279,6 +312,14 @@ export const AntigravityAgentSwarmTab: React.FC<AntigravityAgentSwarmTabProps> =
                             border: `1px solid ${color}`,
                           }}
                         />
+                        {t.stageName && (
+                          <Chip
+                            label={t.stageName}
+                            size="small"
+                            variant="outlined"
+                            sx={{ fontSize: '0.66rem', height: 20, color: 'text.secondary' }}
+                          />
+                        )}
                         <Typography variant="caption" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
                           {t.threadName}
                         </Typography>

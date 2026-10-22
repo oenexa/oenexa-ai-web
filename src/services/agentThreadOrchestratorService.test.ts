@@ -8,12 +8,13 @@ describe('Feature: Antigravity Multi-Agent Thread Orchestration Service', () => 
   it('should execute concurrent agent swarm using virtual thread logic with speedup', async () => {
     const result = await executeConcurrentSwarm({
       goalTitle: 'Build Distributed High-Throughput Event Mesh',
+      strategy: 'PARALLEL_MAX_SPEED',
       targetAgents: ['ARCHITECT', 'SOFTWARE_ENGINEER', 'SECURITY', 'QA', 'DEVOPS', 'DATA_ENGINEER'],
     });
 
     expect(result).toBeDefined();
     expect(result.goalTitle).toBe('Build Distributed High-Throughput Event Mesh');
-    expect(result.concurrencyMode).toBe('JAVA_25_STRUCTURED_VIRTUAL_THREADS');
+    expect(result.concurrencyMode).toBe('PARALLEL_MAX_SPEED');
     expect(result.activeThreadCount).toBe(6);
     expect(result.allPassed).toBe(true);
 
@@ -27,6 +28,7 @@ describe('Feature: Antigravity Multi-Agent Thread Orchestration Service', () => 
     result.threadRecords.forEach((tr) => {
       expect(tr.threadName).toContain('oenexa-vthread-');
       expect(tr.state).toBe('COMPLETED');
+      expect(tr.stageName).toBe('Parallel Swarm');
       expect(tr.executionDurationMs).toBeGreaterThan(0);
       expect(tr.memoryAllocatedKb).toBeGreaterThan(0);
       expect(tr.outputResult.length).toBeGreaterThan(10);
@@ -36,6 +38,20 @@ describe('Feature: Antigravity Multi-Agent Thread Orchestration Service', () => 
     expect(result.consolidatedArtifacts.length).toBeGreaterThanOrEqual(4);
     expect(result.consolidatedArtifacts).toContain('DomainService.java');
     expect(result.consolidatedArtifacts).toContain('ArchitectureContext.puml');
+  });
+
+  it('should execute phased pipeline swarm with stage categorization', async () => {
+    const result = await executeConcurrentSwarm({
+      goalTitle: 'Design and Verify Zero-Trust Engine',
+      strategy: 'PHASED_PIPELINE',
+      targetAgents: ['ARCHITECT', 'SOFTWARE_ENGINEER', 'QA'],
+    });
+
+    expect(result.concurrencyMode).toBe('PHASED_PIPELINE');
+    expect(result.activeThreadCount).toBe(3);
+    expect(result.threadRecords.some((t) => t.stageName?.includes('Stage 1'))).toBe(true);
+    expect(result.threadRecords.some((t) => t.stageName?.includes('Stage 2'))).toBe(true);
+    expect(result.threadRecords.some((t) => t.stageName?.includes('Stage 3'))).toBe(true);
   });
 
   it('should default to full core swarm when no target agents provided', async () => {

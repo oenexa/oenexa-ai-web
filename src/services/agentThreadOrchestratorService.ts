@@ -3,6 +3,7 @@ import {
   AgentThreadExecutionRecord,
   SwarmExecutionRequest,
   EnterpriseAgentType,
+  SwarmExecutionStrategy,
 } from '../types/agentEcosystem';
 
 const API_BASE_URL = '/api/v4/agents/swarm';
@@ -42,6 +43,7 @@ export async function executeConcurrentSwarm(
       threadId: `vthread-sim-${1000 + idx}`,
       threadName: `oenexa-vthread-${agent.toLowerCase()}-${1000 + idx}`,
       agentType: agent,
+      stageName: getStageName(agent, request.strategy),
       taskDescription: getTaskDescription(agent, request.goalTitle),
       state: 'COMPLETED',
       startEpochMs: wallClockStart,
@@ -57,7 +59,7 @@ export async function executeConcurrentSwarm(
   return {
     swarmId: `swarm-${Date.now()}`,
     goalTitle: request.goalTitle,
-    concurrencyMode: 'JAVA_25_STRUCTURED_VIRTUAL_THREADS',
+    concurrencyMode: request.strategy || 'PARALLEL_MAX_SPEED',
     activeThreadCount: threadRecords.length,
     wallClockDurationMs: wallClockMs,
     sequentialDurationMs: sequentialMs,
@@ -93,6 +95,17 @@ export async function fetchActiveThreads(
   }
 
   return [];
+}
+
+function getStageName(agent: EnterpriseAgentType, strategy?: SwarmExecutionStrategy): string {
+  if (strategy !== 'PHASED_PIPELINE') return 'Parallel Swarm';
+  if (agent === 'ARCHITECT' || agent === 'RESEARCH' || agent === 'PRODUCT_MANAGER') {
+    return 'Stage 1: Architecture & Design';
+  }
+  if (agent === 'SOFTWARE_ENGINEER' || agent === 'SECURITY' || agent === 'DATA_ENGINEER') {
+    return 'Stage 2: Core Engineering & Security';
+  }
+  return 'Stage 3: Verification & Deployment';
 }
 
 function getTaskDescription(agent: EnterpriseAgentType, goal: string): string {
