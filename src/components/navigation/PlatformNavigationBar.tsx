@@ -28,6 +28,8 @@ export interface PlatformNavigationBarProps {
   onOpenBilling?: () => void;
   onOpenTelemetry?: () => void;
   activeModel?: string;
+  viewMode?: 'chat' | 'swarm';
+  onSelectView?: (mode: 'chat' | 'swarm') => void;
 }
 
 export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
@@ -40,6 +42,8 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
   onOpenBilling,
   onOpenTelemetry,
   activeModel = 'deepseek-r1:8b',
+  viewMode = 'chat',
+  onSelectView,
 }) => {
   return (
     <AppBar
@@ -81,6 +85,42 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
               borderColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
             }}
           />
+        </Box>
+
+        {/* View Switcher: Chat vs Antigravity Swarm Threads */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, bgcolor: darkMode ? 'rgba(255,255,255,0.05)' : '#f1f5f9', p: 0.4, borderRadius: 2 }}>
+          <Button
+            size="small"
+            variant={viewMode === 'chat' ? 'contained' : 'text'}
+            onClick={() => onSelectView?.('chat')}
+            sx={{
+              textTransform: 'none',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              py: 0.3,
+              px: 1.5,
+              borderRadius: 1.5,
+              ...(viewMode === 'chat' ? { bgcolor: '#0284c7', color: '#fff' } : { color: 'inherit' }),
+            }}
+          >
+            💬 Chat
+          </Button>
+          <Button
+            size="small"
+            variant={viewMode === 'swarm' ? 'contained' : 'text'}
+            onClick={() => onSelectView?.('swarm')}
+            sx={{
+              textTransform: 'none',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              py: 0.3,
+              px: 1.5,
+              borderRadius: 1.5,
+              ...(viewMode === 'swarm' ? { bgcolor: '#0284c7', color: '#fff' } : { color: 'inherit' }),
+            }}
+          >
+            ⚡ Swarm Threads
+          </Button>
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>

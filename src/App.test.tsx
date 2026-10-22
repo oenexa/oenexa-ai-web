@@ -161,4 +161,29 @@ describe('Feature: OENEXA Simple Chat Application', () => {
       expect(screen.getByText(/Sign In to OENEXA/i)).toBeInTheDocument();
     });
   });
+
+  describe('Scenario: Antigravity Multi-Agent Virtual Thread Swarm', () => {
+    it('Given the user is on the platform, When clicking Swarm Threads, Then the Antigravity concurrent agent cockpit mounts and can dispatch swarm', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const swarmBtn = screen.getByRole('button', { name: /Swarm Threads/i });
+      await act(async () => {
+        fireEvent.click(swarmBtn);
+      });
+
+      expect(screen.getByText(/Antigravity Multi-Agent Swarm/i)).toBeInTheDocument();
+      expect(screen.getByText(/Java 25 Virtual Threads/i)).toBeInTheDocument();
+
+      const dispatchBtn = screen.getByRole('button', { name: /Dispatch Swarm/i });
+      await act(async () => {
+        fireEvent.click(dispatchBtn);
+      });
+
+      expect(await screen.findByText(/Wall-Clock Duration/i)).toBeInTheDocument();
+      expect(screen.getByText(/Sequential Equivalent/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Speedup/i).length).toBeGreaterThanOrEqual(1);
+    });
+  });
 });

@@ -76,3 +76,36 @@ export interface ReflectStepRequest {
   stepId: string;
   output: string;
 }
+
+export type AgentThreadState = 'IDLE' | 'RUNNING' | 'WAITING' | 'COMPLETED' | 'FAILED';
+
+export interface AgentThreadExecutionRecord {
+  threadId: string;
+  threadName: string;
+  agentType: EnterpriseAgentType;
+  taskDescription: string;
+  state: AgentThreadState;
+  startEpochMs: number;
+  executionDurationMs: number;
+  outputResult: string;
+  memoryAllocatedKb: number;
+}
+
+export interface ConcurrentAgentSwarmResult {
+  swarmId: string;
+  goalTitle: string;
+  concurrencyMode: string;
+  activeThreadCount: number;
+  wallClockDurationMs: number;
+  sequentialDurationMs: number;
+  speedupFactor: number;
+  threadRecords: AgentThreadExecutionRecord[];
+  consolidatedArtifacts: string[];
+  allPassed: boolean;
+}
+
+export interface SwarmExecutionRequest {
+  goalTitle: string;
+  goalObjective?: string;
+  targetAgents?: EnterpriseAgentType[];
+}

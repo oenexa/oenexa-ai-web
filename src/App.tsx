@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 import { PlatformNavigationBar } from './components/navigation';
 import { ChatTab } from './components/tabs/ChatTab';
+import { AntigravityAgentSwarmTab } from './components/tabs/AntigravityAgentSwarmTab';
 import { AuthDialog } from './components/auth';
 import { SubscriptionBillingModal } from './components/billing/SubscriptionBillingModal';
 import { MemoryMcpTelemetryModal } from './components/telemetry/MemoryMcpTelemetryModal';
@@ -27,6 +28,7 @@ const App: React.FC = () => {
   const [pendingAttachment, setPendingAttachment] = useState<CodeContextAttachment | null>(null);
   const [multimodalAttachments, setMultimodalAttachments] = useState<MultimodalAttachment[]>([]);
   const [isRecordingVoice, setIsRecordingVoice] = useState<boolean>(false);
+  const [viewMode, setViewMode] = useState<'chat' | 'swarm'>('chat');
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
 
   const notify = (msg: string) => setSnackbarMessage(msg);
@@ -99,26 +101,38 @@ const App: React.FC = () => {
         onOpenTelemetry={() => setTelemetryModalOpen(true)}
         onLogout={handleLogout}
         activeModel="deepseek-r1:8b"
+        viewMode={viewMode}
+        onSelectView={setViewMode}
       />
 
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <ChatTab
-          darkMode={darkMode}
-          token={token}
-          username={username}
-          repositoryId="default-repo"
-          pendingAttachment={pendingAttachment}
-          setPendingAttachment={setPendingAttachment}
-          multimodalAttachments={multimodalAttachments}
-          handleAttachCodeToChat={handleAttachCodeToChat}
-          handleAttachVoiceMemo={handleAttachVoiceMemo}
-          handleAttachDiagram={handleAttachDiagram}
-          handleRemoveMultimodalAttachment={handleRemoveMultimodalAttachment}
-          isRecordingVoice={isRecordingVoice}
-          onApplyArtifactToEditor={handleApplyArtifactToEditor}
-          onCopyCode={handleCopyCode}
-          notify={notify}
-        />
+        {viewMode === 'chat' ? (
+          <ChatTab
+            darkMode={darkMode}
+            token={token}
+            username={username}
+            repositoryId="default-repo"
+            pendingAttachment={pendingAttachment}
+            setPendingAttachment={setPendingAttachment}
+            multimodalAttachments={multimodalAttachments}
+            handleAttachCodeToChat={handleAttachCodeToChat}
+            handleAttachVoiceMemo={handleAttachVoiceMemo}
+            handleAttachDiagram={handleAttachDiagram}
+            handleRemoveMultimodalAttachment={handleRemoveMultimodalAttachment}
+            isRecordingVoice={isRecordingVoice}
+            onApplyArtifactToEditor={handleApplyArtifactToEditor}
+            onCopyCode={handleCopyCode}
+            notify={notify}
+          />
+        ) : (
+          <Box sx={{ flex: 1, overflowY: 'auto' }}>
+            <AntigravityAgentSwarmTab
+              darkMode={darkMode}
+              token={token}
+              notify={notify}
+            />
+          </Box>
+        )}
       </Box>
 
       <AuthDialog
