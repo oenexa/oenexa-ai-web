@@ -5,6 +5,7 @@ import {
   Snackbar,
 } from '@mui/material';
 import { PlatformNavigationBar } from './components/navigation';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { ChatTab } from './components/tabs/ChatTab';
 import { OenexaAgentSwarmTab } from './components/tabs/OenexaAgentSwarmTab';
 import { AuthDialog } from './components/auth';
@@ -105,35 +106,37 @@ const App: React.FC = () => {
         onSelectView={setViewMode}
       />
 
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {viewMode === 'chat' ? (
-          <ChatTab
-            darkMode={darkMode}
-            token={token}
-            username={username}
-            repositoryId="default-repo"
-            pendingAttachment={pendingAttachment}
-            setPendingAttachment={setPendingAttachment}
-            multimodalAttachments={multimodalAttachments}
-            handleAttachCodeToChat={handleAttachCodeToChat}
-            handleAttachVoiceMemo={handleAttachVoiceMemo}
-            handleAttachDiagram={handleAttachDiagram}
-            handleRemoveMultimodalAttachment={handleRemoveMultimodalAttachment}
-            isRecordingVoice={isRecordingVoice}
-            onApplyArtifactToEditor={handleApplyArtifactToEditor}
-            onCopyCode={handleCopyCode}
-            notify={notify}
-          />
-        ) : (
-          <Box sx={{ flex: 1, overflowY: 'auto' }}>
-            <OenexaAgentSwarmTab
+      <ErrorBoundary>
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          {viewMode === 'chat' ? (
+            <ChatTab
               darkMode={darkMode}
               token={token}
+              username={username}
+              repositoryId="default-repo"
+              pendingAttachment={pendingAttachment}
+              setPendingAttachment={setPendingAttachment}
+              multimodalAttachments={multimodalAttachments}
+              handleAttachCodeToChat={handleAttachCodeToChat}
+              handleAttachVoiceMemo={handleAttachVoiceMemo}
+              handleAttachDiagram={handleAttachDiagram}
+              handleRemoveMultimodalAttachment={handleRemoveMultimodalAttachment}
+              isRecordingVoice={isRecordingVoice}
+              onApplyArtifactToEditor={handleApplyArtifactToEditor}
+              onCopyCode={handleCopyCode}
               notify={notify}
             />
-          </Box>
-        )}
-      </Box>
+          ) : (
+            <Box sx={{ flex: 1, overflowY: 'auto' }}>
+              <OenexaAgentSwarmTab
+                darkMode={darkMode}
+                token={token}
+                notify={notify}
+              />
+            </Box>
+          )}
+        </Box>
+      </ErrorBoundary>
 
       <AuthDialog
         open={authDialogOpen}
