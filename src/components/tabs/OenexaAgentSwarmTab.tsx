@@ -4,29 +4,26 @@ import {
   Typography,
   Grid,
   Card,
-  CardContent,
   TextField,
   Button,
   Chip,
   LinearProgress,
-  IconButton,
-  Tooltip,
   ButtonGroup,
 } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import BoltIcon from '@mui/icons-material/Bolt';
-import MemoryIcon from '@mui/icons-material/Memory';
-import SpeedIcon from '@mui/icons-material/Speed';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import {
   ConcurrentAgentSwarmResult,
-  EnterpriseAgentType,
   SwarmExecutionStrategy,
 } from '../../types/agentEcosystem';
 import { executeConcurrentSwarm } from '../../services/agentThreadOrchestratorService';
+import {
+  SwarmTelemetryBanner,
+  SwarmThreadCard,
+  SwarmArtifactsStrip,
+} from './swarm';
 
 export interface OenexaAgentSwarmTabProps {
   darkMode: boolean;
@@ -41,21 +38,6 @@ const TEMPLATE_GOALS = [
   'High-Performance Real-Time AI Inference Pipeline',
 ];
 
-const AGENT_COLORS: Record<EnterpriseAgentType, string> = {
-  ARCHITECT: '#38bdf8',
-  SOFTWARE_ENGINEER: '#4ade80',
-  SECURITY: '#f43f5e',
-  QA: '#facc15',
-  DEVOPS: '#a855f7',
-  DATA_ENGINEER: '#fb923c',
-  RESEARCH: '#06b6d4',
-  PRODUCT_MANAGER: '#3b82f6',
-  FINANCE: '#10b981',
-  CUSTOMER_SUPPORT: '#64748b',
-  MARKETING: '#ec4899',
-  LEGAL_ASSISTANT: '#6366f1',
-};
-
 export const OenexaAgentSwarmTab: React.FC<OenexaAgentSwarmTabProps> = ({
   darkMode,
   token,
@@ -65,7 +47,6 @@ export const OenexaAgentSwarmTab: React.FC<OenexaAgentSwarmTabProps> = ({
   const [strategy, setStrategy] = useState<SwarmExecutionStrategy>('PARALLEL_MAX_SPEED');
   const [loading, setLoading] = useState(false);
   const [swarmResult, setSwarmResult] = useState<ConcurrentAgentSwarmResult | null>(null);
-  const [filterState, setFilterState] = useState<string>('ALL');
 
   const handleLaunchSwarm = async () => {
     if (!goal.trim()) return;
@@ -86,13 +67,6 @@ export const OenexaAgentSwarmTab: React.FC<OenexaAgentSwarmTabProps> = ({
     navigator.clipboard.writeText(swarmResult.consolidatedArtifacts.join('\n'));
     if (notify) notify('Consolidated artifact list copied to clipboard');
   };
-
-  const displayedThreads = swarmResult
-    ? swarmResult.threadRecords.filter((t) => {
-        if (filterState === 'ALL') return true;
-        return t.state === filterState || t.stageName?.includes(filterState);
-      })
-    : [];
 
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, maxWidth: 1200, mx: 'auto' }}>
@@ -220,193 +194,33 @@ export const OenexaAgentSwarmTab: React.FC<OenexaAgentSwarmTabProps> = ({
 
       {/* Structured Concurrency Telemetry Banner */}
       {swarmResult && (
-        <Card
-          variant="outlined"
-          sx={{
-            mb: 3,
-            p: 2,
-            borderRadius: 2,
-            bgcolor: darkMode ? '#0c1322' : '#f0fdf4',
-            borderColor: darkMode ? '#1e293b' : '#bbf7d0',
-          }}
-        >
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} sm={3}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <MemoryIcon sx={{ color: '#38bdf8' }} />
-                <Box>
-                  <Typography variant="caption" color="text.secondary">Active Threads</Typography>
-                  <Typography variant="h6" fontWeight="bold">
-                    {swarmResult.activeThreadCount} Virtual Threads
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <SpeedIcon sx={{ color: '#4ade80' }} />
-                <Box>
-                  <Typography variant="caption" color="text.secondary">Wall-Clock Duration</Typography>
-                  <Typography variant="h6" fontWeight="bold" sx={{ color: '#4ade80' }}>
-                    {swarmResult.wallClockDurationMs} ms
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <BoltIcon sx={{ color: '#facc15' }} />
-                <Box>
-                  <Typography variant="caption" color="text.secondary">Sequential Equivalent</Typography>
-                  <Typography variant="h6" fontWeight="bold" sx={{ color: '#94a3b8' }}>
-                    {swarmResult.sequentialDurationMs} ms
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <Chip
-                label={`⚡ ${swarmResult.speedupFactor}x Speedup`}
-                sx={{
-                  bgcolor: '#047857',
-                  color: '#ffffff',
-                  fontWeight: 800,
-                  fontSize: '0.82rem',
-                  py: 1,
-                  width: '100%',
-                }}
-              />
-            </Grid>
-          </Grid>
-        </Card>
+        <SwarmTelemetryBanner
+          darkMode={darkMode}
+          swarmResult={swarmResult}
+        />
       )}
 
       {/* Concurrent Virtual Thread Cards Grid */}
       {swarmResult && (
         <Grid container spacing={2}>
-          {displayedThreads.map((t) => {
-            const color = AGENT_COLORS[t.agentType] || '#38bdf8';
-            return (
-              <Grid item xs={12} md={6} key={t.threadId}>
-                <Card
-                  variant="outlined"
-                  sx={{
-                    height: '100%',
-                    bgcolor: darkMode ? '#090d16' : '#ffffff',
-                    borderColor: darkMode ? '#1e293b' : '#e2e8f0',
-                    borderRadius: 2,
-                    borderLeft: `4px solid ${color}`,
-                  }}
-                >
-                  <CardContent sx={{ p: 2 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-                        <Chip
-                          label={t.agentType.replace('_', ' ')}
-                          size="small"
-                          sx={{
-                            bgcolor: `${color}20`,
-                            color: color,
-                            fontWeight: 700,
-                            fontSize: '0.7rem',
-                            border: `1px solid ${color}`,
-                          }}
-                        />
-                        {t.stageName && (
-                          <Chip
-                            label={t.stageName}
-                            size="small"
-                            variant="outlined"
-                            sx={{ fontSize: '0.66rem', height: 20, color: 'text.secondary' }}
-                          />
-                        )}
-                        <Typography variant="caption" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
-                          {t.threadName}
-                        </Typography>
-                      </Box>
-                      <Chip
-                        icon={<CheckCircleIcon sx={{ fontSize: '0.85rem !important' }} />}
-                        label={`${t.executionDurationMs}ms`}
-                        size="small"
-                        color="success"
-                        variant="outlined"
-                        sx={{ height: 22, fontSize: '0.68rem', fontWeight: 600 }}
-                      />
-                    </Box>
-
-                    <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
-                      {t.taskDescription}
-                    </Typography>
-
-                    <Box
-                      sx={{
-                        p: 1.2,
-                        borderRadius: 1,
-                        bgcolor: darkMode ? '#0f172a' : '#f8fafc',
-                        fontFamily: 'Consolas, monospace',
-                        fontSize: '0.76rem',
-                        color: darkMode ? '#cbd5e1' : '#334155',
-                        border: '1px solid',
-                        borderColor: darkMode ? '#1e293b' : '#e2e8f0',
-                      }}
-                    >
-                      {t.outputResult}
-                    </Box>
-
-                    <Box sx={{ mt: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Memory Allocated: {t.memoryAllocatedKb} KB
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#4ade80', fontWeight: 600 }}>
-                        State: {t.state}
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            );
-          })}
+          {swarmResult.threadRecords.map((t) => (
+            <Grid item xs={12} md={6} key={t.threadId}>
+              <SwarmThreadCard
+                darkMode={darkMode}
+                thread={t}
+              />
+            </Grid>
+          ))}
         </Grid>
       )}
 
       {/* Consolidated Artifacts Strip */}
-      {swarmResult && swarmResult.consolidatedArtifacts.length > 0 && (
-        <Card
-          variant="outlined"
-          sx={{
-            mt: 3,
-            p: 2,
-            borderRadius: 2,
-            bgcolor: darkMode ? '#090d16' : '#ffffff',
-            borderColor: darkMode ? '#1e293b' : '#e2e8f0',
-          }}
-        >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              Consolidated Artifacts Synthesized Across Threads ({swarmResult.consolidatedArtifacts.length})
-            </Typography>
-            <Tooltip title="Copy all artifact names">
-              <IconButton size="small" onClick={handleCopyArtifacts}>
-                <ContentCopyIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {swarmResult.consolidatedArtifacts.map((art, idx) => (
-              <Chip
-                key={idx}
-                label={art}
-                size="small"
-                variant="outlined"
-                sx={{
-                  fontFamily: 'monospace',
-                  fontSize: '0.75rem',
-                  borderColor: darkMode ? '#334155' : '#cbd5e1',
-                }}
-              />
-            ))}
-          </Box>
-        </Card>
+      {swarmResult && (
+        <SwarmArtifactsStrip
+          darkMode={darkMode}
+          artifacts={swarmResult.consolidatedArtifacts}
+          onCopy={handleCopyArtifacts}
+        />
       )}
     </Box>
   );
