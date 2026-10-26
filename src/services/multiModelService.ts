@@ -7,15 +7,18 @@ import {
 } from '../types';
 
 export const DEFAULT_AI_MODELS: AiModelSpec[] = [
-  { modelId: 'oenexa-gpt-o3-max', name: 'OENEXA GPT o3-max', provider: 'OENEXA_GPT', contextWindowTokens: 128000, costPerMillionTokensUsd: 2.50, avgLatencyMs: 450, capabilities: ['REASONING', 'ARCHITECTURE', 'CODING', 'TOOLS'], isAvailable: true, isLocal: false },
+  { modelId: 'deepseek-r1:8b', name: '⚡ OENEXA Sovereign Core (deepseek-r1:8b • Air-Gapped)', provider: 'LOCAL_OLLAMA', contextWindowTokens: 32000, costPerMillionTokensUsd: 0.00, avgLatencyMs: 180, capabilities: ['CODING', 'REASONING', 'FAST_CHAT', 'PRIVACY'], isAvailable: true, isLocal: true },
+  { modelId: 'oenexa-core-neural-32b', name: '⚡ OENEXA Core Neural Engine (32B • In-Process)', provider: 'OENEXA_SOVEREIGN', contextWindowTokens: 128000, costPerMillionTokensUsd: 0.00, avgLatencyMs: 120, capabilities: ['CODING', 'REASONING', 'FAST_CHAT', 'TOOLS'], isAvailable: true, isLocal: true },
+  { modelId: 'oenexa-high-reasoning-70b', name: '🧠 OENEXA High-Reasoning Engine (70B)', provider: 'OENEXA_SOVEREIGN', contextWindowTokens: 128000, costPerMillionTokensUsd: 0.00, avgLatencyMs: 250, capabilities: ['REASONING', 'ARCHITECTURE', 'CODING', 'TOOLS'], isAvailable: true, isLocal: false },
+  { modelId: 'oenexa-fast-matrix-8b', name: '🚀 OENEXA Fast-Inference Matrix (8B • Real-Time)', provider: 'OENEXA_SOVEREIGN', contextWindowTokens: 64000, costPerMillionTokensUsd: 0.00, avgLatencyMs: 80, capabilities: ['FAST_CHAT', 'CODING', 'TOOLS'], isAvailable: true, isLocal: true },
+  { modelId: 'oenexa-security-sast-v1', name: '🛡️ OENEXA Invariant & Security Gate', provider: 'OENEXA_SOVEREIGN', contextWindowTokens: 64000, costPerMillionTokensUsd: 0.00, avgLatencyMs: 140, capabilities: ['SECURITY_AUDIT', 'BUG_FIX', 'TOOLS'], isAvailable: true, isLocal: true },
+  { modelId: 'oenexa-gpt-o3-max', name: 'OENEXA Neural Max', provider: 'OENEXA_SOVEREIGN', contextWindowTokens: 128000, costPerMillionTokensUsd: 1.50, avgLatencyMs: 450, capabilities: ['REASONING', 'ARCHITECTURE', 'CODING', 'TOOLS'], isAvailable: true, isLocal: false },
   { modelId: 'deepseek-v3', name: 'DeepSeek V3', provider: 'DEEPSEEK', contextWindowTokens: 128000, costPerMillionTokensUsd: 0.14, avgLatencyMs: 190, capabilities: ['CODING', 'REASONING', 'FAST_CHAT', 'TOOLS'], isAvailable: true, isLocal: false },
   { modelId: 'gemini-2.5-flash', name: 'Google Gemini 2.5 Flash', provider: 'GEMINI', contextWindowTokens: 1000000, costPerMillionTokensUsd: 0.075, avgLatencyMs: 150, capabilities: ['MULTIMODAL_ANALYSIS', 'FAST_CHAT', 'ARCHITECTURE', 'TOOLS', 'VISION'], isAvailable: true, isLocal: false },
   { modelId: 'claude-3-5-sonnet', name: 'Anthropic Claude 3.5 Sonnet', provider: 'ANTHROPIC_CLAUDE', contextWindowTokens: 200000, costPerMillionTokensUsd: 3.00, avgLatencyMs: 520, capabilities: ['CODING', 'REASONING', 'ARCHITECTURE', 'REPO_ANALYSIS', 'PRODUCT_MANAGEMENT'], isAvailable: true, isLocal: false },
   { modelId: 'llama-3.3-70b', name: 'Meta Llama 3.3 70B', provider: 'LLAMA', contextWindowTokens: 128000, costPerMillionTokensUsd: 0.40, avgLatencyMs: 280, capabilities: ['CODING', 'REASONING', 'FAST_CHAT', 'TOOLS'], isAvailable: true, isLocal: false },
   { modelId: 'mistral-large', name: 'Mistral Large', provider: 'MISTRAL', contextWindowTokens: 128000, costPerMillionTokensUsd: 2.00, avgLatencyMs: 390, capabilities: ['CODING', 'REASONING', 'REPO_ANALYSIS'], isAvailable: true, isLocal: false },
   { modelId: 'qwen-2.5-coder-32b', name: 'Qwen 2.5 Coder 32B', provider: 'QWEN', contextWindowTokens: 128000, costPerMillionTokensUsd: 0.20, avgLatencyMs: 200, capabilities: ['CODING', 'REPO_ANALYSIS', 'BUG_FIX', 'TOOLS'], isAvailable: true, isLocal: false },
-  { modelId: 'oenexa-security-sast-v1', name: 'OENEXA Security Specialist', provider: 'OENEXA_CUSTOM', contextWindowTokens: 64000, costPerMillionTokensUsd: 0.30, avgLatencyMs: 210, capabilities: ['SECURITY_AUDIT', 'BUG_FIX', 'TOOLS'], isAvailable: true, isLocal: false },
-  { modelId: 'deepseek-r1:8b', name: 'DeepSeek R1 8B (Ollama)', provider: 'LOCAL_OLLAMA', contextWindowTokens: 32000, costPerMillionTokensUsd: 0.00, avgLatencyMs: 180, capabilities: ['CODING', 'REASONING', 'FAST_CHAT', 'PRIVACY'], isAvailable: true, isLocal: true },
 ];
 
 export const fetchAvailableModels = async (token?: string | null): Promise<AiModelSpec[]> => {

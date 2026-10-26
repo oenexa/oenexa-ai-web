@@ -169,7 +169,7 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
         {/* Quick Engineering Prompts */}
         <Box sx={{ mb: 1.5, display: 'flex', gap: 0.8, flexWrap: 'wrap', alignItems: 'center' }}>
           <Chip
-            label="⚡ Auto-Architect"
+            label="⚡ Auto-Architect • OENEXA Sovereign"
             size="small"
             clickable
             color="primary"
@@ -177,7 +177,7 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
             onClick={() => onSendMessage('Architect system design blueprint with sealed records and zero-mock boundaries')}
           />
           <Chip
-            label="🚀 Self-Upgrade"
+            label="🚀 Self-Upgrade • OENEXA Continuous"
             size="small"
             clickable
             color="secondary"

@@ -15,7 +15,7 @@ import {
 import { useChatSession } from './chat/useChatSession';
 import { VoiceAssistantModal } from '../voice/VoiceAssistantModal';
 import { MediaStudioModal } from '../media/MediaStudioModal';
-import { AntigravitySidecar, TerminalLogEntry } from '../antigravity/AntigravitySidecar';
+import { OenexaWorksurface, TerminalLogEntry } from '../worksurface/OenexaWorksurface';
 import { runSelfUpgradeCycle } from '../../services/selfUpgradeEngineService';
 
 export interface ChatTabProps {
@@ -241,7 +241,7 @@ Exit code: 0 [SUCCESS]`;
     if (onApplyArtifactToEditor) {
       onApplyArtifactToEditor(artifact);
     }
-    notify(`Loaded ${artifact.title || 'artifact'} into Antigravity Worksurface`);
+    notify(`Loaded ${artifact.title || 'artifact'} into OENEXA Code Studio`);
   };
 
   const handleAcceptDiff = () => {
@@ -334,7 +334,7 @@ Exit code: 0 [SUCCESS]`;
       </Paper>
 
       {sidecarOpen && (
-        <AntigravitySidecar
+        <OenexaWorksurface
           darkMode={darkMode}
           isOpen={sidecarOpen}
           onClose={() => setSidecarOpen(false)}

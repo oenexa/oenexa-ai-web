@@ -124,16 +124,12 @@ export const ChatHeaderBar: React.FC<ChatHeaderBarProps> = ({
             label="Model Engine"
             onChange={(e) => setSelectedModel(e.target.value)}
           >
-            <MenuItem value="deepseek-r1:8b">🤖 DeepSeek-R1 8B (Local Ollama • Air-Gapped)</MenuItem>
-            <MenuItem value="qwen-2.5-coder-32b">⚡ Qwen 2.5 Coder 32B (Qwen)</MenuItem>
-            <MenuItem value="oenexa-gpt-o3-max">🏛️ OENEXA GPT o3-max (Sovereign Frontier)</MenuItem>
-            <MenuItem value="claude-3-5-sonnet">🧠 Claude 3.5 Sonnet (Anthropic)</MenuItem>
-            <MenuItem value="gemini-2.5-flash">🚀 Gemini 2.5 Flash (Google • 1M Context)</MenuItem>
-            <MenuItem value="deepseek-v3">⚡ DeepSeek V3 (DeepSeek)</MenuItem>
-            <MenuItem value="llama-3.3-70b">🦙 Llama 3.3 70B (Meta)</MenuItem>
-            <MenuItem value="mistral-large">🌪️ Mistral Large (Mistral)</MenuItem>
-            <MenuItem value="oenexa-security-sast-v1">🛡️ OENEXA Security Specialist (SAST)</MenuItem>
-            <MenuItem value="auto">⚡ Auto (Multi-Model Router)</MenuItem>
+            <MenuItem value="deepseek-r1:8b">⚡ OENEXA Sovereign Core (deepseek-r1:8b • Air-Gapped)</MenuItem>
+            <MenuItem value="oenexa-core-neural-32b">⚡ OENEXA Core Neural Engine (32B • In-Process)</MenuItem>
+            <MenuItem value="oenexa-high-reasoning-70b">🧠 OENEXA High-Reasoning Engine (70B)</MenuItem>
+            <MenuItem value="oenexa-fast-matrix-8b">🚀 OENEXA Fast-Inference Matrix (8B • Real-Time)</MenuItem>
+            <MenuItem value="oenexa-security-sast-v1">🛡️ OENEXA Invariant & Security Gate</MenuItem>
+            <MenuItem value="auto">🌐 OENEXA Adaptive Neural Router</MenuItem>
           </Select>
         </FormControl>
 

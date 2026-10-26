@@ -42,24 +42,24 @@ export function synthesizeRealScenarioResponse(params: ScenarioSynthesisParams):
     provider = 'OENEXA_AUTONOMOUS';
   } else if (lower.includes('architect') || lower.includes('system design') || lower.includes('c4') || lower.includes('blueprint')) {
     intent = 'ARCHITECTURE_DESIGN';
-    routedModel = 'claude-3-7-sonnet';
-    provider = 'ANTHROPIC';
+    routedModel = preferredModel || 'oenexa-high-reasoning-70b';
+    provider = preferredModel && preferredModel.includes('claude') ? 'ANTHROPIC' : 'OENEXA_SOVEREIGN_NEURAL';
   } else if (lower.includes('security') || lower.includes('sast') || lower.includes('owasp') || lower.includes('vulnerability')) {
     intent = 'SECURITY_AUDIT';
-    routedModel = 'oenexa-security-sast-v1';
+    routedModel = preferredModel || 'oenexa-security-sast-v1';
     provider = 'OENEXA_ENGINE';
   } else if (lower.includes('test') || lower.includes('junit') || lower.includes('vitest') || lower.includes('coverage')) {
     intent = 'TESTING_SYNTHESIS';
-    routedModel = 'oenexa-test-engineer-v2';
+    routedModel = preferredModel || 'oenexa-test-engineer-v2';
     provider = 'OENEXA_ENGINE';
   } else if (lower.includes('fix') || lower.includes('bug') || lower.includes('error') || lower.includes('exception')) {
     intent = 'BUG_FIX_ANALYSIS';
-    routedModel = 'deepseek-r1:8b';
+    routedModel = preferredModel || 'deepseek-r1:8b';
     provider = 'OLLAMA_LOCAL';
   } else if (isPython || isReact || isJava || isGo || isSql || isDocker || lower.includes('code') || lower.includes('write')) {
     intent = 'CODE_GENERATION';
-    routedModel = 'claude-3-7-sonnet';
-    provider = 'ANTHROPIC';
+    routedModel = preferredModel || 'oenexa-core-neural-32b';
+    provider = preferredModel && preferredModel.includes('claude') ? 'ANTHROPIC' : 'OENEXA_SOVEREIGN_NEURAL';
   }
 
   // 3. Scenario-Specific Synthesis

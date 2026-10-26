@@ -97,7 +97,7 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
             }}
           />
           <Chip
-            label="⚡ Auto-Upgrade: v2.5.0 Active"
+            label="⚡ OENEXA Sovereign Core v3.0"
             size="small"
             sx={{
               bgcolor: darkMode ? 'rgba(16,185,129,0.12)' : 'rgba(16,185,129,0.08)',
