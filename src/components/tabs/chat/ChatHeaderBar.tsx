@@ -11,7 +11,7 @@ import {
   Switch,
   Button,
 } from '@mui/material';
-import { SmartToy, Speed, Savings, Psychology, GroupWork, Tune } from '@mui/icons-material';
+import { SmartToy, Speed, Savings, Psychology, GroupWork, Tune, Laptop as WorksurfaceIcon } from '@mui/icons-material';
 import { ConversationMetadata, OptimizationStrategy } from '../../../types';
 
 export interface ChatHeaderBarProps {
@@ -25,6 +25,8 @@ export interface ChatHeaderBarProps {
   autoChatActive?: boolean;
   setAutoChatActive?: (val: boolean) => void;
   onAutoRunStep?: () => void;
+  sidecarOpen?: boolean;
+  onToggleSidecar?: () => void;
 }
 
 export const ChatHeaderBar: React.FC<ChatHeaderBarProps> = ({
@@ -38,6 +40,8 @@ export const ChatHeaderBar: React.FC<ChatHeaderBarProps> = ({
   autoChatActive = false,
   setAutoChatActive,
   onAutoRunStep,
+  sidecarOpen = false,
+  onToggleSidecar,
 }) => {
   return (
     <Box
@@ -172,6 +176,25 @@ export const ChatHeaderBar: React.FC<ChatHeaderBarProps> = ({
             sx={{ textTransform: 'none', fontWeight: 700, borderRadius: 1.5 }}
           >
             Auto-Run Next Step
+          </Button>
+        )}
+
+        {onToggleSidecar && (
+          <Button
+            variant={sidecarOpen ? 'contained' : 'outlined'}
+            size="small"
+            color={sidecarOpen ? 'primary' : 'inherit'}
+            startIcon={<WorksurfaceIcon sx={{ fontSize: 16 }} />}
+            onClick={onToggleSidecar}
+            sx={{
+              textTransform: 'none',
+              fontWeight: 700,
+              borderRadius: 1.5,
+              fontSize: '0.75rem',
+              ...(sidecarOpen ? { bgcolor: '#0284c7', color: '#fff' } : {}),
+            }}
+          >
+            {sidecarOpen ? 'Worksurface (Open)' : 'Worksurface'}
           </Button>
         )}
       </Box>
