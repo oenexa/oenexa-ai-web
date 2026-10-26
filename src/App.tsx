@@ -8,6 +8,8 @@ import { PlatformNavigationBar } from './components/navigation';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { ChatTab } from './components/tabs/ChatTab';
 import { OenexaAgentSwarmTab } from './components/tabs/OenexaAgentSwarmTab';
+import { CoreBrainStudioTab } from './components/tabs/CoreBrainStudioTab';
+import { AutonomousSelfHealingTab } from './components/tabs/AutonomousSelfHealingTab';
 import { AuthDialog } from './components/auth';
 import { SubscriptionBillingModal } from './components/billing/SubscriptionBillingModal';
 import { MemoryMcpTelemetryModal } from './components/telemetry/MemoryMcpTelemetryModal';
@@ -29,7 +31,7 @@ const App: React.FC = () => {
   const [pendingAttachment, setPendingAttachment] = useState<CodeContextAttachment | null>(null);
   const [multimodalAttachments, setMultimodalAttachments] = useState<MultimodalAttachment[]>([]);
   const [isRecordingVoice, setIsRecordingVoice] = useState<boolean>(false);
-  const [viewMode, setViewMode] = useState<'chat' | 'swarm'>('chat');
+  const [viewMode, setViewMode] = useState<'chat' | 'swarm' | 'brain' | 'healing'>('chat');
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
 
   const notify = (msg: string) => setSnackbarMessage(msg);
@@ -108,7 +110,7 @@ const App: React.FC = () => {
 
       <ErrorBoundary>
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          {viewMode === 'chat' ? (
+          {viewMode === 'chat' && (
             <ChatTab
               darkMode={darkMode}
               token={token}
@@ -126,12 +128,34 @@ const App: React.FC = () => {
               onCopyCode={handleCopyCode}
               notify={notify}
             />
-          ) : (
+          )}
+          {viewMode === 'swarm' && (
             <Box sx={{ flex: 1, overflowY: 'auto' }}>
               <OenexaAgentSwarmTab
                 darkMode={darkMode}
                 token={token}
                 notify={notify}
+              />
+            </Box>
+          )}
+          {viewMode === 'brain' && (
+            <Box sx={{ flex: 1, overflowY: 'auto' }}>
+              <CoreBrainStudioTab
+                darkMode={darkMode}
+                token={token}
+                notify={notify}
+                onApplyArtifact={handleApplyArtifactToEditor}
+                onCopyCode={handleCopyCode}
+              />
+            </Box>
+          )}
+          {viewMode === 'healing' && (
+            <Box sx={{ flex: 1, overflowY: 'auto' }}>
+              <AutonomousSelfHealingTab
+                darkMode={darkMode}
+                token={token}
+                notify={notify}
+                onCopyDiff={handleCopyCode}
               />
             </Box>
           )}

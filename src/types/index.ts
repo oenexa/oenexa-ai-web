@@ -12,3 +12,4 @@ export * from './knowledge';
 export * from './voice';
 export * from './mediaAi';
 export * from './billing';
+export * from './coreBrain';

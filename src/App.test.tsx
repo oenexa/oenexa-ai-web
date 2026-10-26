@@ -186,4 +186,51 @@ describe('Feature: OENEXA Simple Chat Application', () => {
       expect(screen.getAllByText(/Speedup/i).length).toBeGreaterThanOrEqual(1);
     });
   });
+
+  describe('Scenario: OENEXA Central Brain & 12-Engine Studio', () => {
+    it('Given the user is on the platform, When clicking Core Brain, Then Central Brain studio mounts with 12 engines', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const brainBtn = screen.getByRole('button', { name: /Core Brain/i });
+      await act(async () => {
+        fireEvent.click(brainBtn);
+      });
+
+      expect(screen.getByText(/OENEXA Central Brain & 12-Engine Studio/i)).toBeInTheDocument();
+      expect(screen.getByText(/12 Core Engines Health & Throughput Matrix/i)).toBeInTheDocument();
+
+      const execBtn = screen.getByRole('button', { name: /Execute Brain Directive/i });
+      await act(async () => {
+        fireEvent.click(execBtn);
+      });
+
+      expect(await screen.findByText(/Core Brain Directive Synthesis/i)).toBeInTheDocument();
+      expect(screen.getByText(/Security Assessment/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('Scenario: Autonomous Issue Handling & Self-Healing Cockpit', () => {
+    it('Given the user is on the platform, When clicking Self-Healing, Then the autonomous 10-pillar cockpit mounts', async () => {
+      await act(async () => {
+        render(<App />);
+      });
+
+      const healBtn = screen.getByRole('button', { name: /Self-Healing/i });
+      await act(async () => {
+        fireEvent.click(healBtn);
+      });
+
+      expect(screen.getByText(/Autonomous Issue Handling & Self-Healing Cockpit/i)).toBeInTheDocument();
+      expect(screen.getByText(/Self-Learning Pattern Repository/i)).toBeInTheDocument();
+
+      const triggerBtn = screen.getByRole('button', { name: /Trigger Self-Healing/i });
+      await act(async () => {
+        fireEvent.click(triggerBtn);
+      });
+
+      expect((await screen.findAllByText(/RESTORED/i)).length).toBeGreaterThanOrEqual(1);
+    });
+  });
 });

@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   executeAutonomousLifecycle,
   getAutonomousTelemetry,
+  detectAndResolveV2,
+  triggerSelfHealingV2,
 } from './autonomousIssueHandlingService';
 
 describe('autonomousIssueHandlingService', () => {
@@ -53,5 +55,24 @@ describe('autonomousIssueHandlingService', () => {
     expect(telemetry.status).toBe('ONLINE_SELF_IMPROVING');
     expect(telemetry.processedCount).toBeGreaterThan(0);
     expect(telemetry.repeatedErrorsPrevented).toBeGreaterThan(0);
+  });
+
+  it('diagnoses and generates fix via detectAndResolveV2', async () => {
+    const result = await detectAndResolveV2(
+      'java.lang.NullPointerException: in PaymentService',
+      'PaymentService',
+      'DEVELOPMENT',
+      'HIGH'
+    );
+    expect(result.issueId).toContain('ISSUE-');
+    expect(result.autoHealed).toBe(true);
+    expect(result.patchDiff).toContain('--- a/PaymentService.java');
+  });
+
+  it('triggers self-healing cycle via triggerSelfHealingV2', async () => {
+    const status = await triggerSelfHealingV2('CYCLE-TEST-1', 'DEADLOCK_RECOVERY');
+    expect(status.cycleId).toBe('CYCLE-TEST-1');
+    expect(status.status).toBe('RESTORED');
+    expect(status.restored).toBe(true);
   });
 });

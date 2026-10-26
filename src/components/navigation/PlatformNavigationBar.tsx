@@ -28,8 +28,8 @@ export interface PlatformNavigationBarProps {
   onOpenBilling?: () => void;
   onOpenTelemetry?: () => void;
   activeModel?: string;
-  viewMode?: 'chat' | 'swarm';
-  onSelectView?: (mode: 'chat' | 'swarm') => void;
+  viewMode?: 'chat' | 'swarm' | 'brain' | 'healing';
+  onSelectView?: (mode: 'chat' | 'swarm' | 'brain' | 'healing') => void;
 }
 
 export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
@@ -87,7 +87,7 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
           />
         </Box>
 
-        {/* View Switcher: Chat vs OENEXA Swarm Threads */}
+        {/* View Switcher: Chat vs Swarm vs Core Brain vs Self-Healing */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, bgcolor: darkMode ? 'rgba(255,255,255,0.05)' : '#f1f5f9', p: 0.4, borderRadius: 2 }}>
           <Button
             size="small"
@@ -98,7 +98,7 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
               fontSize: '0.75rem',
               fontWeight: 700,
               py: 0.3,
-              px: 1.5,
+              px: 1.2,
               borderRadius: 1.5,
               ...(viewMode === 'chat' ? { bgcolor: '#0284c7', color: '#fff' } : { color: 'inherit' }),
             }}
@@ -114,12 +114,44 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
               fontSize: '0.75rem',
               fontWeight: 700,
               py: 0.3,
-              px: 1.5,
+              px: 1.2,
               borderRadius: 1.5,
               ...(viewMode === 'swarm' ? { bgcolor: '#0284c7', color: '#fff' } : { color: 'inherit' }),
             }}
           >
             ⚡ Swarm Threads
+          </Button>
+          <Button
+            size="small"
+            variant={viewMode === 'brain' ? 'contained' : 'text'}
+            onClick={() => onSelectView?.('brain')}
+            sx={{
+              textTransform: 'none',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              py: 0.3,
+              px: 1.2,
+              borderRadius: 1.5,
+              ...(viewMode === 'brain' ? { bgcolor: '#2563eb', color: '#fff' } : { color: 'inherit' }),
+            }}
+          >
+            🧠 Core Brain
+          </Button>
+          <Button
+            size="small"
+            variant={viewMode === 'healing' ? 'contained' : 'text'}
+            onClick={() => onSelectView?.('healing')}
+            sx={{
+              textTransform: 'none',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              py: 0.3,
+              px: 1.2,
+              borderRadius: 1.5,
+              ...(viewMode === 'healing' ? { bgcolor: '#dc2626', color: '#fff' } : { color: 'inherit' }),
+            }}
+          >
+            🛡️ Self-Healing
           </Button>
         </Box>
 

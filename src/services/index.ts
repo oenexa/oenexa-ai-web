@@ -21,3 +21,4 @@ export * from './billingService';
 export * from './memoryHierarchyService';
 export * from './mcpService';
 export * from './autonomousIssueHandlingService';
+export * from './coreBrainService';
