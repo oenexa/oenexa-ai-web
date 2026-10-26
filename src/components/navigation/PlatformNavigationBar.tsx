@@ -74,6 +74,17 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
             ⚡ OENEXA Chat
           </Typography>
           <Chip
+            label="📁 oenexarepo (main)"
+            size="small"
+            sx={{
+              bgcolor: darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
+              color: 'text.secondary',
+              fontWeight: 600,
+              fontSize: '0.72rem',
+              display: { xs: 'none', md: 'inline-flex' },
+            }}
+          />
+          <Chip
             label={`🟢 ${activeModel} • Local Ollama`}
             size="small"
             sx={{
@@ -83,6 +94,17 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
               fontSize: '0.72rem',
               border: 1,
               borderColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
+            }}
+          />
+          <Chip
+            label="⚡ Auto-Upgrade: v2.5.0 Active"
+            size="small"
+            sx={{
+              bgcolor: darkMode ? 'rgba(16,185,129,0.12)' : 'rgba(16,185,129,0.08)',
+              color: '#10b981',
+              fontWeight: 700,
+              fontSize: '0.70rem',
+              display: { xs: 'none', lg: 'inline-flex' },
             }}
           />
         </Box>

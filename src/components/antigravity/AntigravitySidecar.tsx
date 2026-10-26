@@ -20,6 +20,7 @@ import {
   Clear as RevertIcon,
   ContentCopy as CopyIcon,
   PlayArrow as RunIcon,
+  AutoFixHigh as AutoUpgradeIcon,
 } from '@mui/icons-material';
 import Editor, { DiffEditor } from '@monaco-editor/react';
 import { CodeArtifact } from '../../types';
@@ -229,6 +230,17 @@ Adopt Clean Architecture with strict port-and-adapter boundaries:
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Chip
+            label="⚡ Auto-Upgrade: Active"
+            size="small"
+            sx={{
+              height: 20,
+              fontSize: '0.65rem',
+              fontWeight: 800,
+              bgcolor: darkMode ? 'rgba(16,185,129,0.15)' : 'rgba(16,185,129,0.1)',
+              color: '#10b981',
+            }}
+          />
+          <Chip
             label={activeLanguage.toUpperCase()}
             size="small"
             sx={{
@@ -330,6 +342,16 @@ Adopt Clean Architecture with strict port-and-adapter boundaries:
 
         {activeTab === 'terminal' && (
           <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              startIcon={<AutoUpgradeIcon sx={{ fontSize: 14 }} />}
+              onClick={() => handleExecuteCommand('self-upgrade')}
+              sx={{ textTransform: 'none', fontSize: '0.72rem', py: 0.2, px: 1, fontWeight: 700 }}
+            >
+              Run Self-Upgrade
+            </Button>
             <Button
               size="small"
               variant="outlined"

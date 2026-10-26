@@ -76,4 +76,19 @@ describe('Feature: Real Scenario Response Engine', () => {
     expect(result.thoughtProcess).toBeDefined();
     expect(result.thoughtProcess?.length).toBeGreaterThan(50);
   });
+
+  it('should detect autonomous self-upgrade intent and synthesize self-upgrade manifest', () => {
+    const result = synthesizeRealScenarioResponse({
+      message: '/upgrade Run automated self-upgrade cycle and report health status',
+      conversationId: 'conv-upgrade-test',
+      preferredModel: 'deepseek-r1:8b',
+      includeThinking: true,
+    });
+
+    expect(result.intent).toBe('AUTONOMOUS_SELF_UPGRADE');
+    expect(result.reply).toContain('Autonomous Self-Upgrade Report');
+    expect(result.artifacts).toHaveLength(1);
+    expect(result.artifacts[0].title).toBe('SelfUpgradeReport.md');
+    expect(result.artifacts[0].code).toContain('Autonomous Continuous Evolution');
+  });
 });

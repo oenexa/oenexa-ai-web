@@ -177,6 +177,14 @@ export const ChatInputBar: React.FC<ChatInputBarProps> = ({
             onClick={() => onSendMessage('Architect system design blueprint with sealed records and zero-mock boundaries')}
           />
           <Chip
+            label="🚀 Self-Upgrade"
+            size="small"
+            clickable
+            color="secondary"
+            variant="outlined"
+            onClick={() => onSendMessage('/upgrade Run automated self-upgrade cycle: inspect health, verify zero regressions, bump version, and commit')}
+          />
+          <Chip
             label="🧪 Auto-Synthesize Tests"
             size="small"
             clickable
