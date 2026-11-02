@@ -6,7 +6,7 @@ import {
   VideoScene,
 } from '../types/mediaAi';
 
-const API_BASE_URL = 'http://localhost:8080/api/v1/media';
+const API_BASE_URL = '/api/v1/media';
 
 export async function generateImage(
   prompt: string,

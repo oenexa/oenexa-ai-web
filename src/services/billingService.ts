@@ -8,7 +8,7 @@ import {
   StripeCheckoutSession,
 } from '../types/billing';
 
-const API_BASE_URL = 'http://localhost:8080/api/v1/billing';
+const API_BASE_URL = '/api/v1/billing';
 
 export async function getUserSubscription(
   userId: string = 'default-user',

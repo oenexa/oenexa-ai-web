@@ -7,7 +7,7 @@ import {
   MeetingAudioAnalysis,
 } from '../types/voice';
 
-const API_BASE_URL = 'http://localhost:8080/api/v1/voice';
+const API_BASE_URL = '/api/v1/voice';
 
 export async function transcribeAudio(
   audioBase64?: string,

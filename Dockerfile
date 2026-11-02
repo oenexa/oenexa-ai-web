@@ -32,6 +32,9 @@ RUN rm -rf ./*
 # Copy built distribution from builder stage
 COPY --from=builder /app/dist ./
 
+# Create /ai symlink so assets at /ai/assets and /ai/index.html resolve transparently
+RUN ln -s /usr/share/nginx/html /usr/share/nginx/html/ai
+
 # Copy custom Nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 

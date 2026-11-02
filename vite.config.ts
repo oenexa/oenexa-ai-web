@@ -16,6 +16,7 @@ export default defineConfig(({ mode }) => {
     defaultTarget;
 
   return {
+    base: '/ai/',
     plugins: [react()],
     resolve: {
       alias: {

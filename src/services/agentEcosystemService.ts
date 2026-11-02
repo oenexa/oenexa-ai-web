@@ -7,7 +7,7 @@ import {
   AgentCollaborationEvent,
 } from '../types/agentEcosystem';
 
-const API_BASE_URL = 'http://localhost:8080/api/v1/ecosystem';
+const API_BASE_URL = '/api/v1/ecosystem';
 
 const DEFAULT_AGENTS: AgentProfile[] = [
   {
