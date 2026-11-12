@@ -9,12 +9,14 @@ describe('ChatMessageStream Unit Tests', () => {
     {
       id: 'msg-1',
       sender: 'You',
+      role: 'USER',
       content: 'How does virtual thread scheduling work in Java 25?',
       timestamp: '10:00 AM',
     },
     {
       id: 'msg-2',
       sender: 'OENEXA AI',
+      role: 'ASSISTANT',
       content: 'Virtual threads are lightweight threads managed by the Java Virtual Machine rather than the underlying operating system.',
       timestamp: '10:01 AM',
       thoughtProcess: 'Analyzing Java 25 Project Loom fiber scheduling mechanics...',

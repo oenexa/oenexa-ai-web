@@ -5,6 +5,7 @@ import {
   Snackbar,
 } from '@mui/material';
 import { PlatformNavigationBar } from './components/navigation';
+import { OenexaEcosystemBar } from './components/navigation/OenexaEcosystemBar';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { ChatTab } from './components/tabs/ChatTab';
 import { OenexaAgentSwarmTab } from './components/tabs/OenexaAgentSwarmTab';
@@ -23,8 +24,14 @@ export * from './types';
 
 const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('oenexa_token'));
-  const [username, setUsername] = useState<string>(localStorage.getItem('oenexa_user') || 'engineer');
+  // SEC-05: JWT token kept strictly in memory; purge any legacy localStorage token on startup
+  const [token, setToken] = useState<string | null>(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.removeItem('oenexa_token');
+    }
+    return null;
+  });
+  const [username, setUsername] = useState<string>('engineer');
   const [authDialogOpen, setAuthDialogOpen] = useState<boolean>(false);
   const [billingModalOpen, setBillingModalOpen] = useState<boolean>(false);
   const [telemetryModalOpen, setTelemetryModalOpen] = useState<boolean>(false);
@@ -42,8 +49,13 @@ const App: React.FC = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('oenexa_token');
-    localStorage.removeItem('oenexa_user');
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.removeItem('oenexa_token');
+      localStorage.removeItem('oenexa_user');
+    }
+    if (typeof fetch === 'function' && import.meta.env?.MODE !== 'test') {
+      fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
+    }
     setToken(null);
     setUsername('engineer');
     notify('Logged out successfully');
@@ -73,8 +85,8 @@ const App: React.FC = () => {
     setMultimodalAttachments((prev) => prev.filter((a) => a.id !== id));
   };
 
-  const handleApplyArtifactToEditor = (artifact: CodeArtifact) => {
-    notify(`Applied ${artifact.title} to workspace`);
+  const handleApplyArtifactToEditor = (artifact: { title?: string; code?: string } | CodeArtifact) => {
+    notify(`Applied ${artifact.title || 'artifact'} to workspace`);
   };
 
   const handleCopyCode = (code: string) => {
@@ -94,6 +106,7 @@ const App: React.FC = () => {
         flexDirection: 'column',
       }}
     >
+      <OenexaEcosystemBar activeProduct="ai" />
       <PlatformNavigationBar
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
@@ -168,8 +181,6 @@ const App: React.FC = () => {
         onSuccess={(tk, user) => {
           setToken(tk);
           setUsername(user);
-          localStorage.setItem('oenexa_token', tk);
-          localStorage.setItem('oenexa_user', user);
           notify(`Welcome back, ${user}!`);
         }}
         notify={notify}

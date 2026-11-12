@@ -14,10 +14,12 @@ export interface CodeArtifact {
   id: string;
   title?: string;
   name?: string;
-  filePath: string;
+  filePath?: string;
   language: string;
   code?: string;
   content?: string;
+  codeSnippet?: string;
+  originalCode?: string;
   action: 'CREATE' | 'PATCH';
 }
 
