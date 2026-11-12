@@ -6,6 +6,14 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   build-and-test:
     name: Verify & Test OENEXA AI Web
@@ -24,11 +32,73 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run Vitest In-Process Real Verification Tests
+      - name: Run TypeScript Type Check
+        run: npm run typecheck
+
+      - name: Run Vitest Verification Tests
         run: npm test
 
       - name: Build Vite Production Assets (dist/)
         run: npm run build
 
-      - name: Build Container Image (oenexa/ai-web:latest)
-        run: docker build -t oenexa/ai-web:latest -f Dockerfile .
+  build-and-push:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push OENEXA AI Web Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.2.5
+        env:
+          SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        if: env.SSH_KEY != ''
+        with:
+          host: ${{ secrets.SERVER_HOST || '62.210.92.60' }}
+          username: ${{ secrets.SERVER_USER || 'ubuntu' }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          timeout: 60s
+          command_timeout: 10m
+          script: |
+            set -e
+            echo "Deploying OENEXA AI Web on VPS (62.210.92.60)..."
+            if [ -d "/opt/oenexa/src/oenexa-ai-web/.git" ]; then
+              cd /opt/oenexa/src/oenexa-ai-web
+              git fetch origin main
+              git reset --hard origin/main
+            fi
+            cd /opt/oenexa
+            docker compose build oenexa-ai-web
+            docker compose up -d --no-deps oenexa-ai-web
+            docker compose ps oenexa-ai-web
+
+      - name: Report missing SSH secret
+        env:
+          SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        if: env.SSH_KEY == ''
+        run: echo "::warning::SERVER_SSH_KEY secret is not configured in this repository. Skipping automatic SSH deployment to VPS."
