@@ -25,3 +25,4 @@ export * from './coreBrainService';
 export * from './aiPlatformUpgradeService';
 export * from './governanceObservabilityService';
 export * from './riskFraudService';
+export * from './documentAnalyticsService';
