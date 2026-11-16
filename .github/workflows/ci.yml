@@ -76,12 +76,12 @@ jobs:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.2.5
         env:
-          SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          SSH_KEY: ${{ secrets.SERVER_SSH_KEY || secrets.VPS_SSH_KEY }}
         if: env.SSH_KEY != ''
         with:
           host: ${{ secrets.SERVER_HOST || '62.210.92.60' }}
           username: ${{ secrets.SERVER_USER || 'ubuntu' }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          key: ${{ secrets.SERVER_SSH_KEY || secrets.VPS_SSH_KEY }}
           port: 22
           timeout: 60s
           command_timeout: 10m
@@ -94,12 +94,12 @@ jobs:
               git reset --hard origin/main
             fi
             cd /opt/oenexa
-            docker compose build oenexa-ai-web
-            docker compose up -d --no-deps oenexa-ai-web
-            docker compose ps oenexa-ai-web
+            docker compose -f docker-compose.prod.yml build oenexa-ai-web
+            docker compose -f docker-compose.prod.yml up -d --no-deps oenexa-ai-web
+            docker compose -f docker-compose.prod.yml ps oenexa-ai-web
 
       - name: Report missing SSH secret
         env:
-          SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          SSH_KEY: ${{ secrets.SERVER_SSH_KEY || secrets.VPS_SSH_KEY }}
         if: env.SSH_KEY == ''
-        run: echo "::warning::SERVER_SSH_KEY secret is not configured in this repository. Skipping automatic SSH deployment to VPS."
+        run: echo "::warning::SERVER_SSH_KEY / VPS_SSH_KEY secret is not configured in this repository. Skipping automatic SSH deployment to VPS."
