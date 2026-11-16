@@ -1,0 +1,18 @@
+# ==============================================================================
+# OENEXA AI Web Cockpit — Standalone Local Stack
+# Usage: docker compose up -d --build
+# ==============================================================================
+
+version: "3.8"
+
+services:
+  oenexa-ai-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: oenexa-ai-web-standalone
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:8080/api/v4}
+    restart: unless-stopped
