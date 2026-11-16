@@ -24,6 +24,25 @@ describe('EnterpriseAssistantTab Zero-Mock Component Tests', () => {
     const secTab = screen.getByRole('tab', { name: /Security/i });
     fireEvent.click(secTab);
     expect(secTab.getAttribute('aria-selected')).toBe('true');
+
+    const intTab = screen.getByRole('tab', { name: /Integrations/i });
+    fireEvent.click(intTab);
+    expect(intTab.getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('should switch to Integrations tab and execute evaluation', async () => {
+    const notifyMock = vi.fn();
+    render(<EnterpriseAssistantTab darkMode={false} notify={notifyMock} />);
+
+    const intTab = screen.getByRole('tab', { name: /Integrations/i });
+    fireEvent.click(intTab);
+
+    const runButton = screen.getByRole('button', { name: /Run AI Evaluation/i });
+    await React.act(async () => {
+      fireEvent.click(runButton);
+    });
+
+    expect(screen.getByText(/Structured Execution Report/i)).toBeDefined();
   });
 
   it('should execute evaluation and invoke notify callback', async () => {

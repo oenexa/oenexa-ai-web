@@ -20,6 +20,7 @@ import {
   Description as DocIcon,
   Warning as IncidentIcon,
   AutoStories as PromptIcon,
+  Hub as IntegrationIcon,
 } from '@mui/icons-material';
 import {
   analyzeRepository,
@@ -29,6 +30,7 @@ import {
 } from '../../services/aiPlatformUpgradeService';
 import { triageIncident } from '../../services/governanceObservabilityService';
 import { generateDocument, DocumentType } from '../../services/documentAnalyticsService';
+import { inspectLocalRepository } from '../../services/enterpriseIntegrationService';
 
 export interface EnterpriseAssistantTabProps {
   darkMode: boolean;
@@ -89,6 +91,16 @@ export const EnterpriseAssistantTab: React.FC<EnterpriseAssistantTabProps> = ({
         const res = await listPromptTemplates();
         setResultOutput(JSON.stringify(res, null, 2));
         notify(`Loaded ${res.length} enterprise prompt templates`);
+      } else if (activeSubTab === 6) {
+        // Enterprise Integrations
+        const res = await inspectLocalRepository(inputTarget, [
+          'src/main/java',
+          'src/main/resources',
+          'build.gradle.kts',
+          'pom.xml',
+        ]);
+        setResultOutput(JSON.stringify(res, null, 2));
+        notify(`Inspection complete for repo: ${res.repoName} (${res.filesScanned} files)`);
       }
     } catch {
       notify('Execution error; fallback output applied.');
@@ -128,6 +140,7 @@ export const EnterpriseAssistantTab: React.FC<EnterpriseAssistantTabProps> = ({
         <Tab icon={<DocIcon fontSize="small" />} iconPosition="start" label="Documentation" />
         <Tab icon={<IncidentIcon fontSize="small" />} iconPosition="start" label="Incidents & SRE" />
         <Tab icon={<PromptIcon fontSize="small" />} iconPosition="start" label="Prompt Registry" />
+        <Tab icon={<IntegrationIcon fontSize="small" />} iconPosition="start" label="Integrations" />
       </Tabs>
 
       <Grid container spacing={2.5}>
