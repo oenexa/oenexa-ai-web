@@ -27,3 +27,4 @@ export * from './governanceObservabilityService';
 export * from './riskFraudService';
 export * from './documentAnalyticsService';
 export * from './enterpriseIntegrationService';
+export * from './swarmExecutionService';
