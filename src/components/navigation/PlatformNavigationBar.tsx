@@ -28,8 +28,8 @@ export interface PlatformNavigationBarProps {
   onOpenBilling?: () => void;
   onOpenTelemetry?: () => void;
   activeModel?: string;
-  viewMode?: 'chat' | 'swarm' | 'brain' | 'healing';
-  onSelectView?: (mode: 'chat' | 'swarm' | 'brain' | 'healing') => void;
+  viewMode?: 'chat' | 'swarm' | 'brain' | 'healing' | 'assistant';
+  onSelectView?: (mode: 'chat' | 'swarm' | 'brain' | 'healing' | 'assistant') => void;
 }
 
 export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
@@ -174,6 +174,22 @@ export const PlatformNavigationBar: React.FC<PlatformNavigationBarProps> = ({
             }}
           >
             🛡️ Self-Healing
+          </Button>
+          <Button
+            size="small"
+            variant={viewMode === 'assistant' ? 'contained' : 'text'}
+            onClick={() => onSelectView?.('assistant')}
+            sx={{
+              textTransform: 'none',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              py: 0.3,
+              px: 1.2,
+              borderRadius: 1.5,
+              ...(viewMode === 'assistant' ? { bgcolor: '#059669', color: '#fff' } : { color: 'inherit' }),
+            }}
+          >
+            🛠️ Assistant
           </Button>
         </Box>
 

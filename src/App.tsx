@@ -11,6 +11,7 @@ import { ChatTab } from './components/tabs/ChatTab';
 import { OenexaAgentSwarmTab } from './components/tabs/OenexaAgentSwarmTab';
 import { CoreBrainStudioTab } from './components/tabs/CoreBrainStudioTab';
 import { AutonomousSelfHealingTab } from './components/tabs/AutonomousSelfHealingTab';
+import { EnterpriseAssistantTab } from './components/tabs/EnterpriseAssistantTab';
 import { AuthDialog } from './components/auth';
 import { SubscriptionBillingModal } from './components/billing/SubscriptionBillingModal';
 import { MemoryMcpTelemetryModal } from './components/telemetry/MemoryMcpTelemetryModal';
@@ -38,7 +39,7 @@ const App: React.FC = () => {
   const [pendingAttachment, setPendingAttachment] = useState<CodeContextAttachment | null>(null);
   const [multimodalAttachments, setMultimodalAttachments] = useState<MultimodalAttachment[]>([]);
   const [isRecordingVoice, setIsRecordingVoice] = useState<boolean>(false);
-  const [viewMode, setViewMode] = useState<'chat' | 'swarm' | 'brain' | 'healing'>('chat');
+  const [viewMode, setViewMode] = useState<'chat' | 'swarm' | 'brain' | 'healing' | 'assistant'>('chat');
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
 
   const notify = (msg: string) => setSnackbarMessage(msg);
@@ -169,6 +170,15 @@ const App: React.FC = () => {
                 token={token}
                 notify={notify}
                 onCopyDiff={handleCopyCode}
+              />
+            </Box>
+          )}
+          {viewMode === 'assistant' && (
+            <Box sx={{ flex: 1, overflowY: 'auto' }}>
+              <EnterpriseAssistantTab
+                darkMode={darkMode}
+                token={token}
+                notify={notify}
               />
             </Box>
           )}

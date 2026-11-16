@@ -8,3 +8,4 @@ export * from './chat';
 export * from './swarm';
 export * from './corebrain';
 export * from './autonomous';
+export * from './EnterpriseAssistantTab';
