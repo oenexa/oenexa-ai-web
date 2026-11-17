@@ -100,7 +100,7 @@ export const EnterpriseAssistantTab: React.FC<EnterpriseAssistantTabProps> = ({
           'pom.xml',
         ]);
         setResultOutput(JSON.stringify(res, null, 2));
-        notify(`Inspection complete for repo: ${res.repoName} (${res.filesScanned} files)`);
+        notify(`Inspection complete for repo: ${res.repositoryName} (${res.fileCount} files)`);
       }
     } catch {
       notify('Execution error; fallback output applied.');
