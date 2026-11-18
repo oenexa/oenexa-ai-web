@@ -97,6 +97,58 @@ export async function fetchActiveThreads(
   return [];
 }
 
+export interface SwarmStreamEventPayload {
+  eventType: string;
+  planId: string;
+  message: string;
+  payload?: any;
+  timestamp: string;
+}
+
+export function streamConcurrentSwarm(
+  request: SwarmExecutionRequest,
+  onEvent: (event: SwarmStreamEventPayload) => void,
+  token?: string | null
+): () => void {
+  const goal = encodeURIComponent(request.goalTitle || 'Autonomous Enterprise System Engineering');
+  const strategy = encodeURIComponent(request.strategy || 'PARALLEL_MAX_SPEED');
+  const url = `${API_BASE_URL}/stream?goal=${goal}&strategy=${strategy}`;
+
+  if (typeof EventSource !== 'undefined') {
+    const es = new EventSource(url);
+    const eventTypes = ['plan_initialized', 'task_completed', 'telemetry_update', 'plan_completed', 'error'];
+    for (const evt of eventTypes) {
+      es.addEventListener(evt, (e: MessageEvent) => {
+        try {
+          const parsed = JSON.parse(e.data);
+          onEvent(parsed);
+        } catch {
+          onEvent({ eventType: evt, planId: 'stream', message: e.data, timestamp: new Date().toISOString() });
+        }
+      });
+    }
+    es.onerror = () => es.close();
+    return () => es.close();
+  }
+
+  const timeoutId = setTimeout(() => {
+    onEvent({
+      eventType: 'plan_initialized',
+      planId: 'sim-plan-1',
+      message: `Swarm initialized for ${request.goalTitle}`,
+      timestamp: new Date().toISOString(),
+    });
+    onEvent({
+      eventType: 'plan_completed',
+      planId: 'sim-plan-1',
+      message: 'Plan execution complete',
+      timestamp: new Date().toISOString(),
+    });
+  }, 10);
+
+  return () => clearTimeout(timeoutId);
+}
+
 function getStageName(agent: EnterpriseAgentType, strategy?: SwarmExecutionStrategy): string {
   if (strategy !== 'PHASED_PIPELINE') return 'Parallel Swarm';
   if (agent === 'ARCHITECT' || agent === 'RESEARCH' || agent === 'PRODUCT_MANAGER') {

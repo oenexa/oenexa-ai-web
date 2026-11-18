@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   executeConcurrentSwarm,
   fetchActiveThreads,
+  streamConcurrentSwarm,
+  SwarmStreamEventPayload,
 } from './agentThreadOrchestratorService';
 
 describe('Feature: OENEXA Multi-Agent Thread Orchestration Service', () => {
@@ -68,5 +70,22 @@ describe('Feature: OENEXA Multi-Agent Thread Orchestration Service', () => {
     const threads = await fetchActiveThreads();
     expect(threads).toBeDefined();
     expect(Array.isArray(threads)).toBe(true);
+  });
+
+  it('should stream concurrent swarm events via SSE subscriber', async () => {
+    const events: SwarmStreamEventPayload[] = [];
+    const unsubscribe = streamConcurrentSwarm(
+      { goalTitle: 'Quantum Safe Tokenization Swarm', strategy: 'PARALLEL_MAX_SPEED' },
+      (evt) => events.push(evt)
+    );
+
+    expect(typeof unsubscribe).toBe('function');
+
+    // Wait for simulated stream events to arrive
+    await new Promise((r) => setTimeout(r, 50));
+    expect(events.length).toBeGreaterThanOrEqual(1);
+    expect(events.some((e) => e.eventType === 'plan_initialized')).toBe(true);
+    expect(events.some((e) => e.eventType === 'plan_completed')).toBe(true);
+    unsubscribe();
   });
 });
